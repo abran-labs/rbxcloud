@@ -8,6 +8,7 @@ mod messaging_cli;
 mod notification_cli;
 mod ordered_datastore_cli;
 mod place_cli;
+mod raw_cli;
 mod subscription_cli;
 mod universe_cli;
 mod user_cli;
@@ -23,7 +24,8 @@ use user_restriction_cli::UserRestriction;
 use self::{
     assets_cli::Assets, datastore_cli::DataStore, experience_cli::Experience, group_cli::Group,
     messaging_cli::Messaging, notification_cli::Notification,
-    ordered_datastore_cli::OrderedDataStore, place_cli::Place, subscription_cli::Subscription,
+    ordered_datastore_cli::OrderedDataStore, place_cli::Place, raw_cli::Raw,
+    subscription_cli::Subscription,
 };
 
 #[derive(Debug, Parser)]
@@ -75,6 +77,9 @@ pub(crate) enum Command {
 
     /// Access to the Roblox User Restriction API
     UserRestriction(UserRestriction),
+
+    /// Raw authenticated request to any Roblox Open Cloud endpoint
+    Raw(Raw),
 }
 
 impl Cli {
@@ -94,6 +99,7 @@ impl Cli {
             Command::Universe(command) => command.run().await,
             Command::User(command) => command.run().await,
             Command::UserRestriction(command) => command.run().await,
+            Command::Raw(command) => command.run().await,
         }
     }
 }

@@ -19,6 +19,7 @@ nav:
     - Notification: cli/cli-notification.md
     - OrderedDataStore: cli/cli-ordered-datastore.md
     - Place: cli/cli-place.md
+    - Raw: cli/cli-raw.md
     - Subscription: cli/cli-subscription.md
     - Universe: cli/cli-universe.md
     - User: cli/cli-user.md

@@ -25,9 +25,12 @@ use user_restriction::{
 
 use self::{
     group::{
-        GetGroupParams, GetGroupResponse, GetGroupShoutParams, GetGroupShoutResponse,
+        GetGroupParams, GetGroupResponse, GetGroupRoleParams, GetGroupShoutParams,
+        GetGroupShoutResponse, GroupMembership, GroupRole, ListGroupForumCategoriesParams,
+        ListGroupForumCommentsParams, ListGroupForumPostsParams, ListGroupJoinRequestsParams,
         ListGroupMembershipsParams, ListGroupMembershipsResponse, ListGroupRolesParams,
-        ListGroupRolesResponse,
+        ListGroupRolesResponse, MutateGroupJoinRequestParams, MutateGroupMembershipRoleParams,
+        UpdateGroupMembershipParams,
     },
     notification::{Notification, NotificationParams, NotificationResponse},
     subscription::{GetSubscriptionParams, GetSubscriptionResponse, SubscriptionView},
@@ -158,6 +161,145 @@ impl GroupClient {
             max_page_size,
             page_token,
             filter,
+        })
+        .await
+    }
+
+    pub async fn get_role(&self, role_id: String) -> Result<GroupRole, Error> {
+        group::get_group_role(&GetGroupRoleParams {
+            api_key: self.api_key.clone(),
+            group_id: self.group_id,
+            role_id,
+        })
+        .await
+    }
+
+    pub async fn list_forum_categories(
+        &self,
+        max_page_size: Option<u32>,
+        page_token: Option<String>,
+    ) -> Result<serde_json::Value, Error> {
+        group::list_group_forum_categories(&ListGroupForumCategoriesParams {
+            api_key: self.api_key.clone(),
+            group_id: self.group_id,
+            max_page_size,
+            page_token,
+        })
+        .await
+    }
+
+    pub async fn list_forum_posts(
+        &self,
+        forum_category_id: String,
+        max_page_size: Option<u32>,
+        page_token: Option<String>,
+    ) -> Result<serde_json::Value, Error> {
+        group::list_group_forum_posts(&ListGroupForumPostsParams {
+            api_key: self.api_key.clone(),
+            group_id: self.group_id,
+            forum_category_id,
+            max_page_size,
+            page_token,
+        })
+        .await
+    }
+
+    pub async fn list_forum_comments(
+        &self,
+        forum_category_id: String,
+        post_id: String,
+        max_page_size: Option<u32>,
+        page_token: Option<String>,
+    ) -> Result<serde_json::Value, Error> {
+        group::list_group_forum_comments(&ListGroupForumCommentsParams {
+            api_key: self.api_key.clone(),
+            group_id: self.group_id,
+            forum_category_id,
+            post_id,
+            max_page_size,
+            page_token,
+        })
+        .await
+    }
+
+    pub async fn list_join_requests(
+        &self,
+        max_page_size: Option<u32>,
+        filter: Option<String>,
+        page_token: Option<String>,
+    ) -> Result<serde_json::Value, Error> {
+        group::list_group_join_requests(&ListGroupJoinRequestsParams {
+            api_key: self.api_key.clone(),
+            group_id: self.group_id,
+            max_page_size,
+            page_token,
+            filter,
+        })
+        .await
+    }
+
+    pub async fn accept_join_request(
+        &self,
+        join_request_id: String,
+    ) -> Result<serde_json::Value, Error> {
+        group::accept_group_join_request(&MutateGroupJoinRequestParams {
+            api_key: self.api_key.clone(),
+            group_id: self.group_id,
+            join_request_id,
+        })
+        .await
+    }
+
+    pub async fn decline_join_request(
+        &self,
+        join_request_id: String,
+    ) -> Result<serde_json::Value, Error> {
+        group::decline_group_join_request(&MutateGroupJoinRequestParams {
+            api_key: self.api_key.clone(),
+            group_id: self.group_id,
+            join_request_id,
+        })
+        .await
+    }
+
+    pub async fn update_membership(
+        &self,
+        membership_id: String,
+        body: serde_json::Value,
+    ) -> Result<GroupMembership, Error> {
+        group::update_group_membership(&UpdateGroupMembershipParams {
+            api_key: self.api_key.clone(),
+            group_id: self.group_id,
+            membership_id,
+            body,
+        })
+        .await
+    }
+
+    pub async fn assign_role(
+        &self,
+        membership_id: String,
+        role: String,
+    ) -> Result<GroupMembership, Error> {
+        group::assign_group_membership_role(&MutateGroupMembershipRoleParams {
+            api_key: self.api_key.clone(),
+            group_id: self.group_id,
+            membership_id,
+            role,
+        })
+        .await
+    }
+
+    pub async fn unassign_role(
+        &self,
+        membership_id: String,
+        role: String,
+    ) -> Result<GroupMembership, Error> {
+        group::unassign_group_membership_role(&MutateGroupMembershipRoleParams {
+            api_key: self.api_key.clone(),
+            group_id: self.group_id,
+            membership_id,
+            role,
         })
         .await
     }
