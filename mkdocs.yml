@@ -10,6 +10,7 @@ nav:
     - Install: cli/cli-install.md
     - API Key: cli/cli-api-key.md
     - Assets: cli/cli-assets.md
+    - Cloud Operations: cli/cli-cloud.md
     - DataStore: cli/cli-datastore.md
     - Experience: cli/cli-experience.md
     - Group: cli/cli-group.md

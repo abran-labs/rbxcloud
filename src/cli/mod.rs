@@ -1,4 +1,5 @@
 mod assets_cli;
+mod cloud_cli;
 mod datastore_cli;
 mod experience_cli;
 mod group_cli;
@@ -15,6 +16,7 @@ mod user_cli;
 mod user_restriction_cli;
 
 use clap::{Parser, Subcommand};
+use cloud_cli::Cloud;
 use inventory_cli::Inventory;
 use luau_execution_cli::Luau;
 use universe_cli::Universe;
@@ -80,6 +82,9 @@ pub(crate) enum Command {
 
     /// Raw authenticated request to any Roblox Open Cloud endpoint
     Raw(Raw),
+
+    /// Generated named operations for every Roblox API-key endpoint
+    Cloud(Cloud),
 }
 
 impl Cli {
@@ -100,6 +105,7 @@ impl Cli {
             Command::User(command) => command.run().await,
             Command::UserRestriction(command) => command.run().await,
             Command::Raw(command) => command.run().await,
+            Command::Cloud(command) => command.run().await,
         }
     }
 }
