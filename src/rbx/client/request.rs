@@ -24,16 +24,22 @@ pub(crate) struct Attachment {
 }
 
 impl Attachment {
+    /// Fails if `file_name` is not a plain file name; see
+    /// [`check_file_name`].
     pub(crate) fn from_bytes(
         file_name: impl Into<String>,
         content_type: impl Into<String>,
         data: Vec<u8>,
-    ) -> Self {
-        Self {
-            file_name: file_name.into(),
+    ) -> Result<Self, Error> {
+        let file_name = file_name.into();
+        check_file_name(&file_name).map_err(|reason| Error::InvalidAttachment {
+            reason: reason.to_string(),
+        })?;
+        Ok(Self {
+            file_name,
             content_type: content_type.into(),
             data: data.into(),
-        }
+        })
     }
 
     /// Reads the file now, so a retry sends the same bytes. The part is named
@@ -49,8 +55,39 @@ impl Attachment {
             .ok_or_else(|| file_error(io::ErrorKind::InvalidInput))?
             .to_string();
         let data = std::fs::read(path).map_err(|e| file_error(e.kind()))?;
-        Ok(Self::from_bytes(file_name, content_type, data))
+        Self::from_bytes(file_name, content_type, data)
     }
+}
+
+/// Longest attachment file name, in bytes.
+pub(crate) const MAX_FILE_NAME_BYTES: usize = 255;
+
+/// Checks a name that is written into a multipart part header as
+/// `filename="..."`. A line break there would start a new part header, and
+/// servers disagree on how quotes and backslashes are unescaped, so the name
+/// must be a plain file name: not empty, not `.` or `..`, at most
+/// [`MAX_FILE_NAME_BYTES`] bytes, and without control characters, line or
+/// paragraph separators, `"`, `/` or `\`.
+pub(crate) fn check_file_name(name: &str) -> Result<(), &'static str> {
+    if name.is_empty() || name.trim().is_empty() {
+        return Err("the file name is empty");
+    }
+    if name == "." || name == ".." {
+        return Err("the file name is a dot segment");
+    }
+    if name.len() > MAX_FILE_NAME_BYTES {
+        return Err("the file name is longer than 255 bytes");
+    }
+    if name
+        .chars()
+        .any(|c| c.is_control() || matches!(c, '\u{2028}' | '\u{2029}'))
+    {
+        return Err("the file name has a control character or line break");
+    }
+    if name.contains(['"', '/', '\\']) {
+        return Err("the file name has a quote or path separator");
+    }
+    Ok(())
 }
 
 pub(crate) enum Part {
@@ -298,6 +335,52 @@ mod tests {
             url.path(),
             "/v1/things/%40evil.test/parts/%2F%2Fevil.test%2Fx"
         );
+    }
+
+    #[test]
+    fn file_names_must_be_plain() {
+        for good in [
+            "a.png",
+            "pic ture.png",
+            "Tëst ☕.fbx",
+            "x",
+            &"n".repeat(255),
+        ] {
+            assert!(check_file_name(good).is_ok(), "{good:?}");
+            assert!(Attachment::from_bytes(good, "image/png", vec![1]).is_ok());
+        }
+        let long = "n".repeat(256);
+        let bad = [
+            "",
+            "   ",
+            ".",
+            "..",
+            long.as_str(),
+            "a\r\nContent-Type: text/html\r\n\r\nx.png",
+            "a\nb.png",
+            "a\rb.png",
+            "a\tb.png",
+            "a\0b.png",
+            "a\u{7f}b.png",
+            "a\u{85}b.png",
+            "a\u{2028}b.png",
+            "a\u{2029}b.png",
+            "a\"b.png",
+            "dir/a.png",
+            "dir\\a.png",
+        ];
+        for name in bad {
+            assert!(check_file_name(name).is_err(), "{name:?}");
+            let error = Attachment::from_bytes(name, "image/png", vec![1])
+                .err()
+                .unwrap();
+            let text = format!("{error} | {error:?}");
+            assert!(matches!(error, Error::InvalidAttachment { .. }), "{name:?}");
+            assert!(
+                !text.contains("text/html"),
+                "the name is not echoed: {text}"
+            );
+        }
     }
 
     #[test]

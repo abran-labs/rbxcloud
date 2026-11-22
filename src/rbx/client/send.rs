@@ -1,7 +1,7 @@
 //! Sends one request, with bounded retries.
 use std::io::Read;
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use reqwest::blocking::multipart::{Form, Part as FormPart};
 use reqwest::blocking::RequestBuilder;
@@ -40,7 +40,14 @@ enum Failure {
 
 impl Client {
     /// Sends `request`, retrying only if its operation is marked retryable.
-    pub(super) fn send(&self, request: &Request) -> Result<Value, Error> {
+    /// Nothing starts, and no wait begins, that would pass `deadline`.
+    /// `checks` is only reported in a deadline error.
+    pub(super) fn send(
+        &self,
+        request: &Request,
+        deadline: Instant,
+        checks: u32,
+    ) -> Result<Value, Error> {
         let label = request.operation.label();
         let invalid = |reason: String| Error::InvalidRequest {
             operation: label.clone(),
@@ -57,8 +64,17 @@ impl Client {
         };
         let mut attempt = 0u32;
         loop {
+            let left = deadline.saturating_duration_since(Instant::now());
+            if left.is_zero() {
+                return Err(Error::DeadlineExceeded {
+                    operation: label,
+                    limit: self.policy.max_total_time,
+                    checks,
+                });
+            }
             attempt += 1;
-            let (error, wait) = match self.attempt(request, &url, &label, attempt) {
+            let allowed = self.policy.timeout.min(left);
+            let (error, wait) = match self.attempt(request, &url, &label, attempt, allowed) {
                 Ok(value) => return Ok(value),
                 Err(Failure::Fatal(error)) => return Err(error),
                 Err(Failure::Retry { error, wait }) => (error, wait),
@@ -70,7 +86,13 @@ impl Client {
                 .policy
                 .retry_delay
                 .saturating_mul(1u32 << (attempt - 1).min(16));
-            thread::sleep(wait.unwrap_or(backoff).min(self.policy.max_retry_delay));
+            let wait = wait.unwrap_or(backoff).min(self.policy.max_retry_delay);
+            // A retry that could only start after the deadline is not made;
+            // the failure that was going to be retried is the answer.
+            if wait >= deadline.saturating_duration_since(Instant::now()) {
+                return Err(error);
+            }
+            thread::sleep(wait);
         }
     }
 
@@ -80,7 +102,18 @@ impl Client {
         url: &reqwest::Url,
         label: &str,
         attempt: u32,
+        allowed: Duration,
     ) -> Result<Value, Failure> {
+        let timed_out = |what: &str| Failure::Retry {
+            error: Error::Transport {
+                operation: label.to_string(),
+                kind: TransportKind::Timeout,
+                detail: format!("{what} within {allowed:?}"),
+                attempts: attempt,
+            },
+            wait: None,
+        };
+        let started = Instant::now();
         let builder = self.build(request, url).map_err(|reason| {
             Failure::Fatal(Error::InvalidRequest {
                 operation: label.to_string(),
@@ -88,7 +121,12 @@ impl Client {
             })
         })?;
 
-        let response = builder.send().map_err(|e| {
+        // Two clocks, on purpose. The per-request timeout makes reqwest put
+        // one deadline on the whole exchange, body included; the client-wide
+        // timeout alone restarts on every body read, so a slow drip never
+        // trips it. The loop below also checks the clock itself, so the
+        // bound does not rest on that library behaviour.
+        let mut response = builder.timeout(allowed).send().map_err(|e| {
             let kind = if e.is_timeout() {
                 TransportKind::Timeout
             } else if e.is_connect() {
@@ -128,21 +166,32 @@ impl Client {
 
         let limit = self.policy.max_response_bytes;
         let mut bytes = Vec::new();
-        let read = response
-            .take(limit.saturating_add(1))
-            .read_to_end(&mut bytes);
-        if let Err(e) = read {
-            return Err(Failure::Retry {
-                error: Error::Transport {
-                    operation: label.to_string(),
-                    kind: TransportKind::Other,
-                    detail: self
-                        .redactor
-                        .text(&format!("reading the response failed: {e}")),
-                    attempts: attempt,
-                },
-                wait: None,
-            });
+        let mut chunk = [0u8; 16 * 1024];
+        while bytes.len() as u64 <= limit {
+            if started.elapsed() >= allowed {
+                return Err(timed_out("the response body was not complete"));
+            }
+            match response.read(&mut chunk) {
+                Ok(0) => break,
+                Ok(read) => bytes.extend_from_slice(&chunk[..read]),
+                Err(e) if e.kind() == std::io::ErrorKind::Interrupted => {}
+                Err(_) if started.elapsed() >= allowed => {
+                    return Err(timed_out("the response body was not complete"));
+                }
+                Err(e) => {
+                    return Err(Failure::Retry {
+                        error: Error::Transport {
+                            operation: label.to_string(),
+                            kind: TransportKind::Other,
+                            detail: self
+                                .redactor
+                                .text(&format!("reading the response failed: {e}")),
+                            attempts: attempt,
+                        },
+                        wait: None,
+                    });
+                }
+            }
         }
         if bytes.len() as u64 > limit {
             return Err(Failure::Fatal(Error::InvalidResponse {

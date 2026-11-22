@@ -6,6 +6,14 @@ use reqwest::Url;
 /// Hard ceilings, so no policy can make a call retry or poll without end.
 pub const MAX_RETRIES_LIMIT: u32 = 10;
 pub const MAX_POLL_ATTEMPTS_LIMIT: u32 = 1_000;
+/// Longest `timeout` (one HTTP attempt).
+pub const MAX_TIMEOUT_LIMIT: Duration = Duration::from_secs(600);
+/// Longest `max_retry_delay` (one wait between retries).
+pub const MAX_RETRY_DELAY_LIMIT: Duration = Duration::from_secs(300);
+/// Longest `poll_delay` (one wait between operation status checks).
+pub const MAX_POLL_DELAY_LIMIT: Duration = Duration::from_secs(300);
+/// Longest `max_total_time` (one whole `execute` call).
+pub const MAX_TOTAL_TIME_LIMIT: Duration = Duration::from_secs(3600);
 
 /// The Roblox hosts that serve API-key operations. Each operation names its
 /// server (the `server` field of `openapi/coverage.json`); callers never
@@ -58,6 +66,7 @@ pub struct ClientPolicy {
     pub(crate) max_retry_delay: Duration,
     pub(crate) max_poll_attempts: u32,
     pub(crate) poll_delay: Duration,
+    pub(crate) max_total_time: Duration,
     pub(crate) max_response_bytes: u64,
 }
 
@@ -71,6 +80,7 @@ impl Default for ClientPolicy {
             max_retry_delay: Duration::from_secs(30),
             max_poll_attempts: 30,
             poll_delay: Duration::from_secs(2),
+            max_total_time: Duration::from_secs(600),
             max_response_bytes: 64 * 1024 * 1024,
         }
     }
@@ -102,7 +112,11 @@ impl ClientPolicy {
         Ok(self)
     }
 
-    /// Time allowed for one HTTP attempt, from connecting to the last byte.
+    /// Time allowed for one HTTP attempt, from connecting to the last byte of
+    /// the response body. At most [`MAX_TIMEOUT_LIMIT`].
+    ///
+    /// The attempt is abandoned at this deadline whether the server is
+    /// silent or keeps sending data slowly.
     pub fn timeout(mut self, timeout: Duration) -> Self {
         self.timeout = timeout;
         self
@@ -123,6 +137,7 @@ impl ClientPolicy {
     }
 
     /// Longest single wait between retries, whatever the server asks for.
+    /// At most [`MAX_RETRY_DELAY_LIMIT`].
     pub fn max_retry_delay(mut self, delay: Duration) -> Self {
         self.max_retry_delay = delay;
         self
@@ -135,9 +150,21 @@ impl ClientPolicy {
         self
     }
 
-    /// Wait before each status check of a long-running operation.
+    /// Wait before each status check of a long-running operation. At most
+    /// [`MAX_POLL_DELAY_LIMIT`].
     pub fn poll_delay(mut self, delay: Duration) -> Self {
         self.poll_delay = delay;
+        self
+    }
+
+    /// Time allowed for one whole [`execute`](super::Client::execute) call:
+    /// every attempt, retry wait and operation status check together.
+    /// Default 10 minutes, at most [`MAX_TOTAL_TIME_LIMIT`].
+    ///
+    /// No attempt starts and no wait begins once it would pass this deadline,
+    /// and an attempt already running is cut to the time left.
+    pub fn max_total_time(mut self, total: Duration) -> Self {
+        self.max_total_time = total;
         self
     }
 
@@ -162,8 +189,33 @@ impl ClientPolicy {
     }
 
     pub(crate) fn validate(&self) -> Result<(), String> {
-        if self.timeout.is_zero() {
-            return Err("timeout must be greater than zero".into());
+        let durations = [
+            ("timeout", self.timeout, MAX_TIMEOUT_LIMIT, false),
+            ("retry_delay", self.retry_delay, MAX_RETRY_DELAY_LIMIT, true),
+            (
+                "max_retry_delay",
+                self.max_retry_delay,
+                MAX_RETRY_DELAY_LIMIT,
+                true,
+            ),
+            ("poll_delay", self.poll_delay, MAX_POLL_DELAY_LIMIT, true),
+            (
+                "max_total_time",
+                self.max_total_time,
+                MAX_TOTAL_TIME_LIMIT,
+                false,
+            ),
+        ];
+        for (name, value, limit, zero_allowed) in durations {
+            if value.is_zero() && !zero_allowed {
+                return Err(format!("{name} must be greater than zero"));
+            }
+            if value > limit {
+                return Err(format!(
+                    "{name} must be at most {} seconds",
+                    limit.as_secs()
+                ));
+            }
         }
         if self.max_retries > MAX_RETRIES_LIMIT {
             return Err(format!("max_retries must be at most {MAX_RETRIES_LIMIT}"));

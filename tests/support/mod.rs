@@ -41,6 +41,8 @@ enum Mode {
     Close,
     /// Read the request, wait, then close without answering.
     Hang(Duration),
+    /// Send the head at once, then the body one byte per interval.
+    Drip(Duration),
 }
 
 #[derive(Debug, Clone)]
@@ -83,6 +85,14 @@ impl Reply {
         }
     }
 
+    /// A reply whose body arrives one byte per `interval`.
+    pub fn drip(status: u16, body: &str, interval: Duration) -> Self {
+        Self {
+            mode: Mode::Drip(interval),
+            ..Self::json(status, body)
+        }
+    }
+
     pub fn header(mut self, name: &str, value: &str) -> Self {
         self.headers.push((name.to_string(), value.to_string()));
         self
@@ -121,6 +131,18 @@ impl TestServer {
                     Mode::Respond => write_reply(&mut stream, &reply),
                     Mode::Close => {}
                     Mode::Hang(delay) => thread::sleep(delay),
+                    // On its own thread, so later connections are still served.
+                    Mode::Drip(interval) => {
+                        thread::spawn(move || {
+                            write_head(&mut stream, &reply);
+                            for byte in &reply.body {
+                                thread::sleep(interval);
+                                if stream.write_all(&[*byte]).is_err() || stream.flush().is_err() {
+                                    break;
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -146,6 +168,12 @@ impl TestServer {
 }
 
 fn write_reply(stream: &mut TcpStream, reply: &Reply) {
+    write_head(stream, reply);
+    let _ = stream.write_all(&reply.body);
+    let _ = stream.flush();
+}
+
+fn write_head(stream: &mut TcpStream, reply: &Reply) {
     let mut head = format!("HTTP/1.1 {} Scripted\r\n", reply.status);
     for (name, value) in &reply.headers {
         head.push_str(&format!("{name}: {value}\r\n"));
@@ -155,7 +183,6 @@ fn write_reply(stream: &mut TcpStream, reply: &Reply) {
         reply.body.len()
     ));
     let _ = stream.write_all(head.as_bytes());
-    let _ = stream.write_all(&reply.body);
     let _ = stream.flush();
 }
 

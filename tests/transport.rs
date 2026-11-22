@@ -7,7 +7,9 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
-use rbxcloud::rbx::client::{fixtures, Client, ClientPolicy, Error, Server, TransportKind};
+use rbxcloud::rbx::client::{
+    fixtures, AsyncClient, Client, ClientPolicy, Error, Server, TransportKind,
+};
 use rbxcloud::rbx::credentials::{Credentials, CredentialsError, SecretString};
 use serde_json::{json, Value};
 use support::{parse_multipart, Reply, TestServer};
@@ -1122,12 +1124,9 @@ fn multipart_sends_exact_names_and_bytes() {
     data.extend((0u8..=255).rev());
 
     client
-        .execute(fixtures::upload_bytes(
-            &metadata,
-            "pic ture.png",
-            "image/png",
-            data.clone(),
-        ))
+        .execute(
+            fixtures::upload_bytes(&metadata, "pic ture.png", "image/png", data.clone()).unwrap(),
+        )
         .unwrap();
 
     let dir = tempfile::tempdir().unwrap();
@@ -1175,12 +1174,7 @@ fn multipart_uploads_are_not_retried() {
     let server = TestServer::start(vec![rate_limited(), Reply::json(200, "{}")]);
     let client = client_with(policy(&server).max_retries(3));
     let error = client
-        .execute(fixtures::upload_bytes(
-            &json!({}),
-            "a.png",
-            "image/png",
-            vec![1, 2, 3],
-        ))
+        .execute(fixtures::upload_bytes(&json!({}), "a.png", "image/png", vec![1, 2, 3]).unwrap())
         .unwrap_err();
     assert_eq!(error.status(), Some(429));
     assert_eq!(server.requests().len(), 1);
@@ -1198,12 +1192,7 @@ fn unreadable_attachments_and_bad_content_types_fail_before_sending() {
     );
 
     let error = client(&server)
-        .execute(fixtures::upload_bytes(
-            &json!({}),
-            "a.png",
-            "not a mime",
-            vec![1],
-        ))
+        .execute(fixtures::upload_bytes(&json!({}), "a.png", "not a mime", vec![1]).unwrap())
         .unwrap_err();
     assert!(matches!(error, Error::InvalidRequest { .. }), "{error:?}");
     assert_eq!(server.connections(), 0);
@@ -1300,4 +1289,377 @@ fn a_key_echoed_in_a_success_body_is_masked() {
         client.execute(fixtures::get_item("2")).unwrap(),
         json!("plain [REDACTED]")
     );
+}
+
+// ------------------------------------------------------------- time limits
+
+#[test]
+fn durations_have_hard_ceilings() {
+    let new = |policy| Client::new(Credentials::api_key(SecretString::new(KEY)), policy);
+    let ok = ClientPolicy::default;
+    let rejected = [
+        ("timeout", ok().timeout(Duration::from_secs(601))),
+        ("retry_delay", ok().retry_delay(Duration::from_secs(301))),
+        (
+            "max_retry_delay",
+            ok().max_retry_delay(Duration::from_secs(301)),
+        ),
+        ("poll_delay", ok().poll_delay(Duration::from_secs(301))),
+        (
+            "max_total_time",
+            ok().max_total_time(Duration::from_secs(3601)),
+        ),
+        ("max_total_time", ok().max_total_time(Duration::ZERO)),
+    ];
+    for (name, policy) in rejected {
+        match new(policy) {
+            Err(Error::Config(reason)) => assert!(reason.contains(name), "{name}: {reason}"),
+            other => panic!("{name}: expected a configuration error, got {other:?}"),
+        }
+    }
+    let at_the_limits = ok()
+        .timeout(Duration::from_secs(600))
+        .retry_delay(Duration::from_secs(300))
+        .max_retry_delay(Duration::from_secs(300))
+        .poll_delay(Duration::from_secs(300))
+        .max_total_time(Duration::from_secs(3600));
+    assert!(new(at_the_limits).is_ok());
+}
+
+#[test]
+fn a_slowly_dripped_body_cannot_outlast_the_attempt_timeout() {
+    // 400 bytes at one per 50 ms would take 20 s. Every single read succeeds
+    // well inside the timeout, so only a clock over the whole attempt ends it.
+    let body = format!("\"{}\"", "x".repeat(398));
+    let server = TestServer::start(vec![Reply::drip(200, &body, Duration::from_millis(50))]);
+    let client = client_with(
+        policy(&server)
+            .timeout(Duration::from_millis(400))
+            .max_retries(0),
+    );
+    let started = Instant::now();
+    let error = client.execute(fixtures::get_item("1")).unwrap_err();
+    let elapsed = started.elapsed();
+    assert!(
+        matches!(
+            error,
+            Error::Transport {
+                kind: TransportKind::Timeout,
+                attempts: 1,
+                ..
+            }
+        ),
+        "{error:?}"
+    );
+    assert!(elapsed >= Duration::from_millis(350), "{elapsed:?}");
+    assert!(elapsed < Duration::from_secs(3), "{elapsed:?}");
+}
+
+#[test]
+fn a_body_that_stalls_part_way_ends_at_the_attempt_timeout() {
+    // The head arrives at once, then nothing for 3 s.
+    let server = TestServer::start(vec![Reply::drip(200, "{}", Duration::from_secs(3))]);
+    let client = client_with(
+        policy(&server)
+            .timeout(Duration::from_millis(300))
+            .max_retries(0),
+    );
+    let started = Instant::now();
+    let error = client.execute(fixtures::get_item("1")).unwrap_err();
+    let elapsed = started.elapsed();
+    assert!(
+        matches!(
+            error,
+            Error::Transport {
+                kind: TransportKind::Timeout,
+                ..
+            }
+        ),
+        "{error:?}"
+    );
+    assert!(elapsed < Duration::from_millis(1500), "{elapsed:?}");
+}
+
+#[test]
+fn a_dripped_body_that_fits_the_timeout_is_read_whole() {
+    let server = TestServer::start(vec![Reply::drip(
+        200,
+        r#"{"ok":true}"#,
+        Duration::from_millis(5),
+    )]);
+    assert_eq!(
+        client(&server).execute(fixtures::get_item("1")).unwrap(),
+        json!({"ok": true})
+    );
+}
+
+#[test]
+fn polling_stops_at_the_overall_deadline() {
+    // The count limit alone would allow 1000 checks.
+    let server = TestServer::start((0..1000).map(|_| pending()).collect());
+    let client = client_with(
+        policy(&server)
+            .max_poll_attempts(1000)
+            .poll_delay(Duration::from_millis(25))
+            .max_total_time(Duration::from_millis(400)),
+    );
+    let started = Instant::now();
+    let error = client.execute(fixtures::start_job(&json!({}))).unwrap_err();
+    let elapsed = started.elapsed();
+    let Error::DeadlineExceeded {
+        checks,
+        limit,
+        operation,
+    } = &error
+    else {
+        panic!("expected a deadline error, got {error:?}");
+    };
+    assert_eq!(*limit, Duration::from_millis(400));
+    assert_eq!(operation, "POST /transport-fixtures/jobs");
+    assert!((1..=16).contains(checks), "{checks} checks");
+    assert_eq!(server.requests().len() as u32, checks + 1);
+    assert!(elapsed < Duration::from_secs(3), "{elapsed:?}");
+    assert!(error.to_string().contains("time limit"), "{error}");
+}
+
+#[test]
+fn retries_stop_at_the_overall_deadline() {
+    // Backoff 100, 200, 400 ms: the third wait would pass the deadline, so
+    // the last real failure is returned instead of sleeping.
+    let server = TestServer::start((0..10).map(|_| Reply::empty(429)).collect());
+    let client = client_with(
+        policy(&server)
+            .max_retries(10)
+            .retry_delay(Duration::from_millis(100))
+            .max_total_time(Duration::from_millis(500)),
+    );
+    let started = Instant::now();
+    let error = client.execute(fixtures::get_item("1")).unwrap_err();
+    let elapsed = started.elapsed();
+    let Error::Status {
+        status: 429,
+        attempts,
+        ..
+    } = error
+    else {
+        panic!("expected the 429, got {error:?}");
+    };
+    assert!((2..=3).contains(&attempts), "{attempts} attempts");
+    assert_eq!(server.requests().len() as u32, attempts);
+    assert!(elapsed < Duration::from_secs(2), "{elapsed:?}");
+}
+
+#[test]
+fn the_overall_deadline_cuts_a_stalled_attempt_short() {
+    // The attempt timeout alone would allow 5 s, three times over.
+    let hang = || Reply::hang(Duration::from_secs(2));
+    let server = TestServer::start(vec![hang(), hang(), hang(), hang()]);
+    let client = client_with(
+        policy(&server)
+            .timeout(Duration::from_secs(5))
+            .max_retries(3)
+            .max_total_time(Duration::from_millis(300)),
+    );
+    let started = Instant::now();
+    let error = client.execute(fixtures::get_item("1")).unwrap_err();
+    let elapsed = started.elapsed();
+    assert!(
+        matches!(
+            error,
+            Error::Transport {
+                kind: TransportKind::Timeout,
+                attempts: 1,
+                ..
+            }
+        ),
+        "{error:?}"
+    );
+    assert!(elapsed < Duration::from_millis(1500), "{elapsed:?}");
+    assert_eq!(
+        server.requests().len(),
+        1,
+        "no retry is started after the deadline"
+    );
+}
+
+// ------------------------------------------------------------------- async
+
+fn key() -> Credentials {
+    Credentials::api_key(SecretString::new(KEY))
+}
+
+/// Runs `work` and counts how many 10 ms ticks the runtime managed meanwhile.
+async fn ticks_during<T>(work: impl std::future::Future<Output = T>) -> (T, u32) {
+    tokio::pin!(work);
+    let mut ticks = 0u32;
+    let mut interval = tokio::time::interval(Duration::from_millis(10));
+    loop {
+        tokio::select! {
+            output = &mut work => return (output, ticks),
+            _ = interval.tick() => ticks += 1,
+        }
+    }
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn async_client_does_not_block_the_only_runtime_thread() {
+    // Three status checks 80 ms apart: at least 240 ms inside the transport.
+    let server = TestServer::start(vec![
+        pending(),
+        pending(),
+        pending(),
+        Reply::json(200, r#"{"done":true,"response":{"ok":true}}"#),
+    ]);
+    let policy = policy(&server).poll_delay(Duration::from_millis(80));
+    let client = AsyncClient::new(key(), policy).await.unwrap();
+
+    let (result, ticks) = ticks_during(client.execute(fixtures::start_job(&json!({})))).await;
+    assert_eq!(result.unwrap()["response"]["ok"], true);
+    // A blocked single-threaded runtime could not have ticked at all.
+    assert!(ticks >= 10, "the runtime only ticked {ticks} times");
+    assert_eq!(server.requests().len(), 4);
+    assert_eq!(server.requests()[0].header("x-api-key"), Some(KEY));
+    drop(client);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn async_client_works_on_a_multi_thread_runtime_and_when_cloned() {
+    let server = TestServer::start((0..8).map(|_| Reply::json(200, r#"{"ok":true}"#)).collect());
+    let client = AsyncClient::new(key(), policy(&server)).await.unwrap();
+    assert!(!client.policy().is_production());
+
+    let calls: Vec<_> = (0..8)
+        .map(|n| {
+            let client = client.clone();
+            tokio::spawn(async move { client.execute(fixtures::get_item(&n.to_string())).await })
+        })
+        .collect();
+    for call in calls {
+        assert_eq!(call.await.unwrap().unwrap(), json!({"ok": true}));
+    }
+    assert_eq!(server.requests().len(), 8);
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn async_client_run_gives_a_sequence_of_calls_one_blocking_task() {
+    let server = TestServer::start(vec![
+        Reply::json(200, r#"{"items":[1],"nextPageToken":"p2"}"#),
+        Reply::json(200, r#"{"items":[2]}"#),
+    ]);
+    let client = AsyncClient::new(key(), policy(&server)).await.unwrap();
+    let items = client
+        .run(|client| {
+            let mut items = Vec::new();
+            let mut token: Option<String> = None;
+            loop {
+                let page = client.execute(fixtures::list_items(None, token.as_deref(), &[]))?;
+                items.extend(page["items"].as_array().cloned().unwrap_or_default());
+                match page["nextPageToken"].as_str() {
+                    Some(next) => token = Some(next.to_string()),
+                    None => return Ok(items),
+                }
+            }
+        })
+        .await
+        .unwrap();
+    assert_eq!(items, vec![json!(1), json!(2)]);
+    assert_eq!(
+        server.requests()[1].target,
+        "/transport-fixtures/items?pageToken=p2"
+    );
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn async_client_reports_errors_and_a_panicked_task() {
+    let server = TestServer::start(vec![Reply::json(404, r#"{"message":"gone"}"#)]);
+    let client = AsyncClient::new(key(), policy(&server)).await.unwrap();
+    let error = client.execute(fixtures::get_item("1")).await.unwrap_err();
+    assert_eq!(error.status(), Some(404));
+
+    let error = client
+        .run(|_| -> Result<(), Error> { panic!("deliberate test panic") })
+        .await
+        .unwrap_err();
+    assert!(matches!(error, Error::TaskFailed { .. }), "{error:?}");
+
+    let bad = AsyncClient::new(key(), ClientPolicy::default().max_retries(99)).await;
+    assert!(matches!(bad, Err(Error::Config(_))));
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn the_blocking_client_is_refused_on_a_runtime_thread_instead_of_panicking() {
+    let server = TestServer::start(vec![Reply::json(200, "{}")]);
+
+    // Building it here would panic inside reqwest in a debug build.
+    let built = Client::new(key(), policy(&server));
+    let Err(Error::Config(reason)) = built else {
+        panic!("expected a configuration error");
+    };
+    assert!(reason.contains("AsyncClient"), "{reason}");
+
+    // A client built elsewhere is refused when used here.
+    let policy = policy(&server);
+    let client = std::thread::spawn(move || Client::new(key(), policy).unwrap())
+        .join()
+        .unwrap();
+    let error = client.execute(fixtures::get_item("1")).unwrap_err();
+    assert!(matches!(error, Error::Config(_)), "{error:?}");
+    assert_eq!(server.connections(), 0, "nothing was sent");
+
+    // The same client works once it is off the runtime thread.
+    let value = std::thread::spawn(move || client.execute(fixtures::get_item("1")))
+        .join()
+        .unwrap();
+    assert_eq!(value.unwrap(), json!({}));
+}
+
+// ------------------------------------------------------ attachment names
+
+#[test]
+fn attachment_names_with_line_breaks_or_quotes_are_refused_before_sending() {
+    let server = TestServer::start(vec![]);
+    let long = "n".repeat(256);
+    let names = [
+        "evil.png\r\nContent-Type: text/html\r\n\r\n<script>",
+        "a\nb.png",
+        "a\rb.png",
+        "a\u{0}b.png",
+        "a\tb.png",
+        "a\"b.png",
+        "dir/a.png",
+        "dir\\a.png",
+        "",
+        "  ",
+        "..",
+        long.as_str(),
+    ];
+    for name in names {
+        let error =
+            fixtures::upload_bytes(&json!({}), name, "image/png", vec![1, 2, 3]).unwrap_err();
+        assert!(
+            matches!(error, Error::InvalidAttachment { .. }),
+            "{name:?}: {error:?}"
+        );
+        let text = both_formats(&error);
+        assert!(
+            !text.contains("text/html") && !text.contains("<script>"),
+            "{text}"
+        );
+    }
+    assert_eq!(server.connections(), 0);
+    let _ = client(&server);
+}
+
+#[cfg(unix)]
+#[test]
+fn a_file_whose_name_has_a_line_break_is_refused() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("evil.png\r\nX-Injected: 1");
+    fs::write(&path, [1, 2, 3]).unwrap();
+    let error = fixtures::upload_file(&json!({}), &path, "image/png").unwrap_err();
+    assert!(
+        matches!(error, Error::InvalidAttachment { .. }),
+        "{error:?}"
+    );
+    assert!(!both_formats(&error).contains("X-Injected"));
 }

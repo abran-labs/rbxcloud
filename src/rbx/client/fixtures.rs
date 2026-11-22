@@ -96,11 +96,11 @@ pub fn upload_bytes(
     file_name: &str,
     content_type: &str,
     data: Vec<u8>,
-) -> Request {
-    upload(
+) -> Result<Request, Error> {
+    Ok(upload(
         metadata,
-        Attachment::from_bytes(file_name, content_type, data),
-    )
+        Attachment::from_bytes(file_name, content_type, data)?,
+    ))
 }
 
 pub fn upload_file(metadata: &Value, path: &Path, content_type: &str) -> Result<Request, Error> {

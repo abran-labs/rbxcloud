@@ -28,6 +28,20 @@ pub enum Error {
     InvalidRequest { operation: String, reason: String },
     /// A file attachment could not be read.
     File { path: PathBuf, kind: io::ErrorKind },
+    /// A file attachment has a name that cannot be sent. `reason` names the
+    /// rule that was broken, not the file name.
+    InvalidAttachment { reason: String },
+    /// The call ran out of [`max_total_time`](super::ClientPolicy::max_total_time)
+    /// before it finished. `checks` is the number of operation status checks
+    /// made; 0 if the call was not waiting for an operation.
+    DeadlineExceeded {
+        operation: String,
+        limit: std::time::Duration,
+        checks: u32,
+    },
+    /// The background task that runs the blocking transport for
+    /// [`AsyncClient`](super::AsyncClient) panicked or was cancelled.
+    TaskFailed { operation: String },
     /// No HTTP response arrived. `attempts` counts every try.
     Transport {
         operation: String,
@@ -85,6 +99,31 @@ impl fmt::Display for Error {
             }
             Self::File { path, kind } => {
                 write!(f, "cannot read attachment {}: {kind}", path.display())
+            }
+            Self::InvalidAttachment { reason } => write!(f, "invalid attachment: {reason}"),
+            Self::DeadlineExceeded {
+                operation,
+                limit,
+                checks,
+            } => {
+                write!(
+                    f,
+                    "{operation}: not finished within the {:?} time limit",
+                    limit
+                )?;
+                if *checks > 0 {
+                    write!(
+                        f,
+                        " (operation still running after {checks} status check(s))"
+                    )?;
+                }
+                Ok(())
+            }
+            Self::TaskFailed { operation } => {
+                write!(
+                    f,
+                    "{operation}: the transport task panicked or was cancelled"
+                )
             }
             Self::Transport {
                 operation,

@@ -5,6 +5,21 @@ use crate::rbx::credentials::SecretString;
 
 const MASK: &str = "[REDACTED]";
 const MAX_TEXT: usize = 2000;
+/// Bytes of masked text scanned for URLs: a generous multiple of what the
+/// `MAX_TEXT` cap keeps.
+const MAX_SCAN: usize = 8 * MAX_TEXT;
+
+/// At most `max` bytes of `text`, cut on a character boundary.
+fn prefix(text: &str, max: usize) -> &str {
+    if text.len() <= max {
+        return text;
+    }
+    let mut cut = max;
+    while !text.is_char_boundary(cut) {
+        cut -= 1;
+    }
+    &text[..cut]
+}
 
 pub(crate) struct Redactor {
     secret: SecretString,
@@ -18,7 +33,11 @@ impl Redactor {
     /// Masks the credential and the query string of every URL in `text`, then
     /// caps the length. Use for anything that ends up in an error.
     pub(crate) fn text(&self, text: &str) -> String {
-        let scrubbed = strip_url_queries(&self.secret_only(text));
+        // Mask the credential over the whole text first, so a cut can never
+        // leave part of it behind. Then cut before the URL scan, whose cost
+        // grows faster than the text.
+        let masked = self.secret_only(text);
+        let scrubbed = strip_url_queries(prefix(&masked, MAX_SCAN));
         match scrubbed.char_indices().nth(MAX_TEXT) {
             Some((cut, _)) => format!("{}...", &scrubbed[..cut]),
             None => scrubbed,
@@ -129,6 +148,20 @@ mod tests {
     fn caps_length_on_a_character_boundary() {
         let out = redactor().text(&"é".repeat(MAX_TEXT + 50));
         assert_eq!(out.chars().count(), MAX_TEXT + 3);
+    }
+
+    #[test]
+    fn huge_text_is_cut_before_the_url_scan_without_leaking_a_partial_secret() {
+        // The secret straddles the scan cut; many URLs would make an uncut
+        // scan very slow.
+        let mut text = "x".repeat(MAX_SCAN - 4);
+        text.push_str("s3cr3t-key ");
+        text.push_str(&"http://h/p?q=1 ".repeat(200_000));
+        let started = std::time::Instant::now();
+        let out = redactor().text(&text);
+        assert!(started.elapsed() < std::time::Duration::from_secs(2));
+        assert_eq!(out.chars().count(), MAX_TEXT + 3);
+        assert!(!redactor().text(&text[MAX_SCAN - 100..]).contains("s3cr"));
     }
 
     #[test]
