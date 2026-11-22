@@ -11,3 +11,5 @@ pub mod liveops;
 pub mod liveops_models;
 pub mod multipart;
 pub mod multipart_models;
+pub mod resources;
+pub mod resources_models;

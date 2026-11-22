@@ -3,4 +3,5 @@ pub mod creators;
 pub mod insights;
 pub mod liveops;
 pub mod multipart;
+pub mod resources;
 pub mod storage;

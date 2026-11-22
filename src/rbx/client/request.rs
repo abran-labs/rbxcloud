@@ -159,6 +159,13 @@ impl Request {
         self
     }
 
+    pub(crate) fn header_opt(self, name: &'static str, value: Option<impl fmt::Display>) -> Self {
+        match value {
+            Some(value) => self.header(name, value),
+            None => self,
+        }
+    }
+
     /// Sends `body` as `application/json`.
     pub(crate) fn json<T: Serialize + ?Sized>(mut self, body: &T) -> Result<Self, Error> {
         let bytes = serde_json::to_vec(body).map_err(|e| Error::InvalidRequest {
