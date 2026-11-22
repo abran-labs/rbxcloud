@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 152,
-    "not_covered": 245,
+    "covered": 176,
+    "not_covered": 221,
     "existing": 45,
-    "implemented": 107,
+    "implemented": 131,
     "unverified": 0,
     "defective": 0,
-    "pending": 245,
+    "pending": 221,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -40,8 +40,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising list-advertisable-universes",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising list-advertisable-universes",
+      "status": "implemented",
       "operation_id": "ListAdvertisableUniverses",
       "tags": [
         "Advertising"
@@ -77,8 +77,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising list-billing-accounts",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising list-billing-accounts",
+      "status": "implemented",
       "operation_id": "ListBillingAccounts",
       "tags": [
         "Advertising"
@@ -95,8 +95,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising get-billing-account",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising get-billing-account",
+      "status": "implemented",
       "operation_id": "GetBillingAccount",
       "tags": [
         "Advertising"
@@ -131,8 +131,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising list-payment-activities",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising list-payment-activities",
+      "status": "implemented",
       "operation_id": "ListPaymentActivities",
       "tags": [
         "Advertising"
@@ -150,8 +150,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising get-campaign-options",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising get-campaign-options",
+      "status": "implemented",
       "operation_id": "GetCampaignOptions",
       "tags": [
         "Advertising"
@@ -188,8 +188,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising list-campaigns",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising list-campaigns",
+      "status": "implemented",
       "operation_id": "ListCampaigns",
       "tags": [
         "Advertising"
@@ -226,8 +226,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising list-campaign-ads",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising list-campaign-ads",
+      "status": "implemented",
       "operation_id": "ListCampaignAds",
       "tags": [
         "Advertising"
@@ -245,8 +245,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising get-campaign-ad",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising get-campaign-ad",
+      "status": "implemented",
       "operation_id": "GetCampaignAd",
       "tags": [
         "Advertising"
@@ -283,8 +283,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising get-campaign",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising get-campaign",
+      "status": "implemented",
       "operation_id": "GetCampaign",
       "tags": [
         "Advertising"
@@ -359,8 +359,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising list-creatives",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising list-creatives",
+      "status": "implemented",
       "operation_id": "ListCreatives",
       "tags": [
         "Advertising"
@@ -397,8 +397,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising get-creative",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools advertising get-creative",
+      "status": "implemented",
       "operation_id": "GetCreative",
       "tags": [
         "Advertising"
@@ -455,8 +455,8 @@
         "none"
       ],
       "family": "analytics_alerts",
-      "cli": "rbxcloud analytics-alerts list-alerts",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-alerts list-alerts",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Analytics"
@@ -495,8 +495,8 @@
         "none"
       ],
       "family": "analytics_alerts",
-      "cli": "rbxcloud analytics-alerts list-alert-incidents",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-alerts list-alert-incidents",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Analytics"
@@ -535,8 +535,8 @@
         "none"
       ],
       "family": "analytics_alerts",
-      "cli": "rbxcloud analytics-alerts delete-alert",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-alerts delete-alert",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Analytics"
@@ -591,8 +591,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_dashboards",
-      "cli": "rbxcloud analytics-dashboards list-dashboards",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-dashboards list-dashboards",
+      "status": "implemented",
       "operation_id": "CustomDashboards_ListDashboards",
       "tags": [
         "Analytics"
@@ -629,8 +629,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_dashboards",
-      "cli": "rbxcloud analytics-dashboards get-dashboard-capabilities",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-dashboards get-dashboard-capabilities",
+      "status": "implemented",
       "operation_id": "AnalyticsCustomDashboardsApi.CustomDashboards_GetDashboard",
       "tags": [
         "Analytics"
@@ -648,8 +648,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_dashboards",
-      "cli": "rbxcloud analytics-dashboards get-pinned-dashboard",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-dashboards get-pinned-dashboard",
+      "status": "implemented",
       "operation_id": "CustomDashboards_GetDashboard",
       "tags": [
         "Analytics"
@@ -667,8 +667,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_dashboards",
-      "cli": "rbxcloud analytics-dashboards get-dashboard",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-dashboards get-dashboard",
+      "status": "implemented",
       "operation_id": "CustomDashboards_GetDashboard1",
       "tags": [
         "Analytics"
@@ -778,8 +778,8 @@
         "oauth2"
       ],
       "family": "analytics_queries",
-      "cli": "rbxcloud analytics-queries get-dimension-values-operation",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-queries get-dimension-values-operation",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Analytics"
@@ -796,8 +796,8 @@
         "oauth2"
       ],
       "family": "analytics_queries",
-      "cli": "rbxcloud analytics-queries get-metrics-operation",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-queries get-metrics-operation",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Analytics"
@@ -4797,8 +4797,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_logs",
-      "cli": "rbxcloud analytics-logs find-log-regexes",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-logs find-log-regexes",
+      "status": "implemented",
       "operation_id": "LogAttributeService_Find",
       "tags": [
         "Analytics"
@@ -4854,8 +4854,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_logs",
-      "cli": "rbxcloud analytics-logs delete-log-regex",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-logs delete-log-regex",
+      "status": "implemented",
       "operation_id": "LogAttributeService_Delete",
       "tags": [
         "Analytics"
@@ -4873,8 +4873,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_logs",
-      "cli": "rbxcloud analytics-logs ignore-log-regex",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-logs ignore-log-regex",
+      "status": "implemented",
       "operation_id": "LogAttributeService_Ignore",
       "tags": [
         "Analytics"
@@ -6416,8 +6416,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_logs",
-      "cli": "rbxcloud analytics-logs get-error-log-details",
-      "status": "pending",
+      "cli": "rbxcloud insights-tools analytics-logs get-error-log-details",
+      "status": "implemented",
       "operation_id": "ErrorLoggingDetail_GetLogs",
       "tags": [
         "Analytics"

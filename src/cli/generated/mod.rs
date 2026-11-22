@@ -1,5 +1,6 @@
 pub mod assets;
 pub mod creators;
+pub mod insights;
 pub mod liveops;
 pub mod multipart;
 pub mod storage;

@@ -40,6 +40,8 @@ pub(crate) struct Cli {
 pub(crate) enum Command {
     /// Access the Roblox Assets API
     Assets(Assets),
+    /// Access typed advertising and analytics APIs
+    InsightsTools(generated::insights::InsightsTools),
     /// Access typed economy, configuration, and live operations
     LiveopsTools(generated::liveops::LiveOpsTools),
     /// Access typed creator and experience management APIs
@@ -106,6 +108,7 @@ impl Cli {
             Command::AssetMultipart(command) => command.run().await,
             Command::CreatorTools(command) => command.run().await,
             Command::LiveopsTools(command) => command.run().await,
+            Command::InsightsTools(command) => command.run().await,
             Command::Experience(command) => command.run().await,
             Command::Messaging(command) => command.run().await,
             Command::Datastore(command) => command.run().await,
