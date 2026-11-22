@@ -1,165 +1,154 @@
 mod support;
 
+use std::time::Duration;
 use rbxcloud::rbx::{
     client::{AsyncClient, ClientPolicy},
-    cloud::{
-        CloudClient, DataStoreEntry, DataStoreEntryPath, ListDataStoresParams,
-        SnapshotDataStoresRequest,
-    },
     credentials::{Credentials, SecretString},
+    generated::{models::*, storage::*},
 };
 use serde_json::json;
-use std::time::Duration;
 use support::{Reply, TestServer};
 
-const KEY: &str = "typed-storage-test-key-not-a-real-key";
-
-fn path() -> DataStoreEntryPath {
-    DataStoreEntryPath {
-        universe_id: "123".into(),
-        data_store_id: "player data".into(),
-        entry_id: "user/42".into(),
-    }
-}
-
 async fn client(server: &TestServer) -> CloudClient {
-    let policy = ClientPolicy::loopback(server.addr())
-        .unwrap()
-        .timeout(Duration::from_secs(2))
-        .retry_delay(Duration::from_millis(1));
-    CloudClient::new(
-        AsyncClient::new(Credentials::api_key(SecretString::new(KEY)), policy)
-            .await
-            .unwrap(),
-    )
+    let policy = ClientPolicy::loopback(server.addr()).unwrap()
+        .timeout(Duration::from_secs(2)).retry_delay(Duration::from_millis(1));
+    CloudClient::new(AsyncClient::new(Credentials::api_key(SecretString::new("storage-contract-test-key")), policy).await.unwrap())
+}
+
+fn replies(count: usize) -> Vec<Reply> {
+    (0..count).map(|_| Reply::json(200, "{}")).collect()
 }
 
 #[tokio::test]
-async fn list_data_stores_uses_exact_path_and_query() {
-    let server = TestServer::start(vec![Reply::json(
-        200,
-        r#"{"dataStores":[{"path":"universes/123/data-stores/players","id":"players"}],"nextPageToken":"next"}"#,
-    )]);
-    let result = client(&server)
-        .await
-        .list_data_stores(ListDataStoresParams {
-            universe_id: "123".into(),
-            max_page_size: Some(50),
-            page_token: Some("cursor".into()),
-            filter: Some("id.startsWith(\"players\")".into()),
-            show_deleted: Some(true),
-        })
-        .await
-        .unwrap();
-    assert_eq!(result.data_stores[0].id.as_deref(), Some("players"));
-    assert_eq!(result.next_page_token.as_deref(), Some("next"));
-    let requests = server.requests();
-    assert_eq!(requests[0].method, "GET");
-    assert!(requests[0]
-        .target
-        .starts_with("/cloud/v2/universes/123/data-stores?"));
-    let query = requests[0]
-        .target
-        .split_once('?')
-        .map(|(_, q)| q)
-        .unwrap_or_default();
-    assert!(query.contains("maxPageSize=50"));
-    assert!(query.contains("pageToken=cursor"));
-    assert!(query.contains("showDeleted=true"));
-}
-
-#[tokio::test]
-async fn entry_methods_use_typed_bodies_and_encoded_paths() {
-    let server = TestServer::start(vec![
-        Reply::json(200, r#"{"id":"user/42","value":{"coins":7}}"#),
-        Reply::json(201, r#"{"id":"created","value":[1,2]}"#),
-        Reply::empty(204),
-        Reply::json(200, r#"{"id":"user/42","value":12}"#),
-        Reply::json(
-            200,
-            r#"{"newSnapshotTaken":true,"latestSnapshotTime":"2026-11-22T00:00:00Z"}"#,
-        ),
-    ]);
+async fn all_eighteen_data_store_methods_hit_the_generated_client() {
+    let server = TestServer::start(replies(18));
     let client = client(&server).await;
-    let got = client.get_data_store_entry(path()).await.unwrap();
-    assert_eq!(got.value, Some(json!({"coins":7})));
-    client
-        .create_data_store_entry(
-            "123".into(),
-            "player data".into(),
-            "created".into(),
-            DataStoreEntry {
-                value: Some(json!([1, 2])),
-                users: Some(vec!["users/42".into()]),
-                ..Default::default()
-            },
-        )
-        .await
-        .unwrap();
-    client.delete_data_store_entry(path()).await.unwrap();
-    client.increment_data_store_entry(path(), 5).await.unwrap();
-    let snapshot = client
-        .snapshot_data_stores("123".into(), SnapshotDataStoresRequest {})
-        .await
-        .unwrap();
-    assert_eq!(snapshot.new_snapshot_taken, Some(true));
+    client.list_data_stores(ListDataStoresParams { universe_id: "u".into(), max_page_size: Some(10), page_token: Some("page".into()), filter: Some("id.startsWith(\"p\")".into()), show_deleted: Some(true) }).await.unwrap();
+    client.delete_data_store(DeleteDataStoreParams { universe_id: "u".into(), data_store_id: "d".into() }).await.unwrap();
+    client.list_data_store_entries(ListDataStoreEntriesParams { universe_id: "u".into(), data_store_id: "d".into(), max_page_size: Some(20), page_token: None, filter: None, show_deleted: None }).await.unwrap();
+    client.create_data_store_entry(CreateDataStoreEntryParams { universe_id: "u".into(), data_store_id: "d".into(), id: Some("entry".into()), body: CreateDataStoreEntryRequest { value: Some(json!({"nested":[1,true,"x"]})), attributes: Some(json!({"tag":"a"})), ..Default::default() } }).await.unwrap();
+    client.get_data_store_entry(GetDataStoreEntryParams { universe_id: "u".into(), data_store_id: "d".into(), entry_id: "e".into() }).await.unwrap();
+    client.update_data_store_entry(UpdateDataStoreEntryParams { universe_id: "u".into(), data_store_id: "d".into(), entry_id: "e".into(), allow_missing: Some(true), body: UpdateDataStoreEntryRequest { value: Some(json!(null)), ..Default::default() } }).await.unwrap();
+    client.delete_data_store_entry(DeleteDataStoreEntryParams { universe_id: "u".into(), data_store_id: "d".into(), entry_id: "e".into() }).await.unwrap();
+    client.increment_data_store_entry(IncrementDataStoreEntryParams { universe_id: "u".into(), data_store_id: "d".into(), entry_id: "e".into(), body: IncrementDataStoreEntryRequest { amount: Some(5), users: None, attributes: None } }).await.unwrap();
+    client.list_data_store_entry_revisions(ListDataStoreEntryRevisionsParams { universe_id: "u".into(), data_store_id: "d".into(), entry_id: "e".into(), max_page_size: Some(2), page_token: None, filter: None }).await.unwrap();
+    client.list_scoped_data_store_entries(ListScopedDataStoreEntriesParams { universe_id: "u".into(), data_store_id: "d".into(), scope_id: "s".into(), max_page_size: None, page_token: None, filter: None, show_deleted: None }).await.unwrap();
+    client.create_scoped_data_store_entry(CreateScopedDataStoreEntryParams { universe_id: "u".into(), data_store_id: "d".into(), scope_id: "s".into(), id: Some("e".into()), body: CreateScopedDataStoreEntryRequest { value: Some(json!(["a", 2])), ..Default::default() } }).await.unwrap();
+    client.get_scoped_data_store_entry(GetScopedDataStoreEntryParams { universe_id: "u".into(), data_store_id: "d".into(), scope_id: "s".into(), entry_id: "e".into() }).await.unwrap();
+    client.update_scoped_data_store_entry(UpdateScopedDataStoreEntryParams { universe_id: "u".into(), data_store_id: "d".into(), scope_id: "s".into(), entry_id: "e".into(), allow_missing: None, body: UpdateScopedDataStoreEntryRequest { value: Some(json!("quoted string")), ..Default::default() } }).await.unwrap();
+    client.delete_scoped_data_store_entry(DeleteScopedDataStoreEntryParams { universe_id: "u".into(), data_store_id: "d".into(), scope_id: "s".into(), entry_id: "e".into() }).await.unwrap();
+    client.increment_scoped_data_store_entry(IncrementScopedDataStoreEntryParams { universe_id: "u".into(), data_store_id: "d".into(), scope_id: "s".into(), entry_id: "e".into(), body: IncrementScopedDataStoreEntryRequest { amount: Some(-3), users: None, attributes: None } }).await.unwrap();
+    client.list_scoped_data_store_entry_revisions(ListScopedDataStoreEntryRevisionsParams { universe_id: "u".into(), data_store_id: "d".into(), scope_id: "s".into(), entry_id: "e".into(), max_page_size: None, page_token: None, filter: None }).await.unwrap();
+    client.undelete_data_store(UndeleteDataStoreParams { universe_id: "u".into(), data_store_id: "d".into(), body: UndeleteDataStoreRequest {} }).await.unwrap();
+    client.snapshot_data_stores(SnapshotDataStoresParams { universe_id: "u".into(), body: SnapshotDataStoresRequest {} }).await.unwrap();
 
     let requests = server.requests();
-    assert_eq!(
-        requests[0].target,
-        "/cloud/v2/universes/123/data-stores/player%20data/entries/user%2F42"
-    );
-    assert_eq!(requests[1].method, "POST");
-    assert!(requests[1]
-        .target
-        .split_once('?')
-        .map(|(_, q)| q)
-        .unwrap_or_default()
-        .contains("id=created"));
-    let created: serde_json::Value = serde_json::from_str(&requests[1].body_text()).unwrap();
-    assert_eq!(created["value"], json!([1, 2]));
-    assert_eq!(created["users"], json!(["users/42"]));
-    assert!(created.get("path").is_none());
-    assert_eq!(requests[2].method, "DELETE");
-    assert_eq!(requests[3].method, "POST");
-    assert!(requests[3].target.ends_with(":increment"));
-    let increment: serde_json::Value = serde_json::from_str(&requests[3].body_text()).unwrap();
-    assert_eq!(increment, json!({"amount":5}));
-    assert_eq!(
-        requests[4].target,
-        "/cloud/v2/universes/123/data-stores:snapshot"
-    );
-    assert_eq!(requests[4].body_text(), "{}");
-    assert!(requests.iter().all(|r| r.header("x-api-key") == Some(KEY)));
+    assert_eq!(requests.len(), 18);
+    let expected = [
+        ("GET", "/cloud/v2/universes/u/data-stores?maxPageSize=10&pageToken=page&filter=id.startsWith%28%22p%22%29&showDeleted=true"),
+        ("DELETE", "/cloud/v2/universes/u/data-stores/d"),
+        ("GET", "/cloud/v2/universes/u/data-stores/d/entries?maxPageSize=20"),
+        ("POST", "/cloud/v2/universes/u/data-stores/d/entries?id=entry"),
+        ("GET", "/cloud/v2/universes/u/data-stores/d/entries/e"),
+        ("PATCH", "/cloud/v2/universes/u/data-stores/d/entries/e?allowMissing=true"),
+        ("DELETE", "/cloud/v2/universes/u/data-stores/d/entries/e"),
+        ("POST", "/cloud/v2/universes/u/data-stores/d/entries/e:increment"),
+        ("GET", "/cloud/v2/universes/u/data-stores/d/entries/e:listRevisions?maxPageSize=2"),
+        ("GET", "/cloud/v2/universes/u/data-stores/d/scopes/s/entries"),
+        ("POST", "/cloud/v2/universes/u/data-stores/d/scopes/s/entries?id=e"),
+        ("GET", "/cloud/v2/universes/u/data-stores/d/scopes/s/entries/e"),
+        ("PATCH", "/cloud/v2/universes/u/data-stores/d/scopes/s/entries/e"),
+        ("DELETE", "/cloud/v2/universes/u/data-stores/d/scopes/s/entries/e"),
+        ("POST", "/cloud/v2/universes/u/data-stores/d/scopes/s/entries/e:increment"),
+        ("GET", "/cloud/v2/universes/u/data-stores/d/scopes/s/entries/e:listRevisions"),
+        ("POST", "/cloud/v2/universes/u/data-stores/d:undelete"),
+        ("POST", "/cloud/v2/universes/u/data-stores:snapshot"),
+    ];
+    for (request, (method, target)) in requests.iter().zip(expected) {
+        assert_eq!(request.method, method);
+        assert_eq!(request.target, target);
+    }
+    assert_eq!(json_body(&requests[3]), json!({"value":{"nested":[1,true,"x"]},"attributes":{"tag":"a"}}));
+    assert_eq!(json_body(&requests[5]), json!({"value":null}));
+    assert_eq!(json_body(&requests[7]), json!({"amount":5}));
+    assert_eq!(json_body(&requests[10]), json!({"value":["a",2]}));
+    assert_eq!(json_body(&requests[12]), json!({"value":"quoted string"}));
+    assert_eq!(json_body(&requests[14]), json!({"amount":-3}));
+    assert_eq!(requests[16].body_text(), "{}");
+    assert_eq!(requests[17].body_text(), "{}");
+}
+
+#[tokio::test]
+async fn all_ten_memory_store_methods_hit_the_generated_client() {
+    let server = TestServer::start(replies(10));
+    let client = client(&server).await;
+    client.get_memory_store_flush_operation(GetMemoryStoreFlushOperationParams { universe_id: 1, operation_id: "o".into(), scope: Some(GetMemoryStoreFlushOperationScope::Live) }).await.unwrap();
+    client.create_memory_store_queue_item(CreateMemoryStoreQueueItemParams { universe_id: 1, queue_id: "q".into(), body: CreateMemoryStoreQueueItemRequest { data: Some(json!({"x":1})), ttl: Some("3s".into()), priority: Some(2.5) } }).await.unwrap();
+    client.discard_memory_store_queue_items(DiscardMemoryStoreQueueItemsParams { universe_id: 1, queue_id: "q".into(), body: DiscardMemoryStoreQueueItemsRequest { read_id: Some("r".into()) } }).await.unwrap();
+    client.read_memory_store_queue_items(ReadMemoryStoreQueueItemsParams { universe_id: 1, queue_id: "q".into(), count: Some(2), all_or_nothing: Some(true), invisibility_window: Some("3s".into()) }).await.unwrap();
+    client.list_memory_store_sorted_map_items(ListMemoryStoreSortedMapItemsParams { universe_id: 1, sorted_map_id: "m".into(), max_page_size: Some(4), page_token: None, order_by: Some("key".into()), filter: None }).await.unwrap();
+    client.create_memory_store_sorted_map_item(CreateMemoryStoreSortedMapItemParams { universe_id: 1, sorted_map_id: "m".into(), id: "i".into(), body: CreateMemoryStoreSortedMapItemRequest { value: Some(json!({"a":1})), ttl: Some("3s".into()), ..Default::default() } }).await.unwrap();
+    client.get_memory_store_sorted_map_item(GetMemoryStoreSortedMapItemParams { universe_id: 1, sorted_map_id: "m".into(), item_id: "i".into() }).await.unwrap();
+    client.update_memory_store_sorted_map_item(UpdateMemoryStoreSortedMapItemParams { universe_id: 1, sorted_map_id: "m".into(), item_id: "i".into(), allow_missing: Some(true), body: UpdateMemoryStoreSortedMapItemRequest { value: Some(json!([1,2])), ttl: Some("4s".into()), ..Default::default() } }).await.unwrap();
+    client.delete_memory_store_sorted_map_item(DeleteMemoryStoreSortedMapItemParams { universe_id: 1, sorted_map_id: "m".into(), item_id: "i".into() }).await.unwrap();
+    client.flush_memory_store(FlushMemoryStoreParams { universe_id: 1, scope: Some(FlushMemoryStoreScope::Live) }).await.unwrap();
+    let requests = server.requests();
+    assert_eq!(requests.len(), 10);
+    for (request, suffix) in requests.iter().zip(["operations/o?scope=LIVE", "queues/q/items", "queues/q/items:discard", "queues/q/items:read?count=2&allOrNothing=true&invisibilityWindow=3s", "sorted-maps/m/items?maxPageSize=4&orderBy=key", "sorted-maps/m/items?id=i", "sorted-maps/m/items/i", "sorted-maps/m/items/i?allowMissing=true", "sorted-maps/m/items/i", ":flush?scope=LIVE"]) {
+        assert!(request.target.ends_with(suffix), "{} does not end in {suffix}", request.target);
+    }
+    assert_eq!(json_body(&requests[1]), json!({"data":{"x":1},"ttl":"3s","priority":2.5}));
+    assert_eq!(json_body(&requests[2]), json!({"readId":"r"}));
+    assert_eq!(json_body(&requests[5]), json!({"value":{"a":1},"ttl":"3s"}));
+    assert_eq!(json_body(&requests[7]), json!({"value":[1,2],"ttl":"4s"}));
+}
+
+#[tokio::test]
+async fn all_six_ordered_store_methods_hit_the_generated_client() {
+    let server = TestServer::start(replies(6));
+    let client = client(&server).await;
+    client.list_ordered_data_store_entries(ListOrderedDataStoreEntriesParams { universe_id: "u".into(), ordered_data_store_id: "d".into(), scope_id: "s".into(), max_page_size: Some(5), page_token: None, order_by: None, filter: None }).await.unwrap();
+    client.create_ordered_data_store_entry(CreateOrderedDataStoreEntryParams { universe_id: "u".into(), ordered_data_store_id: "d".into(), scope_id: "s".into(), id: Some("e".into()), body: CreateOrderedDataStoreEntryRequest { value: Some(5), ..Default::default() } }).await.unwrap();
+    client.get_ordered_data_store_entry(GetOrderedDataStoreEntryParams { universe_id: "u".into(), ordered_data_store_id: "d".into(), scope_id: "s".into(), entry_id: "e".into() }).await.unwrap();
+    client.update_ordered_data_store_entry(UpdateOrderedDataStoreEntryParams { universe_id: "u".into(), ordered_data_store_id: "d".into(), scope_id: "s".into(), entry_id: "e".into(), allow_missing: None, body: UpdateOrderedDataStoreEntryRequest { value: Some(7), ..Default::default() } }).await.unwrap();
+    client.delete_ordered_data_store_entry(DeleteOrderedDataStoreEntryParams { universe_id: "u".into(), ordered_data_store_id: "d".into(), scope_id: "s".into(), entry_id: "e".into() }).await.unwrap();
+    client.increment_ordered_data_store_entry(IncrementOrderedDataStoreEntryParams { universe_id: "u".into(), ordered_data_store_id: "d".into(), scope_id: "s".into(), entry_id: "e".into(), body: IncrementOrderedDataStoreEntryRequest { amount: Some(2) } }).await.unwrap();
+    let requests = server.requests();
+    assert_eq!(requests.len(), 6);
+    assert!(requests[0].target.ends_with("/entries?maxPageSize=5"));
+    assert_eq!(json_body(&requests[1]), json!({"value":5}));
+    assert_eq!(json_body(&requests[3]), json!({"value":7}));
+    assert_eq!(json_body(&requests[5]), json!({"amount":2}));
+}
+
+fn json_body(request: &support::Recorded) -> serde_json::Value {
+    serde_json::from_str(&request.body_text()).unwrap()
 }
 
 #[test]
-fn explicit_commands_have_no_generic_request_arguments() {
-    let output = std::process::Command::new(env!("CARGO_BIN_EXE_rbxcloud"))
-        .args(["datastore-v2", "--help"])
-        .output()
-        .unwrap();
-    assert!(output.status.success());
+fn generated_commands_have_no_generic_request_arguments_or_read_only_fields() {
+    for group in ["datastore-v2", "memory-store", "ordered-datastore-v2"] {
+        let output = std::process::Command::new(env!("CARGO_BIN_EXE_rbxcloud")).args([group, "--help"]).output().unwrap();
+        assert!(output.status.success(), "{group}");
+    }
+    let output = std::process::Command::new(env!("CARGO_BIN_EXE_rbxcloud")).args(["datastore-v2", "create-data-store-entry", "--help"]).output().unwrap();
     let help = String::from_utf8(output.stdout).unwrap();
-    for command in [
-        "list-data-stores",
-        "get-data-store-entry",
-        "create-data-store-entry",
-        "delete-data-store-entry",
-        "increment-data-store-entry",
-        "snapshot-data-stores",
-    ] {
-        assert!(help.contains(command));
-    }
-    let output = std::process::Command::new(env!("CARGO_BIN_EXE_rbxcloud"))
-        .args(["datastore-v2", "create-data-store-entry", "--help"])
-        .output()
-        .unwrap();
-    let help = String::from_utf8(output.stdout).unwrap();
-    for argument in ["--id", "--body-value", "--body-users"] {
-        assert!(help.contains(argument));
-    }
-    for argument in ["--url ", "--method ", "--path ", "--body ", "--api-key "] {
-        assert!(!help.contains(argument));
-    }
+    for argument in ["--id", "--body-value", "--body-users", "--body-attributes"] { assert!(help.contains(argument)); }
+    for argument in ["--url ", "--method ", "--path ", "--body ", "--api-key ", "--body-id ", "--body-create-time ", "--body-revision-id "] { assert!(!help.contains(argument), "unexpected {argument}"); }
+}
+
+#[test]
+fn parser_accepts_negative_numbers_and_validates_memory_scope() {
+    let binary = env!("CARGO_BIN_EXE_rbxcloud");
+    let valid = std::process::Command::new(binary)
+        .args(["ordered-datastore-v2", "increment-ordered-data-store-entry", "--universe-id", "1", "--ordered-data-store-id", "d", "--scope-id", "s", "--entry-id", "e", "--body-amount", "-5"])
+        .env("ROBLOX_OPEN_CLOUD_API_KEY", "").env("RBXCLOUD_API_KEY", "")
+        .output().unwrap();
+    let stderr = String::from_utf8(valid.stderr).unwrap();
+    assert!(!stderr.contains("unexpected argument '-5'"), "{stderr}");
+
+    let invalid_scope = std::process::Command::new(binary)
+        .args(["memory-store", "flush-memory-store", "--universe-id", "1", "--scope", "BOGUS"])
+        .output().unwrap();
+    assert_eq!(invalid_scope.status.code(), Some(2));
 }

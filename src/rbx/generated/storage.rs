@@ -288,7 +288,7 @@ impl CloudClient {
         &self,
         params: ReadMemoryStoreQueueItemsParams,
     ) -> Result<ReadMemoryStoreQueueItemsResponse, Error> {
-        let request = Request::new(Operation::get(
+        let request = Request::new(Operation::get_once(
             Server::Apis,
             "/cloud/v2/universes/{universe_id}/memory-store/queues/{queue_id}/items:read",
         ))
@@ -333,7 +333,7 @@ impl CloudClient {
         ))
         .path_param("universe_id", params.universe_id)
         .path_param("sorted_map_id", params.sorted_map_id)
-        .query_opt("id", params.id)
+        .query("id", params.id)
         .json(&params.body)?;
         let value = self.transport.execute(request).await?;
         decode::<MemoryStoreSortedMapItem>(
@@ -578,7 +578,7 @@ pub struct SnapshotDataStoresParams {
 pub struct GetMemoryStoreFlushOperationParams {
     pub universe_id: i64,
     pub operation_id: String,
-    pub scope: Option<String>,
+    pub scope: Option<models::GetMemoryStoreFlushOperationScope>,
 }
 #[derive(Debug, Clone)]
 pub struct CreateMemoryStoreQueueItemParams {
@@ -613,7 +613,7 @@ pub struct ListMemoryStoreSortedMapItemsParams {
 pub struct CreateMemoryStoreSortedMapItemParams {
     pub universe_id: i64,
     pub sorted_map_id: String,
-    pub id: Option<String>,
+    pub id: String,
     pub body: CreateMemoryStoreSortedMapItemRequest,
 }
 #[derive(Debug, Clone)]
@@ -639,7 +639,7 @@ pub struct DeleteMemoryStoreSortedMapItemParams {
 #[derive(Debug, Clone)]
 pub struct FlushMemoryStoreParams {
     pub universe_id: i64,
-    pub scope: Option<String>,
+    pub scope: Option<models::FlushMemoryStoreScope>,
 }
 #[derive(Debug, Clone)]
 pub struct ListOrderedDataStoreEntriesParams {

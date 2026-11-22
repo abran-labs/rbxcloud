@@ -47,6 +47,9 @@ class Contract:
         return value
 
     def operations(self, families):
+        for name in ["IncrementDataStoreEntryRequest", "IncrementOrderedDataStoreEntryRequest"]:
+            self.spec["components"]["schemas"][name]["properties"]["amount"]["x-integer"] = True
+        self.spec["components"]["schemas"]["OrderedDataStoreEntry"]["properties"]["value"]["x-integer"] = True
         result = []
         for record in self.manifest["operations"]:
             if record["family"] not in families:

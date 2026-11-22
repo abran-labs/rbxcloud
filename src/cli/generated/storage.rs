@@ -60,22 +60,12 @@ enum DatastoreV2Command {
         #[arg(long)]
         body_path: Option<String>,
         #[arg(long)]
-        body_create_time: Option<String>,
-        #[arg(long)]
-        body_revision_id: Option<String>,
-        #[arg(long)]
-        body_revision_create_time: Option<String>,
-        #[arg(long)]
-        body_state: Option<models::CreateDataStoreEntryRequestState>,
-        #[arg(long)]
         body_etag: Option<String>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_value: Option<String>,
         #[arg(long)]
-        body_id: Option<String>,
-        #[arg(long)]
         body_users: Option<Vec<String>>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_attributes: Option<String>,
     },
     /// Get Data Store Entry
@@ -100,22 +90,12 @@ enum DatastoreV2Command {
         #[arg(long)]
         body_path: Option<String>,
         #[arg(long)]
-        body_create_time: Option<String>,
-        #[arg(long)]
-        body_revision_id: Option<String>,
-        #[arg(long)]
-        body_revision_create_time: Option<String>,
-        #[arg(long)]
-        body_state: Option<models::UpdateDataStoreEntryRequestState>,
-        #[arg(long)]
         body_etag: Option<String>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_value: Option<String>,
         #[arg(long)]
-        body_id: Option<String>,
-        #[arg(long)]
         body_users: Option<Vec<String>>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_attributes: Option<String>,
     },
     /// Delete Data Store Entry
@@ -135,11 +115,11 @@ enum DatastoreV2Command {
         data_store_id: String,
         #[arg(long)]
         entry_id: String,
-        #[arg(long)]
-        body_amount: Option<f64>,
+        #[arg(long, allow_negative_numbers = true)]
+        body_amount: Option<i64>,
         #[arg(long)]
         body_users: Option<Vec<String>>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_attributes: Option<String>,
     },
     /// List Data Store Entry Revisions
@@ -187,22 +167,12 @@ enum DatastoreV2Command {
         #[arg(long)]
         body_path: Option<String>,
         #[arg(long)]
-        body_create_time: Option<String>,
-        #[arg(long)]
-        body_revision_id: Option<String>,
-        #[arg(long)]
-        body_revision_create_time: Option<String>,
-        #[arg(long)]
-        body_state: Option<models::CreateScopedDataStoreEntryRequestState>,
-        #[arg(long)]
         body_etag: Option<String>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_value: Option<String>,
         #[arg(long)]
-        body_id: Option<String>,
-        #[arg(long)]
         body_users: Option<Vec<String>>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_attributes: Option<String>,
     },
     /// Get Data Store Entry
@@ -231,22 +201,12 @@ enum DatastoreV2Command {
         #[arg(long)]
         body_path: Option<String>,
         #[arg(long)]
-        body_create_time: Option<String>,
-        #[arg(long)]
-        body_revision_id: Option<String>,
-        #[arg(long)]
-        body_revision_create_time: Option<String>,
-        #[arg(long)]
-        body_state: Option<models::UpdateScopedDataStoreEntryRequestState>,
-        #[arg(long)]
         body_etag: Option<String>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_value: Option<String>,
         #[arg(long)]
-        body_id: Option<String>,
-        #[arg(long)]
         body_users: Option<Vec<String>>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_attributes: Option<String>,
     },
     /// Delete Data Store Entry
@@ -270,11 +230,11 @@ enum DatastoreV2Command {
         scope_id: String,
         #[arg(long)]
         entry_id: String,
-        #[arg(long)]
-        body_amount: Option<f64>,
+        #[arg(long, allow_negative_numbers = true)]
+        body_amount: Option<i64>,
         #[arg(long)]
         body_users: Option<Vec<String>>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_attributes: Option<String>,
     },
     /// List Data Store Entry Revisions
@@ -382,13 +342,8 @@ impl DatastoreV2 {
                 data_store_id,
                 id,
                 body_path,
-                body_create_time,
-                body_revision_id,
-                body_revision_create_time,
-                body_state,
                 body_etag,
                 body_value,
-                body_id,
                 body_users,
                 body_attributes,
             } => {
@@ -400,16 +355,16 @@ impl DatastoreV2 {
                             id: id,
                             body: rbxcloud::rbx::generated::models::CreateDataStoreEntryRequest {
                                 path: body_path,
-                                create_time: body_create_time,
-                                revision_id: body_revision_id,
-                                revision_create_time: body_revision_create_time,
-                                state: body_state,
+                                create_time: None,
+                                revision_id: None,
+                                revision_create_time: None,
+                                state: None,
                                 etag: body_etag,
                                 value: body_value
                                     .as_deref()
                                     .map(serde_json::from_str)
                                     .transpose()?,
-                                id: body_id,
+                                id: None,
                                 users: body_users,
                                 attributes: body_attributes
                                     .as_deref()
@@ -451,13 +406,8 @@ impl DatastoreV2 {
                 entry_id,
                 allow_missing,
                 body_path,
-                body_create_time,
-                body_revision_id,
-                body_revision_create_time,
-                body_state,
                 body_etag,
                 body_value,
-                body_id,
                 body_users,
                 body_attributes,
             } => {
@@ -470,16 +420,16 @@ impl DatastoreV2 {
                             allow_missing: allow_missing,
                             body: rbxcloud::rbx::generated::models::UpdateDataStoreEntryRequest {
                                 path: body_path,
-                                create_time: body_create_time,
-                                revision_id: body_revision_id,
-                                revision_create_time: body_revision_create_time,
-                                state: body_state,
+                                create_time: None,
+                                revision_id: None,
+                                revision_create_time: None,
+                                state: None,
                                 etag: body_etag,
                                 value: body_value
                                     .as_deref()
                                     .map(serde_json::from_str)
                                     .transpose()?,
-                                id: body_id,
+                                id: None,
                                 users: body_users,
                                 attributes: body_attributes
                                     .as_deref()
@@ -607,13 +557,8 @@ impl DatastoreV2 {
                 scope_id,
                 id,
                 body_path,
-                body_create_time,
-                body_revision_id,
-                body_revision_create_time,
-                body_state,
                 body_etag,
                 body_value,
-                body_id,
                 body_users,
                 body_attributes,
             } => {
@@ -624,13 +569,13 @@ impl DatastoreV2 {
                     id: id,
                     body: rbxcloud::rbx::generated::models::CreateScopedDataStoreEntryRequest {
                         path: body_path,
-                        create_time: body_create_time,
-                        revision_id: body_revision_id,
-                        revision_create_time: body_revision_create_time,
-                        state: body_state,
+                        create_time: None,
+                        revision_id: None,
+                        revision_create_time: None,
+                        state: None,
                         etag: body_etag,
                         value: body_value.as_deref().map(serde_json::from_str).transpose()?,
-                        id: body_id,
+                        id: None,
                         users: body_users,
                         attributes: body_attributes.as_deref().map(serde_json::from_str).transpose()?,
                     },
@@ -670,13 +615,8 @@ impl DatastoreV2 {
                 entry_id,
                 allow_missing,
                 body_path,
-                body_create_time,
-                body_revision_id,
-                body_revision_create_time,
-                body_state,
                 body_etag,
                 body_value,
-                body_id,
                 body_users,
                 body_attributes,
             } => {
@@ -688,13 +628,13 @@ impl DatastoreV2 {
                     allow_missing: allow_missing,
                     body: rbxcloud::rbx::generated::models::UpdateScopedDataStoreEntryRequest {
                         path: body_path,
-                        create_time: body_create_time,
-                        revision_id: body_revision_id,
-                        revision_create_time: body_revision_create_time,
-                        state: body_state,
+                        create_time: None,
+                        revision_id: None,
+                        revision_create_time: None,
+                        state: None,
                         etag: body_etag,
                         value: body_value.as_deref().map(serde_json::from_str).transpose()?,
-                        id: body_id,
+                        id: None,
                         users: body_users,
                         attributes: body_attributes.as_deref().map(serde_json::from_str).transpose()?,
                     },
@@ -828,7 +768,7 @@ enum MemoryStoreCommand {
         #[arg(long)]
         operation_id: String,
         #[arg(long)]
-        scope: Option<String>,
+        scope: Option<models::GetMemoryStoreFlushOperationScope>,
     },
     /// Create Memory Store Queue Item
     CreateMemoryStoreQueueItem {
@@ -836,11 +776,11 @@ enum MemoryStoreCommand {
         universe_id: i64,
         #[arg(long)]
         queue_id: String,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_data: Option<String>,
         #[arg(long)]
         body_ttl: Option<String>,
-        #[arg(long)]
+        #[arg(long, allow_negative_numbers = true)]
         body_priority: Option<f64>,
     },
     /// Discard Memory Store Queue Items
@@ -890,19 +830,17 @@ enum MemoryStoreCommand {
         id: String,
         #[arg(long)]
         body_path: Option<String>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_value: Option<String>,
         #[arg(long)]
         body_etag: Option<String>,
-        #[arg(long)]
-        body_expire_time: Option<String>,
         #[arg(long)]
         body_ttl: Option<String>,
         #[arg(long)]
         body_id: Option<String>,
         #[arg(long)]
         body_string_sort_key: Option<String>,
-        #[arg(long)]
+        #[arg(long, allow_negative_numbers = true)]
         body_numeric_sort_key: Option<f64>,
     },
     /// Get Memory Store Sorted Map Item
@@ -926,19 +864,17 @@ enum MemoryStoreCommand {
         allow_missing: Option<bool>,
         #[arg(long)]
         body_path: Option<String>,
-        #[arg(long)]
+        #[arg(long, allow_hyphen_values = true)]
         body_value: Option<String>,
         #[arg(long)]
         body_etag: Option<String>,
-        #[arg(long)]
-        body_expire_time: Option<String>,
         #[arg(long)]
         body_ttl: Option<String>,
         #[arg(long)]
         body_id: Option<String>,
         #[arg(long)]
         body_string_sort_key: Option<String>,
-        #[arg(long)]
+        #[arg(long, allow_negative_numbers = true)]
         body_numeric_sort_key: Option<f64>,
     },
     /// Delete Memory Store Sorted Map Item
@@ -955,7 +891,7 @@ enum MemoryStoreCommand {
         #[arg(long)]
         universe_id: i64,
         #[arg(long)]
-        scope: Option<String>,
+        scope: Option<models::FlushMemoryStoreScope>,
     },
 }
 impl MemoryStore {
@@ -1081,7 +1017,6 @@ impl MemoryStore {
                 body_path,
                 body_value,
                 body_etag,
-                body_expire_time,
                 body_ttl,
                 body_id,
                 body_string_sort_key,
@@ -1090,12 +1025,12 @@ impl MemoryStore {
                 let result = client.create_memory_store_sorted_map_item(rbxcloud::rbx::generated::storage::CreateMemoryStoreSortedMapItemParams {
                     universe_id: universe_id,
                     sorted_map_id: sorted_map_id,
-                    id: Some(id),
+                    id: id,
                     body: rbxcloud::rbx::generated::models::CreateMemoryStoreSortedMapItemRequest {
                         path: body_path,
                         value: body_value.as_deref().map(serde_json::from_str).transpose()?,
                         etag: body_etag,
-                        expire_time: body_expire_time,
+                        expire_time: None,
                         ttl: body_ttl,
                         id: body_id,
                         string_sort_key: body_string_sort_key,
@@ -1136,7 +1071,6 @@ impl MemoryStore {
                 body_path,
                 body_value,
                 body_etag,
-                body_expire_time,
                 body_ttl,
                 body_id,
                 body_string_sort_key,
@@ -1151,7 +1085,7 @@ impl MemoryStore {
                         path: body_path,
                         value: body_value.as_deref().map(serde_json::from_str).transpose()?,
                         etag: body_etag,
-                        expire_time: body_expire_time,
+                        expire_time: None,
                         ttl: body_ttl,
                         id: body_id,
                         string_sort_key: body_string_sort_key,
@@ -1236,10 +1170,8 @@ enum OrderedDatastoreV2Command {
         id: Option<String>,
         #[arg(long)]
         body_path: Option<String>,
-        #[arg(long)]
-        body_value: Option<f64>,
-        #[arg(long)]
-        body_id: Option<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        body_value: Option<i64>,
     },
     /// Get Ordered Data Store Entry
     GetOrderedDataStoreEntry {
@@ -1266,10 +1198,8 @@ enum OrderedDatastoreV2Command {
         allow_missing: Option<bool>,
         #[arg(long)]
         body_path: Option<String>,
-        #[arg(long)]
-        body_value: Option<f64>,
-        #[arg(long)]
-        body_id: Option<String>,
+        #[arg(long, allow_negative_numbers = true)]
+        body_value: Option<i64>,
     },
     /// Delete Ordered Data Store Entry
     DeleteOrderedDataStoreEntry {
@@ -1292,8 +1222,8 @@ enum OrderedDatastoreV2Command {
         scope_id: String,
         #[arg(long)]
         entry_id: String,
-        #[arg(long)]
-        body_amount: Option<f64>,
+        #[arg(long, allow_negative_numbers = true)]
+        body_amount: Option<i64>,
     },
 }
 impl OrderedDatastoreV2 {
@@ -1337,7 +1267,6 @@ impl OrderedDatastoreV2 {
                 id,
                 body_path,
                 body_value,
-                body_id,
             } => {
                 let result = client.create_ordered_data_store_entry(rbxcloud::rbx::generated::storage::CreateOrderedDataStoreEntryParams {
                     universe_id: universe_id,
@@ -1347,7 +1276,7 @@ impl OrderedDatastoreV2 {
                     body: rbxcloud::rbx::generated::models::CreateOrderedDataStoreEntryRequest {
                         path: body_path,
                         value: body_value,
-                        id: body_id,
+                        id: None,
                     },
                 }).await?;
                 if serde_json::to_value(&result)?.is_null() {
@@ -1386,7 +1315,6 @@ impl OrderedDatastoreV2 {
                 allow_missing,
                 body_path,
                 body_value,
-                body_id,
             } => {
                 let result = client.update_ordered_data_store_entry(rbxcloud::rbx::generated::storage::UpdateOrderedDataStoreEntryParams {
                     universe_id: universe_id,
@@ -1397,7 +1325,7 @@ impl OrderedDatastoreV2 {
                     body: rbxcloud::rbx::generated::models::UpdateOrderedDataStoreEntryRequest {
                         path: body_path,
                         value: body_value,
-                        id: body_id,
+                        id: None,
                     },
                 }).await?;
                 if serde_json::to_value(&result)?.is_null() {

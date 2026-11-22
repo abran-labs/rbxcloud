@@ -38,7 +38,7 @@ const GENERIC_WORDS: [&str; 20] = [
 /// `existing`: a legacy client reaches the operation. `implemented`: typed method on the
 /// shared transport plus an explicit command. `defective`: a legacy command targets the
 /// operation but does not send the documented request. `pending`: planned only.
-const STATUSES: [&str; 4] = ["existing", "implemented", "defective", "pending"];
+const STATUSES: [&str; 5] = ["existing", "implemented", "unverified", "defective", "pending"];
 
 /// Statuses that count as covered.
 const COVERED: [&str; 2] = ["existing", "implemented"];

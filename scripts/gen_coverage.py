@@ -47,7 +47,7 @@ AUTH_ORDER = ["api-key", "oauth2", "legacy-cookie", "none"]
 # defective:   a legacy command targets this operation but does not send the
 #              documented request. Counted as not covered.
 # pending:     no owner code yet; `cli` is the planned command.
-STATUSES = ["existing", "implemented", "defective", "pending"]
+STATUSES = ["existing", "implemented", "unverified", "defective", "pending"]
 COVERED = {"existing", "implemented"}
 OWNER_FIELDS = ("family", "cli", "cli_aliases", "status", "note")
 

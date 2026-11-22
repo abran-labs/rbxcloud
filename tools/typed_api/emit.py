@@ -42,6 +42,11 @@ def rust_value(value):
 
 def emit_models(contract, operations, models):
     for operation in operations:
+        for parameter in operation.parameters:
+            parameter_schema = dict(parameter.schema)
+            if parameter_schema.get("enum"):
+                parameter_schema["x-generated-name"] = pascal(method_name(operation)) + pascal(parameter.name)
+            models.reference(parameter_schema)
         schema = body_schema(contract, operation)
         if schema:
             if "$ref" not in schema and schema.get("type") == "object":
@@ -60,15 +65,18 @@ def emit_operations(contract, operations, models):
     chunks.append("impl CloudClient {\n    pub fn new(transport: AsyncClient) -> Self { Self { transport } }\n")
     for operation in operations:
         name = method_name(operation)
+        for parameter in operation.parameters:
+            if parameter.schema.get("enum"):
+                schema = dict(parameter.schema)
+                schema["x-generated-name"] = pascal(name) + pascal(parameter.name)
+                models.reference(schema)
         params = pascal(name) + "Params"
         response = response_type(contract, operation, models)
         server = {"https://apis.roblox.com": "Apis", "https://itemconfiguration.roblox.com": "ItemConfiguration", "https://thumbnails.roblox.com": "Thumbnails"}[operation.server]
         constructor = operation.method.lower()
-        if constructor == "get":
-            constructor = "get"
-        elif constructor in ["post", "put", "patch", "delete"]:
-            pass
-        else:
+        if operation.id == "GET /cloud/v2/universes/{universe_id}/memory-store/queues/{queue_id}/items:read":
+            constructor = "get_once"
+        if constructor not in ["get", "get_once", "post", "put", "patch", "delete"]:
             raise ValueError(operation.method)
         chunks.append(f"    pub async fn {name}(&self, params: {params}) -> Result<{response}, Error> {{\n")
         chunks.append(f'        let request = Request::new(Operation::{constructor}(Server::{server}, {rust_value(operation.path)}))')
@@ -77,7 +85,10 @@ def emit_operations(contract, operations, models):
             if parameter.location == "path":
                 chunks.append(f'            .path_param({rust_value(parameter.name)}, params.{field})')
             elif parameter.location == "query":
-                chunks.append(f'            .query_opt({rust_value(parameter.name)}, params.{field})')
+                if parameter.required:
+                    chunks.append(f'            .query({rust_value(parameter.name)}, params.{field})')
+                else:
+                    chunks.append(f'            .query_opt({rust_value(parameter.name)}, params.{field})')
             elif parameter.location == "header":
                 chunks.append(f'            .header({rust_value(parameter.name)}, params.{field})')
         body = body_schema(contract, operation)
@@ -98,8 +109,11 @@ def emit_operations(contract, operations, models):
         chunks.append(f"pub struct {params} {{\n")
         for parameter in operation.parameters:
             field = snake(parameter.name)
-            typ = qualify_cli_type(models.reference(parameter.schema))
-            if parameter.location == "query":
+            parameter_schema = dict(parameter.schema)
+            if parameter_schema.get("enum"):
+                parameter_schema["x-generated-name"] = pascal(name) + pascal(parameter.name)
+            typ = qualify_cli_type(models.reference(parameter_schema))
+            if parameter.location == "query" and not parameter.required:
                 typ = f"Option<{typ}>"
             chunks.append(f"    pub {field}: {typ},\n")
         if body_schema(contract, operation):
@@ -128,7 +142,12 @@ def emit_cli(contract, operations, models):
         for command, operation in entries:
             variant = pascal(command)
             chunks.append(f"    /// {operation.summary}\n    {variant} {{\n")
-            model_types = {snake(p.name): qualify_cli_type(models.reference(p.schema)) for p in operation.parameters}
+            model_types = {}
+            for parameter in operation.parameters:
+                schema = dict(parameter.schema)
+                if schema.get("enum"):
+                    schema["x-generated-name"] = pascal(method_name(operation)) + pascal(parameter.name)
+                model_types[snake(parameter.name)] = qualify_cli_type(models.reference(schema))
             for parameter in operation.parameters:
                 field = snake(parameter.name)
                 typ = model_types[field]
@@ -138,7 +157,7 @@ def emit_cli(contract, operations, models):
                 chunks.append(f"        #[arg(long)]\n        {field}: {typ},\n")
             schema = body_schema(contract, operation)
             if schema:
-                properties = schema.get("properties", {})
+                properties = {name: value for name, value in schema.get("properties", {}).items() if not value.get("readOnly")}
                 required_body = set(schema.get("required", []))
                 for wire, original in properties.items():
                     field = "body_" + snake(wire)
@@ -149,9 +168,13 @@ def emit_cli(contract, operations, models):
                     is_json = "serde_json::Value" in typ or "BTreeMap<String, serde_json::Value>" in typ
                     if is_json or typ.startswith("models::GoogleProtobufValue"):
                         typ = "Option<String>" if optional else "String"
-                    elif optional:
-                        typ = f"Option<{typ}>"
-                    chunks.append(f"        #[arg(long)]\n        {field}: {typ},\n")
+                        attribute = "#[arg(long, allow_hyphen_values = true)]"
+                    else:
+                        if optional:
+                            typ = f"Option<{typ}>"
+                        bare_type = typ.replace("Option<", "").rstrip(">")
+                        attribute = "#[arg(long, allow_negative_numbers = true)]" if bare_type in ["i32", "i64", "u32", "u64", "f32", "f64"] else "#[arg(long)]"
+                    chunks.append(f"        {attribute}\n        {field}: {typ},\n")
             chunks.append("    },\n")
         chunks.append("}\n")
         chunks.append(f"impl {struct} {{\n    pub async fn run(self) -> anyhow::Result<Option<String>> {{\n")
@@ -162,7 +185,7 @@ def emit_cli(contract, operations, models):
             schema = body_schema(contract, operation)
             body_fields = []
             if schema:
-                body_fields = ["body_" + snake(name) for name in schema.get("properties", {})]
+                body_fields = ["body_" + snake(name) for name, value in schema.get("properties", {}).items() if not value.get("readOnly")]
             pattern = fields + body_fields
             chunks.append(f"            {enum}::{variant} {{ {', '.join(pattern)} }} => {{\n")
             chunks.append(f"                let result = client.{method_name(operation)}(rbxcloud::rbx::generated::storage::{pascal(method_name(operation))}Params {{\n")
@@ -170,13 +193,16 @@ def emit_cli(contract, operations, models):
                 field = snake(parameter.name)
                 value = field
                 if parameter.location == "query" and parameter.required:
-                    value = f"Some({field})"
+                    value = field
                 chunks.append(f"                    {field}: {value},\n")
             if schema:
                 body_type = pascal(method_name(operation)) + "Request" if "$ref" not in schema else pascal(schema["$ref"].split("/")[-1])
                 chunks.append(f"                    body: rbxcloud::rbx::generated::models::{body_type} {{\n")
                 required = set(schema.get("required", []))
-                for wire in schema.get("properties", {}):
+                for wire, original_body in schema.get("properties", {}).items():
+                    if original_body.get("readOnly"):
+                        chunks.append(f"                        {snake(wire)}: None,\n")
+                        continue
                     cli_name = "body_" + snake(wire)
                     field = snake(wire)
                     original = schema.get("properties", {})[wire]

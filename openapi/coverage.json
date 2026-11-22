@@ -14,6 +14,7 @@
     "not_covered": 311,
     "existing": 45,
     "implemented": 41,
+    "unverified": 0,
     "defective": 1,
     "pending": 310,
     "excluded": 600,

@@ -40,54 +40,54 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 
 | Family | CLI group | Existing | Implemented | Defective | Pending | Total |
 |---|---|---:|---:|---:|---:|---:|
-| `advertising` | `advertising` | 0 | 0 | 0 | 22 | 22 |
-| `analytics_alerts` | `analytics-alerts` | 0 | 0 | 0 | 5 | 5 |
-| `analytics_dashboards` | `analytics-dashboards` | 0 | 0 | 0 | 9 | 9 |
-| `analytics_logs` | `analytics-logs` | 0 | 0 | 0 | 7 | 7 |
-| `analytics_queries` | `analytics-queries` | 0 | 0 | 0 | 5 | 5 |
-| `asset_delivery` | `asset-delivery` | 0 | 0 | 0 | 2 | 2 |
-| `asset_permissions` | `asset-permissions` | 0 | 0 | 0 | 1 | 1 |
-| `assets` | `asset-multipart`, `asset-tools`, `assets` | 6 | 7 | 0 | 2 | 15 |
-| `avatar_bundles` | `avatar-bundles` | 0 | 0 | 0 | 5 | 5 |
-| `badges` | `badges` | 0 | 0 | 0 | 3 | 3 |
-| `collectibles` | `collectibles` | 0 | 0 | 0 | 20 | 20 |
-| `configs` | `configs` | 0 | 0 | 0 | 9 | 9 |
-| `creator_store` | `creator-store` | 0 | 0 | 0 | 10 | 10 |
-| `data_stores` | `datastore-v2` | 0 | 18 | 0 | 0 | 18 |
-| `data_stores_v1` | `datastore` | 8 | 0 | 0 | 0 | 8 |
-| `developer_products` | `developer-products` | 0 | 0 | 0 | 4 | 4 |
-| `experience_notifications` | `experience-notifications` | 0 | 0 | 0 | 8 | 8 |
-| `experiments` | `experiments` | 0 | 0 | 0 | 11 | 11 |
-| `game_events` | `game-events` | 0 | 0 | 0 | 5 | 5 |
-| `game_localization` | `game-localization` | 0 | 0 | 0 | 40 | 40 |
-| `game_passes` | `game-passes` | 0 | 0 | 0 | 4 | 4 |
-| `generative_ai` | `generative-ai` | 0 | 0 | 0 | 2 | 2 |
-| `groups` | `group` | 3 | 0 | 0 | 19 | 22 |
-| `inventory` | `inventory` | 1 | 0 | 0 | 0 | 1 |
-| `item_folders` | `item-folders` | 0 | 0 | 0 | 8 | 8 |
-| `localization_tables` | `localization-tables` | 0 | 0 | 0 | 10 | 10 |
-| `luau_execution` | `luau` | 4 | 0 | 0 | 1 | 5 |
-| `marketplace_items` | `marketplace-items` | 0 | 0 | 0 | 13 | 13 |
-| `matchmaking` | `matchmaking` | 0 | 0 | 0 | 23 | 23 |
-| `memory_stores` | `memory-store` | 0 | 10 | 0 | 0 | 10 |
-| `messaging` | `messaging` | 1 | 0 | 0 | 1 | 2 |
-| `notifications` | `notification` | 1 | 0 | 0 | 0 | 1 |
-| `ordered_data_stores` | `ordered-datastore-v2` | 0 | 6 | 0 | 0 | 6 |
-| `ordered_data_stores_v1` | `ordered-datastore` | 6 | 0 | 0 | 0 | 6 |
-| `place_instances` | `place-instances` | 0 | 0 | 0 | 4 | 4 |
-| `place_versions` | `place-versions` | 0 | 0 | 0 | 3 | 3 |
-| `places` | `experience`, `place` | 3 | 0 | 0 | 0 | 3 |
-| `secrets` | `secrets` | 0 | 0 | 0 | 5 | 5 |
-| `server_management` | `server-management` | 0 | 0 | 0 | 7 | 7 |
-| `service_efficiency` | `service-efficiency` | 0 | 0 | 0 | 23 | 23 |
-| `subscriptions` | `subscription` | 0 | 0 | 1 | 0 | 1 |
-| `team_create` | `team-create` | 0 | 0 | 0 | 6 | 6 |
-| `thumbnails` | `thumbnails` | 0 | 0 | 0 | 3 | 3 |
-| `universe_followings` | `universe-followings` | 0 | 0 | 0 | 5 | 5 |
-| `universes` | `universe` | 3 | 0 | 0 | 4 | 7 |
-| `user_restrictions` | `user-restriction` | 7 | 0 | 0 | 0 | 7 |
-| `users` | `user` | 2 | 0 | 0 | 1 | 3 |
-| **Total** | | **45** | **41** | **1** | **310** | **397** |
+| `advertising` | `advertising` | 0 | 0 | 0 | 0 | 22 | 22 |
+| `analytics_alerts` | `analytics-alerts` | 0 | 0 | 0 | 0 | 5 | 5 |
+| `analytics_dashboards` | `analytics-dashboards` | 0 | 0 | 0 | 0 | 9 | 9 |
+| `analytics_logs` | `analytics-logs` | 0 | 0 | 0 | 0 | 7 | 7 |
+| `analytics_queries` | `analytics-queries` | 0 | 0 | 0 | 0 | 5 | 5 |
+| `asset_delivery` | `asset-delivery` | 0 | 0 | 0 | 0 | 2 | 2 |
+| `asset_permissions` | `asset-permissions` | 0 | 0 | 0 | 0 | 1 | 1 |
+| `assets` | `asset-multipart`, `asset-tools`, `assets` | 6 | 7 | 0 | 0 | 2 | 15 |
+| `avatar_bundles` | `avatar-bundles` | 0 | 0 | 0 | 0 | 5 | 5 |
+| `badges` | `badges` | 0 | 0 | 0 | 0 | 3 | 3 |
+| `collectibles` | `collectibles` | 0 | 0 | 0 | 0 | 20 | 20 |
+| `configs` | `configs` | 0 | 0 | 0 | 0 | 9 | 9 |
+| `creator_store` | `creator-store` | 0 | 0 | 0 | 0 | 10 | 10 |
+| `data_stores` | `datastore-v2` | 0 | 18 | 0 | 0 | 0 | 18 |
+| `data_stores_v1` | `datastore` | 8 | 0 | 0 | 0 | 0 | 8 |
+| `developer_products` | `developer-products` | 0 | 0 | 0 | 0 | 4 | 4 |
+| `experience_notifications` | `experience-notifications` | 0 | 0 | 0 | 0 | 8 | 8 |
+| `experiments` | `experiments` | 0 | 0 | 0 | 0 | 11 | 11 |
+| `game_events` | `game-events` | 0 | 0 | 0 | 0 | 5 | 5 |
+| `game_localization` | `game-localization` | 0 | 0 | 0 | 0 | 40 | 40 |
+| `game_passes` | `game-passes` | 0 | 0 | 0 | 0 | 4 | 4 |
+| `generative_ai` | `generative-ai` | 0 | 0 | 0 | 0 | 2 | 2 |
+| `groups` | `group` | 3 | 0 | 0 | 0 | 19 | 22 |
+| `inventory` | `inventory` | 1 | 0 | 0 | 0 | 0 | 1 |
+| `item_folders` | `item-folders` | 0 | 0 | 0 | 0 | 8 | 8 |
+| `localization_tables` | `localization-tables` | 0 | 0 | 0 | 0 | 10 | 10 |
+| `luau_execution` | `luau` | 4 | 0 | 0 | 0 | 1 | 5 |
+| `marketplace_items` | `marketplace-items` | 0 | 0 | 0 | 0 | 13 | 13 |
+| `matchmaking` | `matchmaking` | 0 | 0 | 0 | 0 | 23 | 23 |
+| `memory_stores` | `memory-store` | 0 | 10 | 0 | 0 | 0 | 10 |
+| `messaging` | `messaging` | 1 | 0 | 0 | 0 | 1 | 2 |
+| `notifications` | `notification` | 1 | 0 | 0 | 0 | 0 | 1 |
+| `ordered_data_stores` | `ordered-datastore-v2` | 0 | 6 | 0 | 0 | 0 | 6 |
+| `ordered_data_stores_v1` | `ordered-datastore` | 6 | 0 | 0 | 0 | 0 | 6 |
+| `place_instances` | `place-instances` | 0 | 0 | 0 | 0 | 4 | 4 |
+| `place_versions` | `place-versions` | 0 | 0 | 0 | 0 | 3 | 3 |
+| `places` | `experience`, `place` | 3 | 0 | 0 | 0 | 0 | 3 |
+| `secrets` | `secrets` | 0 | 0 | 0 | 0 | 5 | 5 |
+| `server_management` | `server-management` | 0 | 0 | 0 | 0 | 7 | 7 |
+| `service_efficiency` | `service-efficiency` | 0 | 0 | 0 | 0 | 23 | 23 |
+| `subscriptions` | `subscription` | 0 | 0 | 0 | 1 | 0 | 1 |
+| `team_create` | `team-create` | 0 | 0 | 0 | 0 | 6 | 6 |
+| `thumbnails` | `thumbnails` | 0 | 0 | 0 | 0 | 3 | 3 |
+| `universe_followings` | `universe-followings` | 0 | 0 | 0 | 0 | 5 | 5 |
+| `universes` | `universe` | 3 | 0 | 0 | 0 | 4 | 7 |
+| `user_restrictions` | `user-restriction` | 7 | 0 | 0 | 0 | 0 | 7 |
+| `users` | `user` | 2 | 0 | 0 | 0 | 1 | 3 |
+| **Total** | | **45** | **41** | **0** | **1** | **310** | **397** |
 
 ## Servers
 

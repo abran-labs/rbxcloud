@@ -74,6 +74,11 @@ impl Operation {
         Self::new(Method::Delete, server, path, false)
     }
 
+    /// A read whose response must not be replayed because it has an effect.
+    pub(crate) const fn get_once(server: Server, path: &'static str) -> Self {
+        Self::new(Method::Get, server, path, false)
+    }
+
     /// Marks a write as safe to send again. Use only when the Roblox
     /// documentation says a repeat has the same effect as one call.
     pub(crate) const fn idempotent(mut self) -> Self {
