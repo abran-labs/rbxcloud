@@ -10,12 +10,12 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 79,
-    "not_covered": 318,
+    "covered": 83,
+    "not_covered": 314,
     "existing": 45,
-    "implemented": 34,
+    "implemented": 38,
     "defective": 1,
-    "pending": 317,
+    "pending": 313,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -922,8 +922,8 @@
         "oauth2"
       ],
       "family": "assets",
-      "cli": "rbxcloud assets list-asset-versions",
-      "status": "pending",
+      "cli": "rbxcloud asset-tools list-asset-versions",
+      "status": "implemented",
       "operation_id": "Assets_ListAssetVersions",
       "tags": [
         "Assets"
@@ -940,8 +940,8 @@
         "oauth2"
       ],
       "family": "assets",
-      "cli": "rbxcloud assets get-asset-version",
-      "status": "pending",
+      "cli": "rbxcloud asset-tools get-asset-version",
+      "status": "implemented",
       "operation_id": "Assets_GetAssetVersion",
       "tags": [
         "Assets"
@@ -958,8 +958,8 @@
         "oauth2"
       ],
       "family": "assets",
-      "cli": "rbxcloud assets rollback-asset-version",
-      "status": "pending",
+      "cli": "rbxcloud asset-tools rollback-asset-version",
+      "status": "implemented",
       "operation_id": "Assets_RollbackAssetVersion",
       "tags": [
         "Assets"
@@ -2573,8 +2573,8 @@
         "oauth2"
       ],
       "family": "assets",
-      "cli": "rbxcloud assets list-asset-quotas",
-      "status": "pending",
+      "cli": "rbxcloud asset-tools list-asset-quotas",
+      "status": "implemented",
       "operation_id": "Cloud_ListAssetQuotas",
       "tags": [
         "Assets",

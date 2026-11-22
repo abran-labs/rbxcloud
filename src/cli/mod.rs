@@ -40,6 +40,8 @@ pub(crate) struct Cli {
 pub(crate) enum Command {
     /// Access the Roblox Assets API
     Assets(Assets),
+    /// Access typed asset versions and quotas
+    AssetTools(generated::assets::Assets),
 
     /// Access the Roblox Experience API
     Experience(Experience),
@@ -94,6 +96,7 @@ impl Cli {
     pub(crate) async fn run(self) -> anyhow::Result<Option<String>> {
         match self.command {
             Command::Assets(command) => command.run().await,
+            Command::AssetTools(command) => command.run().await,
             Command::Experience(command) => command.run().await,
             Command::Messaging(command) => command.run().await,
             Command::Datastore(command) => command.run().await,
