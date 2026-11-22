@@ -13,9 +13,9 @@ from tools.typed_api.models import Models
 from tools.typed_api.spec import Contract
 
 
-def generate():
+def generate(families=None):
     contract = Contract(ROOT)
-    operations = contract.operations({"data_stores", "ordered_data_stores", "memory_stores"})
+    operations = contract.operations(set(families or ["data_stores", "ordered_data_stores", "memory_stores"]))
     models = Models(contract)
     model_source = emit_models(contract, operations, models)
     operation_source = emit_operations(contract, operations, models)
