@@ -46,6 +46,7 @@ def emit_models(contract, operations, models):
             parameter_schema = dict(parameter.schema)
             if parameter_schema.get("enum"):
                 parameter_schema["x-generated-name"] = pascal(method_name(operation)) + pascal(parameter.name)
+                parameter_schema["x-request-enum"] = True
             models.reference(parameter_schema)
         schema = body_schema(contract, operation)
         if schema:
@@ -113,6 +114,7 @@ def emit_operations(contract, operations, models):
             parameter_schema = dict(parameter.schema)
             if parameter_schema.get("enum"):
                 parameter_schema["x-generated-name"] = pascal(name) + pascal(parameter.name)
+                parameter_schema["x-request-enum"] = True
             typ = qualify_cli_type(models.reference(parameter_schema))
             if parameter.location == "query" and not parameter.required:
                 typ = f"Option<{typ}>"
@@ -149,6 +151,7 @@ def emit_cli(contract, operations, models):
                 schema = dict(parameter.schema)
                 if schema.get("enum"):
                     schema["x-generated-name"] = pascal(method_name(operation)) + pascal(parameter.name)
+                    schema["x-request-enum"] = True
                 model_types[snake(parameter.name)] = qualify_cli_type(models.reference(schema))
             for parameter in operation.parameters:
                 field = snake(parameter.name)

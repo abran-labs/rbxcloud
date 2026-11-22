@@ -8,6 +8,7 @@ class Models:
         self.schemas = contract.spec["components"]["schemas"]
         self.definitions = {}
         self.enums = {}
+        self.request_enums = set()
         self.anonymous = 0
 
     def reference(self, schema):
@@ -23,7 +24,7 @@ class Models:
             self.collect(name)
             return pascal(name)
         if schema.get("enum") and schema.get("type") == "string" and schema.get("x-generated-name"):
-            return self.inline_enum(schema["x-generated-name"], schema["enum"])
+            return self.inline_enum(schema["x-generated-name"], schema["enum"], bool(schema.get("x-request-enum")))
         if "allOf" in schema:
             variants = [self.reference(self.contract.resolve(item)) for item in schema["allOf"]]
             if len(variants) == 1:
@@ -38,7 +39,7 @@ class Models:
             if "enum" in schema:
                 owner = schema.get("x-generated-name")
                 if owner:
-                    return self.inline_enum(owner, schema["enum"])
+                    return self.inline_enum(owner, schema["enum"], bool(schema.get("x-request-enum")))
             if schema.get("format") == "binary":
                 return "std::path::PathBuf"
             return "String"
@@ -67,8 +68,10 @@ class Models:
             return self.object(owner, schema)
         raise ValueError(f"unsupported schema: {schema}")
 
-    def inline_enum(self, owner, values):
+    def inline_enum(self, owner, values, request_only=False):
         name = pascal(owner)
+        if request_only:
+            self.request_enums.add(name)
         if name not in self.enums:
             self.enums[name] = tuple(values)
         elif self.enums[name] != tuple(values):
@@ -125,10 +128,14 @@ class Models:
             for value in values:
                 lines.append(f'    #[serde(rename = "{value}")]')
                 lines.append(f"    {pascal(str(value))},")
-            lines.append("    #[serde(other)]\n    #[value(skip)]\n    Unknown,\n}\n")
+            if name not in self.request_enums:
+                lines.append("    #[serde(other)]\n    #[value(skip)]\n    Unknown,\n")
+            lines.append("}\n")
         for name, values in sorted(self.enums.items()):
             arms = [f'            Self::{pascal(str(value))} => "{value}",' for value in values]
-            lines.append(f"impl std::fmt::Display for {pascal(name)} {{\n    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {{\n        f.write_str(match self {{\n" + "\n".join(arms) + "\n            Self::Unknown => \"UNKNOWN\",\n        })\n    }\n}\n")
+            if name not in self.request_enums:
+                arms.append('            Self::Unknown => "UNKNOWN",')
+            lines.append(f"impl std::fmt::Display for {pascal(name)} {{\n    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {{\n        f.write_str(match self {{\n" + "\n".join(arms) + "\n        })\n    }\n}\n")
         for name, body in sorted(self.definitions.items()):
             if body is None:
                 raise ValueError(f"cyclic model requires indirection: {name}")

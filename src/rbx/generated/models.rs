@@ -38,9 +38,6 @@ pub enum FlushMemoryStoreScope {
     Live,
     #[serde(rename = "TEST")]
     Test,
-    #[serde(other)]
-    #[value(skip)]
-    Unknown,
 }
 
 #[derive(
@@ -51,9 +48,6 @@ pub enum GetMemoryStoreFlushOperationScope {
     Live,
     #[serde(rename = "TEST")]
     Test,
-    #[serde(other)]
-    #[value(skip)]
-    Unknown,
 }
 
 impl std::fmt::Display for DataStoreEntryState {
@@ -83,7 +77,6 @@ impl std::fmt::Display for FlushMemoryStoreScope {
         f.write_str(match self {
             Self::Live => "LIVE",
             Self::Test => "TEST",
-            Self::Unknown => "UNKNOWN",
         })
     }
 }
@@ -93,7 +86,6 @@ impl std::fmt::Display for GetMemoryStoreFlushOperationScope {
         f.write_str(match self {
             Self::Live => "LIVE",
             Self::Test => "TEST",
-            Self::Unknown => "UNKNOWN",
         })
     }
 }
