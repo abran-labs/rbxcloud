@@ -5,6 +5,7 @@
 //! [`client`] and [`credentials`] are the shared transport that new typed
 //! API families are built on. The `v1` and `v2` clients do not use it yet.
 pub mod client;
+pub mod cloud;
 pub mod credentials;
 pub mod error;
 pub mod types;

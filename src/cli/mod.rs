@@ -1,6 +1,7 @@
 mod assets_cli;
 mod cloud;
 mod datastore_cli;
+mod datastore_v2;
 mod experience_cli;
 mod group_cli;
 mod inventory_cli;
@@ -15,6 +16,7 @@ mod user_cli;
 mod user_restriction_cli;
 
 use clap::{Parser, Subcommand};
+use datastore_v2::DataStoreV2;
 use inventory_cli::Inventory;
 use luau_execution_cli::Luau;
 use universe_cli::Universe;
@@ -77,6 +79,9 @@ pub(crate) enum Command {
     /// Access to the Roblox User Restriction API
     UserRestriction(UserRestriction),
 
+    /// Access typed Open Cloud v2 DataStores
+    DatastoreV2(DataStoreV2),
+
     /// Show Open Cloud API coverage status by family
     Coverage(Coverage),
 }
@@ -98,6 +103,7 @@ impl Cli {
             Command::Universe(command) => command.run().await,
             Command::User(command) => command.run().await,
             Command::UserRestriction(command) => command.run().await,
+            Command::DatastoreV2(command) => command.run().await,
             Command::Coverage(command) => command.run(),
         }
     }
