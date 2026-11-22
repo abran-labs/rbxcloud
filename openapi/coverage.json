@@ -10,12 +10,12 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 83,
-    "not_covered": 314,
+    "covered": 86,
+    "not_covered": 311,
     "existing": 45,
-    "implemented": 38,
+    "implemented": 41,
     "defective": 1,
-    "pending": 313,
+    "pending": 310,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -1066,8 +1066,8 @@
         "oauth2"
       ],
       "family": "assets",
-      "cli": "rbxcloud assets multipart-upload-abort",
-      "status": "pending",
+      "cli": "rbxcloud asset-multipart multipart-upload-abort",
+      "status": "implemented",
       "operation_id": "Assets_MultipartUploadAbort",
       "tags": [
         "Assets"
@@ -1084,8 +1084,8 @@
         "oauth2"
       ],
       "family": "assets",
-      "cli": "rbxcloud assets multipart-upload-chunk-complete",
-      "status": "pending",
+      "cli": "rbxcloud asset-multipart multipart-upload-chunk-complete",
+      "status": "implemented",
       "operation_id": "Assets_MultipartUploadChunkComplete",
       "tags": [
         "Assets"
@@ -1102,8 +1102,8 @@
         "oauth2"
       ],
       "family": "assets",
-      "cli": "rbxcloud assets multipart-upload-complete",
-      "status": "pending",
+      "cli": "rbxcloud asset-multipart multipart-upload-complete",
+      "status": "implemented",
       "operation_id": "Assets_MultipartUploadComplete",
       "tags": [
         "Assets"
