@@ -25,8 +25,12 @@ async fn client(server: &TestServer) -> InsightsCloudClient {
 #[tokio::test]
 async fn insights_queries_use_exact_repeated_arrays_and_paths() {
     let server = TestServer::start(vec![
-        Reply::json(200, "{}"), Reply::json(200, "{\"ads\":[]}"), Reply::json(200, "[]"),
-        Reply::json(200, "{}"), Reply::json(200, "{}"), Reply::json(200, "{}"),
+        Reply::json(200, "{}"),
+        Reply::json(200, "{\"ads\":[]}"),
+        Reply::json(200, "[]"),
+        Reply::json(200, "{}"),
+        Reply::json(200, "{}"),
+        Reply::json(200, "{}"),
     ]);
     let client = client(&server).await;
     client
