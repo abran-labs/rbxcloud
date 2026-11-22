@@ -5,5 +5,7 @@ pub mod asset_models;
 pub mod assets;
 pub mod creator_models;
 pub mod creators;
+pub mod liveops;
+pub mod liveops_models;
 pub mod multipart;
 pub mod multipart_models;

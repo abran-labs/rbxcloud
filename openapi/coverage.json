@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 115,
-    "not_covered": 282,
+    "covered": 152,
+    "not_covered": 245,
     "existing": 45,
-    "implemented": 70,
+    "implemented": 107,
     "unverified": 0,
     "defective": 0,
-    "pending": 282,
+    "pending": 245,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -2672,8 +2672,8 @@
         "legacy-cookie"
       ],
       "family": "configs",
-      "cli": "rbxcloud configs get-config-repository-values",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools configs get-config-repository-values",
+      "status": "implemented",
       "operation_id": "CreatorConfigsPublicApi_GetConfigRepositoryValues",
       "tags": [
         "Configs"
@@ -2691,8 +2691,8 @@
         "legacy-cookie"
       ],
       "family": "configs",
-      "cli": "rbxcloud configs get-config-repository-draft",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools configs get-config-repository-draft",
+      "status": "implemented",
       "operation_id": "CreatorConfigsPublicApi_GetConfigRepositoryDraft",
       "tags": [
         "Configs"
@@ -2767,8 +2767,8 @@
         "legacy-cookie"
       ],
       "family": "configs",
-      "cli": "rbxcloud configs get-config-repository-full",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools configs get-config-repository-full",
+      "status": "implemented",
       "operation_id": "CreatorConfigsPublicApi_GetConfigRepositoryFull",
       "tags": [
         "Configs"
@@ -2805,8 +2805,8 @@
         "legacy-cookie"
       ],
       "family": "configs",
-      "cli": "rbxcloud configs list-revisions",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools configs list-revisions",
+      "status": "implemented",
       "operation_id": "CreatorConfigsPublicApi_ListRevisions",
       "tags": [
         "Configs"
@@ -2824,8 +2824,8 @@
         "legacy-cookie"
       ],
       "family": "configs",
-      "cli": "rbxcloud configs restore-revision",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools configs restore-revision",
+      "status": "implemented",
       "operation_id": "CreatorConfigsPublicApi_RestoreRevision",
       "tags": [
         "Configs"
@@ -2843,8 +2843,8 @@
         "legacy-cookie"
       ],
       "family": "experiments",
-      "cli": "rbxcloud experiments list-experiments",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools experiments list-experiments",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_ListExperiments",
       "tags": [
         "Experiments"
@@ -2881,8 +2881,8 @@
         "legacy-cookie"
       ],
       "family": "experiments",
-      "cli": "rbxcloud experiments get-experiment",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools experiments get-experiment",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_GetExperiment",
       "tags": [
         "Experiments"
@@ -2919,8 +2919,8 @@
         "legacy-cookie"
       ],
       "family": "experiments",
-      "cli": "rbxcloud experiments discard-experiment",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools experiments discard-experiment",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_DiscardExperiment",
       "tags": [
         "Experiments"
@@ -2938,8 +2938,8 @@
         "legacy-cookie"
       ],
       "family": "experiments",
-      "cli": "rbxcloud experiments get-experiment-stats",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools experiments get-experiment-stats",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_GetExperimentStats",
       "tags": [
         "Experiments"
@@ -2995,8 +2995,8 @@
         "legacy-cookie"
       ],
       "family": "experiments",
-      "cli": "rbxcloud experiments start-experiment",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools experiments start-experiment",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_StartExperiment",
       "tags": [
         "Experiments"
@@ -3033,8 +3033,8 @@
         "legacy-cookie"
       ],
       "family": "experiments",
-      "cli": "rbxcloud experiments get-experiment-operation-status",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools experiments get-experiment-operation-status",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_GetExperimentOperationStatus",
       "tags": [
         "Experiments"
@@ -3208,8 +3208,8 @@
         "legacy-cookie"
       ],
       "family": "developer_products",
-      "cli": "rbxcloud developer-products list-developer-product-configs-by-universe-v2",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools developer-products list-developer-product-configs-by-universe-v2",
+      "status": "implemented",
       "operation_id": "DeveloperProducts_ListDeveloperProductConfigsByUniverseV2",
       "tags": [
         "Developer products"
@@ -3246,8 +3246,8 @@
         "legacy-cookie"
       ],
       "family": "developer_products",
-      "cli": "rbxcloud developer-products get-developer-product-config-v2",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools developer-products get-developer-product-config-v2",
+      "status": "implemented",
       "operation_id": "DeveloperProducts_GetDeveloperProductConfigV2",
       "tags": [
         "Developer products"
@@ -3284,8 +3284,8 @@
         "legacy-cookie"
       ],
       "family": "game_passes",
-      "cli": "rbxcloud game-passes list-game-pass-configs-by-universe",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools game-passes list-game-pass-configs-by-universe",
+      "status": "implemented",
       "operation_id": "GamePasses_ListGamePassConfigsByUniverse",
       "tags": [
         "Game passes"
@@ -3322,8 +3322,8 @@
         "legacy-cookie"
       ],
       "family": "game_passes",
-      "cli": "rbxcloud game-passes get-game-pass-config",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools game-passes get-game-pass-config",
+      "status": "implemented",
       "operation_id": "GamePasses_GetGamePassConfig",
       "tags": [
         "Game passes"
@@ -4968,8 +4968,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking delete-player-attribute",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking delete-player-attribute",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -4987,8 +4987,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking list-player-attributes",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking list-player-attributes",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5025,8 +5025,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking get-default-weights",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking get-default-weights",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5044,8 +5044,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking generate-mock-servers",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking generate-mock-servers",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5082,8 +5082,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking remove-place-scoring-configuration",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking remove-place-scoring-configuration",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5101,8 +5101,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking get-scoring-configuration",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking get-scoring-configuration",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5139,8 +5139,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking delete-scoring-configuration",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking delete-scoring-configuration",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5196,8 +5196,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking delete-signal",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking delete-signal",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5215,8 +5215,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking list-scoring-configurations",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking list-scoring-configurations",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5234,8 +5234,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking list-scoring-configuration-places",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking list-scoring-configuration-places",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5291,8 +5291,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking delete-server-attribute",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking delete-server-attribute",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5310,8 +5310,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking list-server-attributes",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking list-server-attributes",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5329,8 +5329,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking get-feature-flags",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools matchmaking get-feature-flags",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5669,8 +5669,8 @@
         "legacy-cookie"
       ],
       "family": "server_management",
-      "cli": "rbxcloud server-management list-client-logs",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools server-management list-client-logs",
+      "status": "implemented",
       "operation_id": "GameServers_ListClientLogs",
       "tags": [
         "Observability"
@@ -5688,8 +5688,8 @@
         "legacy-cookie"
       ],
       "family": "server_management",
-      "cli": "rbxcloud server-management get-filter-options",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools server-management get-filter-options",
+      "status": "implemented",
       "operation_id": "GameServers_GetFilterOptions",
       "tags": [
         "Observability"
@@ -5707,8 +5707,8 @@
         "legacy-cookie"
       ],
       "family": "server_management",
-      "cli": "rbxcloud server-management list-game-servers",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools server-management list-game-servers",
+      "status": "implemented",
       "operation_id": "GameServers_ListGameServers",
       "tags": [
         "Observability"
@@ -5726,8 +5726,8 @@
         "legacy-cookie"
       ],
       "family": "server_management",
-      "cli": "rbxcloud server-management list-game-server-logs",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools server-management list-game-server-logs",
+      "status": "implemented",
       "operation_id": "GameServers_ListGameServerLogs",
       "tags": [
         "Observability"
@@ -5745,8 +5745,8 @@
         "legacy-cookie"
       ],
       "family": "server_management",
-      "cli": "rbxcloud server-management list-restart-statuses",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools server-management list-restart-statuses",
+      "status": "implemented",
       "operation_id": "Restarts_ListRestartStatuses",
       "tags": [
         "Observability"
@@ -5783,8 +5783,8 @@
         "legacy-cookie"
       ],
       "family": "server_management",
-      "cli": "rbxcloud server-management forecast-restart",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools server-management forecast-restart",
+      "status": "implemented",
       "operation_id": "Restarts_ForecastRestart",
       "tags": [
         "Observability"
@@ -7376,8 +7376,8 @@
         "legacy-cookie"
       ],
       "family": "game_events",
-      "cli": "rbxcloud game-events get-game-event",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools game-events get-game-event",
+      "status": "implemented",
       "operation_id": "GameEvent_GetGameEvent",
       "tags": [
         "Game Events"
@@ -7414,8 +7414,8 @@
         "legacy-cookie"
       ],
       "family": "game_events",
-      "cli": "rbxcloud game-events delete-game-event",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools game-events delete-game-event",
+      "status": "implemented",
       "operation_id": "GameEvent_DeleteGameEvent",
       "tags": [
         "Game Events"
@@ -7433,8 +7433,8 @@
         "legacy-cookie"
       ],
       "family": "game_events",
-      "cli": "rbxcloud game-events get-game-events",
-      "status": "pending",
+      "cli": "rbxcloud liveops-tools game-events get-game-events",
+      "status": "implemented",
       "operation_id": "GameEvents_GetGameEvents",
       "tags": [
         "Game Events"

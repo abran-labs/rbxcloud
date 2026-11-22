@@ -81,13 +81,18 @@ def emit_operations(contract, operations, models):
         if constructor not in ["get", "get_once", "post", "put", "patch", "delete"]:
             raise ValueError(operation.method)
         chunks.append(f"    pub async fn {name}(&self, params: {params}) -> Result<{response}, Error> {{\n")
-        chunks.append(f'        let request = Request::new(TransportOperation::{constructor}(Server::{server}, {rust_value(operation.path)}))')
+        has_arrays = any(p.schema.get("type") == "array" and p.location == "query" for p in operation.parameters)
+        binding = "mut request" if has_arrays else "request"
+        chunks.append(f'        let {binding} = Request::new(TransportOperation::{constructor}(Server::{server}, {rust_value(operation.path)}))')
+        array_queries = []
         for parameter in operation.parameters:
             field = snake(parameter.name)
             if parameter.location == "path":
                 chunks.append(f'            .path_param({rust_value(parameter.name)}, params.{field})')
             elif parameter.location == "query":
-                if parameter.required:
+                if parameter.schema.get("type") == "array":
+                    array_queries.append((parameter.name, field, parameter.required))
+                elif parameter.required:
                     chunks.append(f'            .query({rust_value(parameter.name)}, params.{field})')
                 else:
                     chunks.append(f'            .query_opt({rust_value(parameter.name)}, params.{field})')
@@ -96,7 +101,13 @@ def emit_operations(contract, operations, models):
         body = body_schema(contract, operation)
         if body:
             chunks.append("            .json(&params.body)?")
-        chunks.append(";\n        let value = self.transport.execute(request).await?;\n")
+        chunks.append(";\n")
+        for wire, field, required in array_queries:
+            if required:
+                chunks.append(f"        for value in params.{field} {{ request = request.query({rust_value(wire)}, value); }}\n")
+            else:
+                chunks.append(f"        if let Some(values) = params.{field} {{ for value in values {{ request = request.query({rust_value(wire)}, value); }} }}\n")
+        chunks.append("        let value = self.transport.execute(request).await?;\n")
         if response == "()":
             chunks.append("        let _ = value;\n        Ok(())\n")
         else:
@@ -145,7 +156,8 @@ def emit_cli(contract, operations, models):
         chunks.append(f"enum {enum} {{\n")
         for command, operation in entries:
             variant = pascal(command)
-            chunks.append(f"    /// {operation.summary}\n    {variant} {{\n")
+            summary = " ".join(operation.summary.splitlines()).replace("*/", "* /")
+            chunks.append(f"    /// {summary}\n    {variant} {{\n")
             model_types = {}
             for parameter in operation.parameters:
                 schema = dict(parameter.schema)
