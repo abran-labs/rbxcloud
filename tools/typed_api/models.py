@@ -15,6 +15,11 @@ class Models:
             return "serde_json::Value"
         if "$ref" in schema:
             name = schema["$ref"].split("/")[-1]
+            if schema.get("x-request-model"):
+                schema = dict(self.schemas[name])
+                schema["x-request-model"] = True
+                schema["x-generated-name"] = name + "Input"
+                return self.object(name + "Input", schema)
             self.collect(name)
             return pascal(name)
         if schema.get("enum") and schema.get("type") == "string" and schema.get("x-generated-name"):
@@ -93,6 +98,8 @@ class Models:
         required = set(schema.get("required", []))
         fields = []
         for wire, original in schema.get("properties", {}).items():
+            if schema.get("x-request-model") and original.get("readOnly"):
+                continue
             schema_copy = dict(original)
             schema_copy["x-generated-name"] = rust_name + pascal(wire)
             typ = self.reference(schema_copy)
@@ -118,7 +125,7 @@ class Models:
             for value in values:
                 lines.append(f'    #[serde(rename = "{value}")]')
                 lines.append(f"    {pascal(str(value))},")
-            lines.append("    #[serde(other)]\n    Unknown,\n}\n")
+            lines.append("    #[serde(other)]\n    #[value(skip)]\n    Unknown,\n}\n")
         for name, values in sorted(self.enums.items()):
             arms = [f'            Self::{pascal(str(value))} => "{value}",' for value in values]
             lines.append(f"impl std::fmt::Display for {pascal(name)} {{\n    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {{\n        f.write_str(match self {{\n" + "\n".join(arms) + "\n            Self::Unknown => \"UNKNOWN\",\n        })\n    }\n}\n")

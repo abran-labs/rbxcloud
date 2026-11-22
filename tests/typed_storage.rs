@@ -152,3 +152,35 @@ fn parser_accepts_negative_numbers_and_validates_memory_scope() {
         .output().unwrap();
     assert_eq!(invalid_scope.status.code(), Some(2));
 }
+
+#[tokio::test]
+async fn queue_read_does_not_retry_a_lost_or_rate_limited_response() {
+    let server = TestServer::start(vec![Reply::json(503, r#"{"message":"unavailable"}"#)]);
+    let result = client(&server).await.read_memory_store_queue_items(ReadMemoryStoreQueueItemsParams {
+        universe_id: 1, queue_id: "q".into(), count: Some(1), all_or_nothing: None, invisibility_window: None,
+    }).await;
+    assert!(result.is_err());
+    assert_eq!(server.requests().len(), 1);
+}
+
+#[test]
+fn response_enums_accept_future_states_but_request_enums_do_not_expose_unknown() {
+    let store: DataStore = serde_json::from_value(json!({"state":"A_FUTURE_STATE"})).unwrap();
+    assert_eq!(store.state, Some(DataStoreState::Unknown));
+    let help = std::process::Command::new(env!("CARGO_BIN_EXE_rbxcloud"))
+        .args(["memory-store", "flush-memory-store", "--help"]).output().unwrap();
+    let help = String::from_utf8(help.stdout).unwrap();
+    assert!(help.contains("live"));
+    assert!(help.contains("test"));
+    assert!(!help.contains("unknown"));
+}
+
+#[test]
+fn parser_accepts_negative_dynamic_json_values() {
+    let output = std::process::Command::new(env!("CARGO_BIN_EXE_rbxcloud"))
+        .args(["datastore-v2", "create-data-store-entry", "--universe-id", "1", "--data-store-id", "d", "--body-value", "-5"])
+        .env("ROBLOX_OPEN_CLOUD_API_KEY", "").env("RBXCLOUD_API_KEY", "")
+        .output().unwrap();
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    assert!(!stderr.contains("unexpected argument '-5'"), "{stderr}");
+}

@@ -3,34 +3,6 @@
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum, serde::Serialize, serde::Deserialize,
 )]
-pub enum CreateDataStoreEntryRequestState {
-    #[serde(rename = "STATE_UNSPECIFIED")]
-    StateUnspecified,
-    #[serde(rename = "ACTIVE")]
-    Active,
-    #[serde(rename = "DELETED")]
-    Deleted,
-    #[serde(other)]
-    Unknown,
-}
-
-#[derive(
-    Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum, serde::Serialize, serde::Deserialize,
-)]
-pub enum CreateScopedDataStoreEntryRequestState {
-    #[serde(rename = "STATE_UNSPECIFIED")]
-    StateUnspecified,
-    #[serde(rename = "ACTIVE")]
-    Active,
-    #[serde(rename = "DELETED")]
-    Deleted,
-    #[serde(other)]
-    Unknown,
-}
-
-#[derive(
-    Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum, serde::Serialize, serde::Deserialize,
-)]
 pub enum DataStoreEntryState {
     #[serde(rename = "STATE_UNSPECIFIED")]
     StateUnspecified,
@@ -39,6 +11,7 @@ pub enum DataStoreEntryState {
     #[serde(rename = "DELETED")]
     Deleted,
     #[serde(other)]
+    #[value(skip)]
     Unknown,
 }
 
@@ -53,6 +26,7 @@ pub enum DataStoreState {
     #[serde(rename = "DELETED")]
     Deleted,
     #[serde(other)]
+    #[value(skip)]
     Unknown,
 }
 
@@ -65,6 +39,7 @@ pub enum FlushMemoryStoreScope {
     #[serde(rename = "TEST")]
     Test,
     #[serde(other)]
+    #[value(skip)]
     Unknown,
 }
 
@@ -77,57 +52,8 @@ pub enum GetMemoryStoreFlushOperationScope {
     #[serde(rename = "TEST")]
     Test,
     #[serde(other)]
+    #[value(skip)]
     Unknown,
-}
-
-#[derive(
-    Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum, serde::Serialize, serde::Deserialize,
-)]
-pub enum UpdateDataStoreEntryRequestState {
-    #[serde(rename = "STATE_UNSPECIFIED")]
-    StateUnspecified,
-    #[serde(rename = "ACTIVE")]
-    Active,
-    #[serde(rename = "DELETED")]
-    Deleted,
-    #[serde(other)]
-    Unknown,
-}
-
-#[derive(
-    Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum, serde::Serialize, serde::Deserialize,
-)]
-pub enum UpdateScopedDataStoreEntryRequestState {
-    #[serde(rename = "STATE_UNSPECIFIED")]
-    StateUnspecified,
-    #[serde(rename = "ACTIVE")]
-    Active,
-    #[serde(rename = "DELETED")]
-    Deleted,
-    #[serde(other)]
-    Unknown,
-}
-
-impl std::fmt::Display for CreateDataStoreEntryRequestState {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            Self::StateUnspecified => "STATE_UNSPECIFIED",
-            Self::Active => "ACTIVE",
-            Self::Deleted => "DELETED",
-            Self::Unknown => "UNKNOWN",
-        })
-    }
-}
-
-impl std::fmt::Display for CreateScopedDataStoreEntryRequestState {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            Self::StateUnspecified => "STATE_UNSPECIFIED",
-            Self::Active => "ACTIVE",
-            Self::Deleted => "DELETED",
-            Self::Unknown => "UNKNOWN",
-        })
-    }
 }
 
 impl std::fmt::Display for DataStoreEntryState {
@@ -172,49 +98,14 @@ impl std::fmt::Display for GetMemoryStoreFlushOperationScope {
     }
 }
 
-impl std::fmt::Display for UpdateDataStoreEntryRequestState {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            Self::StateUnspecified => "STATE_UNSPECIFIED",
-            Self::Active => "ACTIVE",
-            Self::Deleted => "DELETED",
-            Self::Unknown => "UNKNOWN",
-        })
-    }
-}
-
-impl std::fmt::Display for UpdateScopedDataStoreEntryRequestState {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            Self::StateUnspecified => "STATE_UNSPECIFIED",
-            Self::Active => "ACTIVE",
-            Self::Deleted => "DELETED",
-            Self::Unknown => "UNKNOWN",
-        })
-    }
-}
-
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct CreateDataStoreEntryRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    #[serde(rename = "createTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub create_time: Option<String>,
-    #[serde(rename = "revisionId")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision_id: Option<String>,
-    #[serde(rename = "revisionCreateTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision_create_time: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub state: Option<CreateDataStoreEntryRequestState>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub etag: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<GoogleProtobufValue>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -239,9 +130,6 @@ pub struct CreateMemoryStoreSortedMapItemRequest {
     pub value: Option<serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub etag: Option<String>,
-    #[serde(rename = "expireTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expire_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ttl: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -260,31 +148,16 @@ pub struct CreateOrderedDataStoreEntryRequest {
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct CreateScopedDataStoreEntryRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    #[serde(rename = "createTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub create_time: Option<String>,
-    #[serde(rename = "revisionId")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision_id: Option<String>,
-    #[serde(rename = "revisionCreateTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision_create_time: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub state: Option<CreateScopedDataStoreEntryRequestState>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub etag: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<GoogleProtobufValue>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -503,23 +376,10 @@ pub struct UndeleteDataStoreRequest {}
 pub struct UpdateDataStoreEntryRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    #[serde(rename = "createTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub create_time: Option<String>,
-    #[serde(rename = "revisionId")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision_id: Option<String>,
-    #[serde(rename = "revisionCreateTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision_create_time: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub state: Option<UpdateDataStoreEntryRequestState>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub etag: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<GoogleProtobufValue>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -534,9 +394,6 @@ pub struct UpdateMemoryStoreSortedMapItemRequest {
     pub value: Option<serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub etag: Option<String>,
-    #[serde(rename = "expireTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub expire_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ttl: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -555,31 +412,16 @@ pub struct UpdateOrderedDataStoreEntryRequest {
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct UpdateScopedDataStoreEntryRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    #[serde(rename = "createTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub create_time: Option<String>,
-    #[serde(rename = "revisionId")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision_id: Option<String>,
-    #[serde(rename = "revisionCreateTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision_create_time: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub state: Option<UpdateScopedDataStoreEntryRequestState>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub etag: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<GoogleProtobufValue>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

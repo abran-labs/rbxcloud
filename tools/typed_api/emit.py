@@ -49,8 +49,9 @@ def emit_models(contract, operations, models):
             models.reference(parameter_schema)
         schema = body_schema(contract, operation)
         if schema:
+            schema = dict(schema)
+            schema["x-request-model"] = True
             if "$ref" not in schema and schema.get("type") == "object":
-                schema = dict(schema)
                 schema["x-generated-name"] = pascal(operation.cli.split()[-1]) + "Request"
             models.reference(schema)
         response_type(contract, operation, models)
@@ -117,7 +118,8 @@ def emit_operations(contract, operations, models):
                 typ = f"Option<{typ}>"
             chunks.append(f"    pub {field}: {typ},\n")
         if body_schema(contract, operation):
-            schema = body_schema(contract, operation)
+            schema = dict(body_schema(contract, operation))
+            schema["x-request-model"] = True
             if "$ref" not in schema:
                 schema = dict(schema)
                 schema["x-generated-name"] = pascal(operation.cli.split()[-1]) + "Request"
@@ -196,12 +198,11 @@ def emit_cli(contract, operations, models):
                     value = field
                 chunks.append(f"                    {field}: {value},\n")
             if schema:
-                body_type = pascal(method_name(operation)) + "Request" if "$ref" not in schema else pascal(schema["$ref"].split("/")[-1])
+                body_type = pascal(method_name(operation)) + "Request" if "$ref" not in schema else pascal(schema["$ref"].split("/")[-1]) + "Input"
                 chunks.append(f"                    body: rbxcloud::rbx::generated::models::{body_type} {{\n")
                 required = set(schema.get("required", []))
                 for wire, original_body in schema.get("properties", {}).items():
                     if original_body.get("readOnly"):
-                        chunks.append(f"                        {snake(wire)}: None,\n")
                         continue
                     cli_name = "body_" + snake(wire)
                     field = snake(wire)

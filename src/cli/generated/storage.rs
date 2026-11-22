@@ -355,16 +355,11 @@ impl DatastoreV2 {
                             id: id,
                             body: rbxcloud::rbx::generated::models::CreateDataStoreEntryRequest {
                                 path: body_path,
-                                create_time: None,
-                                revision_id: None,
-                                revision_create_time: None,
-                                state: None,
                                 etag: body_etag,
                                 value: body_value
                                     .as_deref()
                                     .map(serde_json::from_str)
                                     .transpose()?,
-                                id: None,
                                 users: body_users,
                                 attributes: body_attributes
                                     .as_deref()
@@ -420,16 +415,11 @@ impl DatastoreV2 {
                             allow_missing: allow_missing,
                             body: rbxcloud::rbx::generated::models::UpdateDataStoreEntryRequest {
                                 path: body_path,
-                                create_time: None,
-                                revision_id: None,
-                                revision_create_time: None,
-                                state: None,
                                 etag: body_etag,
                                 value: body_value
                                     .as_deref()
                                     .map(serde_json::from_str)
                                     .transpose()?,
-                                id: None,
                                 users: body_users,
                                 attributes: body_attributes
                                     .as_deref()
@@ -569,13 +559,8 @@ impl DatastoreV2 {
                     id: id,
                     body: rbxcloud::rbx::generated::models::CreateScopedDataStoreEntryRequest {
                         path: body_path,
-                        create_time: None,
-                        revision_id: None,
-                        revision_create_time: None,
-                        state: None,
                         etag: body_etag,
                         value: body_value.as_deref().map(serde_json::from_str).transpose()?,
-                        id: None,
                         users: body_users,
                         attributes: body_attributes.as_deref().map(serde_json::from_str).transpose()?,
                     },
@@ -628,13 +613,8 @@ impl DatastoreV2 {
                     allow_missing: allow_missing,
                     body: rbxcloud::rbx::generated::models::UpdateScopedDataStoreEntryRequest {
                         path: body_path,
-                        create_time: None,
-                        revision_id: None,
-                        revision_create_time: None,
-                        state: None,
                         etag: body_etag,
                         value: body_value.as_deref().map(serde_json::from_str).transpose()?,
-                        id: None,
                         users: body_users,
                         attributes: body_attributes.as_deref().map(serde_json::from_str).transpose()?,
                     },
@@ -1030,7 +1010,6 @@ impl MemoryStore {
                         path: body_path,
                         value: body_value.as_deref().map(serde_json::from_str).transpose()?,
                         etag: body_etag,
-                        expire_time: None,
                         ttl: body_ttl,
                         id: body_id,
                         string_sort_key: body_string_sort_key,
@@ -1085,7 +1064,6 @@ impl MemoryStore {
                         path: body_path,
                         value: body_value.as_deref().map(serde_json::from_str).transpose()?,
                         etag: body_etag,
-                        expire_time: None,
                         ttl: body_ttl,
                         id: body_id,
                         string_sort_key: body_string_sort_key,
@@ -1276,7 +1254,6 @@ impl OrderedDatastoreV2 {
                     body: rbxcloud::rbx::generated::models::CreateOrderedDataStoreEntryRequest {
                         path: body_path,
                         value: body_value,
-                        id: None,
                     },
                 }).await?;
                 if serde_json::to_value(&result)?.is_null() {
@@ -1325,7 +1302,6 @@ impl OrderedDatastoreV2 {
                     body: rbxcloud::rbx::generated::models::UpdateOrderedDataStoreEntryRequest {
                         path: body_path,
                         value: body_value,
-                        id: None,
                     },
                 }).await?;
                 if serde_json::to_value(&result)?.is_null() {
