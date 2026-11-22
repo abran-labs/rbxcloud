@@ -5,3 +5,5 @@ test.sh
 *.ai
 *.psd
 .DS_Store
+__pycache__/
+*.py[cod]
