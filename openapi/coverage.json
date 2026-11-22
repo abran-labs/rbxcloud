@@ -10,12 +10,12 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 45,
-    "not_covered": 352,
+    "covered": 79,
+    "not_covered": 318,
     "existing": 45,
-    "implemented": 0,
+    "implemented": 34,
     "defective": 1,
-    "pending": 351,
+    "pending": 317,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -1597,7 +1597,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 list-data-stores",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_ListDataStores",
       "tags": [
         "Data and memory stores"
@@ -1614,7 +1614,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 delete-data-store",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_DeleteDataStore",
       "tags": [
         "Data and memory stores"
@@ -1631,7 +1631,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 list-data-store-entries",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_ListDataStoreEntries__Using_Universes",
       "tags": [
         "Data and memory stores"
@@ -1648,7 +1648,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 create-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_CreateDataStoreEntry__Using_Universes",
       "tags": [
         "Data and memory stores"
@@ -1665,7 +1665,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 get-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_GetDataStoreEntry__Using_Universes_DataStores",
       "tags": [
         "Data and memory stores"
@@ -1682,7 +1682,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 update-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_UpdateDataStoreEntry__Using_Universes_DataStores",
       "tags": [
         "Data and memory stores"
@@ -1699,7 +1699,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 delete-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_DeleteDataStoreEntry__Using_Universes_DataStores",
       "tags": [
         "Data and memory stores"
@@ -1716,7 +1716,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 increment-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_IncrementDataStoreEntry__Using_Universes_DataStores",
       "tags": [
         "Data and memory stores"
@@ -1733,7 +1733,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 list-data-store-entry-revisions",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_ListDataStoreEntryRevisions__Using_Universes_DataStores",
       "tags": [
         "Data and memory stores"
@@ -1750,7 +1750,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 list-scoped-data-store-entries",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_ListDataStoreEntries__Using_Universes_DataStores",
       "tags": [
         "Data and memory stores"
@@ -1767,7 +1767,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 create-scoped-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_CreateDataStoreEntry__Using_Universes_DataStores",
       "tags": [
         "Data and memory stores"
@@ -1784,7 +1784,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 get-scoped-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_GetDataStoreEntry__Using_Universes_DataStores_Scopes",
       "tags": [
         "Data and memory stores"
@@ -1801,7 +1801,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 update-scoped-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_UpdateDataStoreEntry__Using_Universes_DataStores_Scopes",
       "tags": [
         "Data and memory stores"
@@ -1818,7 +1818,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 delete-scoped-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_DeleteDataStoreEntry__Using_Universes_DataStores_Scopes",
       "tags": [
         "Data and memory stores"
@@ -1835,7 +1835,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 increment-scoped-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_IncrementDataStoreEntry__Using_Universes_DataStores_Scopes",
       "tags": [
         "Data and memory stores"
@@ -1852,7 +1852,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 list-scoped-data-store-entry-revisions",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_ListDataStoreEntryRevisions__Using_Universes_DataStores_Scopes",
       "tags": [
         "Data and memory stores"
@@ -1869,7 +1869,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 undelete-data-store",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_UndeleteDataStore",
       "tags": [
         "Data and memory stores"
@@ -1886,7 +1886,7 @@
       ],
       "family": "data_stores",
       "cli": "rbxcloud datastore-v2 snapshot-data-stores",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_SnapshotDataStores",
       "tags": [
         "Data and memory stores"
@@ -1920,7 +1920,7 @@
       ],
       "family": "memory_stores",
       "cli": "rbxcloud memory-store get-memory-store-flush-operation",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_GetMemoryStoreFlushOperation",
       "tags": [
         "Data and memory stores"
@@ -1937,7 +1937,7 @@
       ],
       "family": "memory_stores",
       "cli": "rbxcloud memory-store create-memory-store-queue-item",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_CreateMemoryStoreQueueItem",
       "tags": [
         "Data and memory stores"
@@ -1954,7 +1954,7 @@
       ],
       "family": "memory_stores",
       "cli": "rbxcloud memory-store discard-memory-store-queue-items",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_DiscardMemoryStoreQueueItems",
       "tags": [
         "Data and memory stores"
@@ -1971,7 +1971,7 @@
       ],
       "family": "memory_stores",
       "cli": "rbxcloud memory-store read-memory-store-queue-items",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_ReadMemoryStoreQueueItems",
       "tags": [
         "Data and memory stores"
@@ -1988,7 +1988,7 @@
       ],
       "family": "memory_stores",
       "cli": "rbxcloud memory-store list-memory-store-sorted-map-items",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_ListMemoryStoreSortedMapItems",
       "tags": [
         "Data and memory stores"
@@ -2005,7 +2005,7 @@
       ],
       "family": "memory_stores",
       "cli": "rbxcloud memory-store create-memory-store-sorted-map-item",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_CreateMemoryStoreSortedMapItem",
       "tags": [
         "Data and memory stores"
@@ -2022,7 +2022,7 @@
       ],
       "family": "memory_stores",
       "cli": "rbxcloud memory-store get-memory-store-sorted-map-item",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_GetMemoryStoreSortedMapItem",
       "tags": [
         "Data and memory stores"
@@ -2039,7 +2039,7 @@
       ],
       "family": "memory_stores",
       "cli": "rbxcloud memory-store update-memory-store-sorted-map-item",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_UpdateMemoryStoreSortedMapItem",
       "tags": [
         "Data and memory stores"
@@ -2056,7 +2056,7 @@
       ],
       "family": "memory_stores",
       "cli": "rbxcloud memory-store delete-memory-store-sorted-map-item",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_DeleteMemoryStoreSortedMapItem",
       "tags": [
         "Data and memory stores"
@@ -2073,7 +2073,7 @@
       ],
       "family": "memory_stores",
       "cli": "rbxcloud memory-store flush-memory-store",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_FlushMemoryStore",
       "tags": [
         "Data and memory stores"
@@ -2090,7 +2090,7 @@
       ],
       "family": "ordered_data_stores",
       "cli": "rbxcloud ordered-datastore-v2 list-ordered-data-store-entries",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_ListOrderedDataStoreEntries",
       "tags": [
         "Data and memory stores"
@@ -2107,7 +2107,7 @@
       ],
       "family": "ordered_data_stores",
       "cli": "rbxcloud ordered-datastore-v2 create-ordered-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_CreateOrderedDataStoreEntry",
       "tags": [
         "Data and memory stores"
@@ -2124,7 +2124,7 @@
       ],
       "family": "ordered_data_stores",
       "cli": "rbxcloud ordered-datastore-v2 get-ordered-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_GetOrderedDataStoreEntry",
       "tags": [
         "Data and memory stores"
@@ -2141,7 +2141,7 @@
       ],
       "family": "ordered_data_stores",
       "cli": "rbxcloud ordered-datastore-v2 update-ordered-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_UpdateOrderedDataStoreEntry",
       "tags": [
         "Data and memory stores"
@@ -2158,7 +2158,7 @@
       ],
       "family": "ordered_data_stores",
       "cli": "rbxcloud ordered-datastore-v2 delete-ordered-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_DeleteOrderedDataStoreEntry",
       "tags": [
         "Data and memory stores"
@@ -2175,7 +2175,7 @@
       ],
       "family": "ordered_data_stores",
       "cli": "rbxcloud ordered-datastore-v2 increment-ordered-data-store-entry",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "Cloud_IncrementOrderedDataStoreEntry",
       "tags": [
         "Data and memory stores"

@@ -14,8 +14,8 @@ Generated from `openapi/coverage.json` by `python3 scripts/gen_coverage.py`. Do 
 |---|---:|
 | Operations in the spec | 997 |
 | Accept an API key (coverage target) | 397 |
-| Covered (`existing` + `implemented`) | 45 |
-| Not covered (`defective` + `pending`) | 352 |
+| Covered (`existing` + `implemented`) | 79 |
+| Not covered (`defective` + `pending`) | 318 |
 | Excluded (no API-key auth) | 600 |
 
 An operation is in the target when its `security` list contains exactly `{"roblox-api-key": []}` as one alternative. Operations that also accept OAuth 2.0 or a legacy cookie stay in the target; operations that never accept an API key are listed under `excluded` in the manifest and are never counted as required.
@@ -30,9 +30,9 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | Status | Operations | Covered | Meaning |
 |---|---:|---|---|
 | `existing` | 45 | yes | A legacy client (`src/rbx/v1`, `src/rbx/v2`) and its command reach this method and path. Request parameters may be incomplete; see Notes. No new work may use this status. |
-| `implemented` | 0 | yes | A typed method on the shared transport plus an explicit command. Every newly built or migrated operation gets this status. |
+| `implemented` | 34 | yes | A typed method on the shared transport plus an explicit command. Every newly built or migrated operation gets this status. |
 | `defective` | 1 | no | A legacy command targets this operation but does not send the documented request. Needs a `note`. |
-| `pending` | 351 | no | No owner code yet. `cli` is the planned command and may still be renamed. |
+| `pending` | 317 | no | No owner code yet. `cli` is the planned command and may still be renamed. |
 
 ## Families
 
@@ -53,7 +53,7 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `collectibles` | `collectibles` | 0 | 0 | 0 | 20 | 20 |
 | `configs` | `configs` | 0 | 0 | 0 | 9 | 9 |
 | `creator_store` | `creator-store` | 0 | 0 | 0 | 10 | 10 |
-| `data_stores` | `datastore-v2` | 0 | 0 | 0 | 18 | 18 |
+| `data_stores` | `datastore-v2` | 0 | 18 | 0 | 0 | 18 |
 | `data_stores_v1` | `datastore` | 8 | 0 | 0 | 0 | 8 |
 | `developer_products` | `developer-products` | 0 | 0 | 0 | 4 | 4 |
 | `experience_notifications` | `experience-notifications` | 0 | 0 | 0 | 8 | 8 |
@@ -69,10 +69,10 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `luau_execution` | `luau` | 4 | 0 | 0 | 1 | 5 |
 | `marketplace_items` | `marketplace-items` | 0 | 0 | 0 | 13 | 13 |
 | `matchmaking` | `matchmaking` | 0 | 0 | 0 | 23 | 23 |
-| `memory_stores` | `memory-store` | 0 | 0 | 0 | 10 | 10 |
+| `memory_stores` | `memory-store` | 0 | 10 | 0 | 0 | 10 |
 | `messaging` | `messaging` | 1 | 0 | 0 | 1 | 2 |
 | `notifications` | `notification` | 1 | 0 | 0 | 0 | 1 |
-| `ordered_data_stores` | `ordered-datastore-v2` | 0 | 0 | 0 | 6 | 6 |
+| `ordered_data_stores` | `ordered-datastore-v2` | 0 | 6 | 0 | 0 | 6 |
 | `ordered_data_stores_v1` | `ordered-datastore` | 6 | 0 | 0 | 0 | 6 |
 | `place_instances` | `place-instances` | 0 | 0 | 0 | 4 | 4 |
 | `place_versions` | `place-versions` | 0 | 0 | 0 | 3 | 3 |
@@ -87,7 +87,7 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `universes` | `universe` | 3 | 0 | 0 | 4 | 7 |
 | `user_restrictions` | `user-restriction` | 7 | 0 | 0 | 0 | 7 |
 | `users` | `user` | 2 | 0 | 0 | 1 | 3 |
-| **Total** | | **45** | **0** | **1** | **351** | **397** |
+| **Total** | | **45** | **34** | **1** | **317** | **397** |
 
 ## Servers
 

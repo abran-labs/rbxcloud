@@ -1,8 +1,8 @@
 mod assets_cli;
 mod cloud;
 mod datastore_cli;
-mod datastore_v2;
 mod experience_cli;
+mod generated;
 mod group_cli;
 mod inventory_cli;
 mod luau_execution_cli;
@@ -16,7 +16,7 @@ mod user_cli;
 mod user_restriction_cli;
 
 use clap::{Parser, Subcommand};
-use datastore_v2::DataStoreV2;
+use generated::storage::{DatastoreV2, MemoryStore, OrderedDatastoreV2};
 use inventory_cli::Inventory;
 use luau_execution_cli::Luau;
 use universe_cli::Universe;
@@ -80,7 +80,11 @@ pub(crate) enum Command {
     UserRestriction(UserRestriction),
 
     /// Access typed Open Cloud v2 DataStores
-    DatastoreV2(DataStoreV2),
+    DatastoreV2(DatastoreV2),
+    /// Access typed Open Cloud Memory Store
+    MemoryStore(MemoryStore),
+    /// Access typed Open Cloud v2 ordered DataStores
+    OrderedDatastoreV2(OrderedDatastoreV2),
 
     /// Show Open Cloud API coverage status by family
     Coverage(Coverage),
@@ -104,6 +108,8 @@ impl Cli {
             Command::User(command) => command.run().await,
             Command::UserRestriction(command) => command.run().await,
             Command::DatastoreV2(command) => command.run().await,
+            Command::MemoryStore(command) => command.run().await,
+            Command::OrderedDatastoreV2(command) => command.run().await,
             Command::Coverage(command) => command.run(),
         }
     }

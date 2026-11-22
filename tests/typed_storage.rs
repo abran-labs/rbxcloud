@@ -156,10 +156,10 @@ fn explicit_commands_have_no_generic_request_arguments() {
         .output()
         .unwrap();
     let help = String::from_utf8(output.stdout).unwrap();
-    for argument in ["--id", "--value-json", "--user"] {
+    for argument in ["--id", "--body-value", "--body-users"] {
         assert!(help.contains(argument));
     }
-    for argument in ["--url", "--method", "--path", "--body", "--api-key"] {
+    for argument in ["--url ", "--method ", "--path ", "--body ", "--api-key "] {
         assert!(!help.contains(argument));
     }
 }
