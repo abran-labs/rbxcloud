@@ -1,4 +1,5 @@
 mod assets_cli;
+mod cloud;
 mod datastore_cli;
 mod experience_cli;
 mod group_cli;
@@ -21,8 +22,8 @@ use user_cli::User;
 use user_restriction_cli::UserRestriction;
 
 use self::{
-    assets_cli::Assets, datastore_cli::DataStore, experience_cli::Experience, group_cli::Group,
-    messaging_cli::Messaging, notification_cli::Notification,
+    assets_cli::Assets, cloud::Coverage, datastore_cli::DataStore, experience_cli::Experience,
+    group_cli::Group, messaging_cli::Messaging, notification_cli::Notification,
     ordered_datastore_cli::OrderedDataStore, place_cli::Place, subscription_cli::Subscription,
 };
 
@@ -75,6 +76,9 @@ pub(crate) enum Command {
 
     /// Access to the Roblox User Restriction API
     UserRestriction(UserRestriction),
+
+    /// Show Open Cloud API coverage status by family
+    Coverage(Coverage),
 }
 
 impl Cli {
@@ -94,6 +98,7 @@ impl Cli {
             Command::Universe(command) => command.run().await,
             Command::User(command) => command.run().await,
             Command::UserRestriction(command) => command.run().await,
+            Command::Coverage(command) => command.run(),
         }
     }
 }
