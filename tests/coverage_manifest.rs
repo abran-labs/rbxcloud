@@ -35,6 +35,14 @@ const GENERIC_WORDS: [&str; 20] = [
     "options",
 ];
 
+/// `existing`: a legacy client reaches the operation. `implemented`: typed method on the
+/// shared transport plus an explicit command. `defective`: a legacy command targets the
+/// operation but does not send the documented request. `pending`: planned only.
+const STATUSES: [&str; 4] = ["existing", "implemented", "defective", "pending"];
+
+/// Statuses that count as covered.
+const COVERED: [&str; 2] = ["existing", "implemented"];
+
 /// Catch-all buckets that are not a typed family.
 const GENERIC_FAMILIES: [&str; 10] = [
     "cloud", "api", "apis", "other", "misc", "unknown", "generic", "legacy", "v1", "v2",
@@ -71,6 +79,8 @@ fn text<'a>(record: &'a Value, key: &str) -> &'a str {
 }
 
 /// SHA-256 (FIPS 180-4). Kept local so this test adds no dependency.
+// `as_chunks` needs Rust 1.88; the lint that suggests it is unknown to older clippy.
+#[allow(unknown_lints, clippy::chunks_exact_to_as_chunks)]
 fn sha256_hex(data: &[u8]) -> String {
     const K: [u32; 64] = [
         0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4,
@@ -96,12 +106,10 @@ fn sha256_hex(data: &[u8]) -> String {
     }
     message.extend_from_slice(&((data.len() as u64) * 8).to_be_bytes());
 
-    let (blocks, rest) = message.as_chunks::<64>();
-    assert!(rest.is_empty());
-    for block in blocks {
+    for block in message.chunks_exact(64) {
         let mut w = [0u32; 64];
-        for (slot, word) in w.iter_mut().zip(block.as_chunks::<4>().0) {
-            *slot = u32::from_be_bytes(*word);
+        for (slot, word) in w.iter_mut().zip(block.chunks_exact(4)) {
+            *slot = u32::from_be_bytes([word[0], word[1], word[2], word[3]]);
         }
         for i in 16..64 {
             let s0 = w[i - 15].rotate_right(7) ^ w[i - 15].rotate_right(18) ^ (w[i - 15] >> 3);
@@ -141,17 +149,72 @@ fn sha256_hex(data: &[u8]) -> String {
     state.iter().map(|word| format!("{word:08x}")).collect()
 }
 
-/// Every operation in the spec as `HTTP_METHOD /path` -> its `security` value.
-fn spec_operations(spec: &Value) -> BTreeMap<String, Value> {
+struct SpecOperation {
+    security: Value,
+    operation_id: Value,
+    tags: Value,
+    stability: Value,
+    server: String,
+}
+
+fn single_server(servers: &Value) -> Option<String> {
+    let servers = servers.as_array()?;
+    assert_eq!(servers.len(), 1, "expected exactly one server: {servers:?}");
+    Some(servers[0]["url"].as_str()?.to_string())
+}
+
+/// Every operation in the spec, keyed by `HTTP_METHOD /path`.
+fn spec_operations(spec: &Value) -> BTreeMap<String, SpecOperation> {
     let mut out = BTreeMap::new();
+    let default_server = single_server(&spec["servers"]).expect("spec has no default server");
     let paths = spec["paths"].as_object().expect("spec has no paths");
     for (path, item) in paths {
         for method in HTTP_METHODS {
             if let Some(operation) = item.get(method) {
                 let id = format!("{} {path}", method.to_uppercase());
-                out.insert(id, operation["security"].clone());
+                let server = single_server(&operation["servers"])
+                    .or_else(|| single_server(&item["servers"]))
+                    .unwrap_or_else(|| default_server.clone());
+                out.insert(
+                    id,
+                    SpecOperation {
+                        security: operation["security"].clone(),
+                        operation_id: operation["operationId"].clone(),
+                        tags: operation
+                            .get("tags")
+                            .cloned()
+                            .unwrap_or_else(|| Value::Array(vec![])),
+                        stability: operation["x-roblox-stability"].clone(),
+                        server,
+                    },
+                );
             }
         }
+    }
+    out
+}
+
+/// The auth names the manifest uses for a spec `security` value.
+fn auth_names(security: &Value) -> Vec<&'static str> {
+    let Some(requirements) = security.as_array() else {
+        return vec!["unspecified"];
+    };
+    let has = |scheme: &str| requirements.iter().any(|r| r.get(scheme).is_some());
+    let mut out = vec![];
+    if has("roblox-api-key") {
+        out.push("api-key");
+    }
+    if has("roblox-oauth2") {
+        out.push("oauth2");
+    }
+    if has("roblox-legacy-cookie") {
+        out.push("legacy-cookie");
+    }
+    if requirements
+        .iter()
+        .any(|r| r.as_object().is_some_and(|schemes| schemes.is_empty()))
+    {
+        out.push("none");
     }
     out
 }
@@ -270,12 +333,12 @@ fn manifest_accounts_for_every_spec_operation() {
 
     let expected_required: BTreeSet<&str> = spec_ops
         .iter()
-        .filter(|(_, security)| accepts_api_key(security))
+        .filter(|(_, operation)| accepts_api_key(&operation.security))
         .map(|(id, _)| id.as_str())
         .collect();
     let expected_excluded: BTreeSet<&str> = spec_ops
         .iter()
-        .filter(|(_, security)| !accepts_api_key(security))
+        .filter(|(_, operation)| !accepts_api_key(&operation.security))
         .map(|(id, _)| id.as_str())
         .collect();
     let required: BTreeSet<&str> = records(&manifest, "operations")
@@ -343,10 +406,10 @@ fn api_key_records_have_typed_owners() {
         let cli = text(record, "cli");
         let mut owners = vec![cli];
         if let Some(aliases) = record.get("cli_aliases") {
-            assert_eq!(
+            assert_ne!(
                 text(record, "status"),
-                "existing",
-                "{id}: aliases need an existing owner"
+                "pending",
+                "{id}: aliases need a real owner"
             );
             owners.extend(
                 aliases
@@ -371,9 +434,21 @@ fn api_key_records_have_typed_owners() {
 
         let status = text(record, "status");
         assert!(
-            status == "existing" || status == "pending",
+            STATUSES.contains(&status),
             "{id}: unexpected status `{status}`"
         );
+        if let Some(note) = record.get("note") {
+            assert!(
+                note.as_str().is_some_and(|note| !note.trim().is_empty()),
+                "{id}: `note` must be a non-empty string"
+            );
+        }
+        if status == "defective" {
+            assert!(
+                record.get("note").is_some(),
+                "{id}: a defective record must say what is wrong in `note`"
+            );
+        }
     }
 }
 
@@ -396,6 +471,9 @@ fn pending_owners_are_distinct() {
             }
         }
     }
+    for entry in records(&manifest, "outside_spec") {
+        existing.insert(text(entry, "cli"));
+    }
     let clash: Vec<_> = pending.intersection(&existing).collect();
     assert!(
         clash.is_empty(),
@@ -411,7 +489,7 @@ fn legacy_cookie_operations_are_not_required() {
 
     for record in records(&manifest, "operations") {
         let id = text(record, "id");
-        let security = &spec_ops[id];
+        let security = &spec_ops[id].security;
         assert!(
             accepts_api_key(security),
             "{id} is counted as required but does not accept an API key"
@@ -421,7 +499,7 @@ fn legacy_cookie_operations_are_not_required() {
     let mut cookie_only = 0;
     for record in records(&manifest, "excluded") {
         let id = text(record, "id");
-        let security = &spec_ops[id];
+        let security = &spec_ops[id].security;
         assert!(
             !mentions_scheme(security, "roblox-api-key"),
             "{id} wrongly excluded"
@@ -444,7 +522,12 @@ fn legacy_cookie_operations_are_not_required() {
     // Operations that accept either a cookie or an API key stay required.
     let both = records(&manifest, "operations")
         .iter()
-        .filter(|record| mentions_scheme(&spec_ops[text(record, "id")], "roblox-legacy-cookie"))
+        .filter(|record| {
+            mentions_scheme(
+                &spec_ops[text(record, "id")].security,
+                "roblox-legacy-cookie",
+            )
+        })
         .count();
     assert!(both > 0);
 }
@@ -467,8 +550,17 @@ fn summary_matches_records() {
         summary["spec_operations"],
         (operations.len() + excluded.len()) as u64
     );
-    assert_eq!(summary["existing"], count("existing"));
-    assert_eq!(summary["pending"], count("pending"));
+    let mut covered = 0;
+    for status in STATUSES {
+        assert_eq!(summary[status], count(status), "summary.{status}");
+        if COVERED.contains(&status) {
+            covered += count(status);
+        }
+    }
+    assert_eq!(summary["covered"], covered);
+    assert_eq!(summary["not_covered"], operations.len() as u64 - covered);
+    // A command that misses its documented path must never be counted as covered.
+    assert!(!COVERED.contains(&"defective") && !COVERED.contains(&"pending"));
 
     let mut by_reason: BTreeMap<&str, u64> = BTreeMap::new();
     for record in excluded {
@@ -486,31 +578,124 @@ fn summary_matches_records() {
 #[test]
 fn status_matches_the_built_cli() {
     let manifest = manifest();
-    let mut existing = BTreeSet::new();
+    // `existing`, `implemented` and `defective` owners are commands that exist today.
+    let mut real = BTreeSet::new();
     let mut pending = BTreeSet::new();
     for record in records(&manifest, "operations") {
-        let owners = if text(record, "status") == "existing" {
-            &mut existing
-        } else {
+        let owners = if text(record, "status") == "pending" {
             &mut pending
+        } else {
+            &mut real
         };
         owners.insert(text(record, "cli"));
         if let Some(aliases) = record.get("cli_aliases") {
             owners.extend(aliases.as_array().unwrap().iter().filter_map(Value::as_str));
         }
     }
-    assert!(!existing.is_empty());
+    for entry in records(&manifest, "outside_spec") {
+        assert!(text(entry, "request").contains(" /"));
+        real.insert(text(entry, "cli"));
+    }
+    assert!(!real.is_empty());
 
-    for cli in existing {
+    for cli in real {
         assert!(
             help_succeeds(&cli_tokens(cli)),
-            "`{cli}` is marked existing but the CLI has no such command"
+            "`{cli}` is recorded as a real command but the CLI has no such command"
         );
     }
     for cli in pending {
         assert!(
             !help_succeeds(&cli_tokens(cli)),
-            "`{cli}` exists in the CLI; update its status in openapi/coverage.json"
+            "`{cli}` exists in the CLI; set its status to `implemented` in openapi/coverage.json"
         );
     }
+}
+
+#[test]
+fn spec_fields_match_the_snapshot() {
+    let spec = spec();
+    let manifest = manifest();
+    let spec_ops = spec_operations(&spec);
+
+    for record in records(&manifest, "operations") {
+        let id = text(record, "id");
+        let operation = &spec_ops[id];
+        assert_eq!(text(record, "server"), operation.server, "{id}: server");
+        assert_eq!(
+            record["operation_id"], operation.operation_id,
+            "{id}: operation_id"
+        );
+        assert_eq!(record["tags"], operation.tags, "{id}: tags");
+        assert_eq!(record["stability"], operation.stability, "{id}: stability");
+    }
+    for key in ["operations", "excluded"] {
+        for record in records(&manifest, key) {
+            let id = text(record, "id");
+            let auth: Vec<&str> = record["auth"]
+                .as_array()
+                .unwrap_or_else(|| panic!("{id}: `auth` must be an array"))
+                .iter()
+                .filter_map(Value::as_str)
+                .collect();
+            assert_eq!(auth, auth_names(&spec_ops[id].security), "{id}: auth");
+        }
+    }
+}
+
+/// `id` has no host. An endpoint is `server` + `path`, so that pair must be unique per method
+/// and every server must be a Roblox HTTPS origin.
+#[test]
+fn server_and_id_locate_one_endpoint() {
+    let manifest = manifest();
+    let default_server = text(&manifest["spec"], "default_server");
+    let mut endpoints = BTreeSet::new();
+    let mut servers = BTreeSet::new();
+    for record in records(&manifest, "operations") {
+        let id = text(record, "id");
+        let server = text(record, "server");
+        let host = server
+            .strip_prefix("https://")
+            .unwrap_or_else(|| panic!("{id}: server `{server}` is not https"));
+        assert!(
+            host == "roblox.com" || host.ends_with(".roblox.com"),
+            "{id}: server `{server}` is not a roblox.com origin"
+        );
+        assert!(
+            !host.contains('/') && !host.contains('@') && !host.contains(':'),
+            "{id}: server `{server}` must be a bare origin"
+        );
+        let url = format!(
+            "{} {server}{}",
+            text(record, "method"),
+            text(record, "path")
+        );
+        assert!(
+            endpoints.insert(url.clone()),
+            "two records resolve to {url}"
+        );
+        servers.insert(server);
+    }
+    assert!(servers.contains(default_server));
+    assert!(
+        servers.len() > 1,
+        "snapshot has operations off the default server; `server` must carry them"
+    );
+}
+
+/// `summary` and docs/COVERAGE.md are derived from the manifest by scripts/gen_coverage.py.
+/// Fails when either was edited by hand or not regenerated after a manifest change.
+#[test]
+fn generated_files_are_up_to_date() {
+    let output = Command::new("python3")
+        .arg("scripts/gen_coverage.py")
+        .arg("--check")
+        .current_dir(env!("CARGO_MANIFEST_DIR"))
+        .output()
+        .expect("python3 is required to check docs/COVERAGE.md against openapi/coverage.json");
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
 }

@@ -25,6 +25,7 @@ nav:
     - User Restriction: cli/cli-user-restriction.md
   - Rust Lib:
     - Install: lib/lib-install.md
+  - Coverage: COVERAGE.md
 
 theme:
   name: material

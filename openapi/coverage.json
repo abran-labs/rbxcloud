@@ -10,7 +10,11 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "existing": 46,
+    "covered": 45,
+    "not_covered": 352,
+    "existing": 45,
+    "implemented": 0,
+    "defective": 1,
     "pending": 351,
     "excluded": 600,
     "excluded_by_reason": {
@@ -18,6 +22,12 @@
       "no-api-key": 76
     }
   },
+  "outside_spec": [
+    {"cli": "rbxcloud group shout", "when": null, "request": "GET /cloud/v2/groups/{group_id}/shout"},
+    {"cli": "rbxcloud luau get-task", "when": "without --version-id", "request": "GET /cloud/v2/universes/{universe_id}/places/{place_id}/luau-execution-sessions/{session_id}/tasks/{task_id}"},
+    {"cli": "rbxcloud luau get-logs", "when": "without --version-id", "request": "GET /cloud/v2/universes/{universe_id}/places/{place_id}/luau-execution-sessions/{session_id}/tasks/{task_id}/logs"},
+    {"cli": "rbxcloud user-restriction logs", "when": "with --place-id", "request": "GET /cloud/v2/universes/{universe_id}/places/{place_id}/user-restrictions:listLogs"}
+  ],
   "operations": [
     {
       "id": "GET /ads-management/v1/advertisable-universes",
@@ -900,7 +910,8 @@
         "Assets"
       ],
       "server": "https://apis.roblox.com",
-      "stability": "BETA"
+      "stability": "BETA",
+      "note": "Partial: the spec has an `updateMask` query parameter; the client never sends it."
     },
     {
       "id": "GET /assets/v1/assets/{assetId}/versions",
@@ -2280,7 +2291,8 @@
         "Users"
       ],
       "server": "https://apis.roblox.com",
-      "stability": "BETA"
+      "stability": "BETA",
+      "note": "Partial: the client sends a `filter` query parameter that the spec does not list for this operation (spec: `maxPageSize`, `pageToken`)."
     },
     {
       "id": "GET /cloud/v2/universes/{universe_id}/places/{place_id}/user-restrictions/{user_restriction_id}",
@@ -2322,7 +2334,8 @@
         "Users"
       ],
       "server": "https://apis.roblox.com",
-      "stability": "BETA"
+      "stability": "BETA",
+      "note": "Partial: `updateMask` is hard-coded to `gameJoinRestriction`; the caller cannot choose the mask."
     },
     {
       "id": "POST /cloud/v2/universes/{universe_id}/places/{place_id}/versions/{version_id}/luau-execution-session-tasks",
@@ -2388,14 +2401,14 @@
       ],
       "family": "subscriptions",
       "cli": "rbxcloud subscription get",
-      "status": "existing",
+      "status": "defective",
       "operation_id": "Cloud_GetSubscription",
       "tags": [
         "Users"
       ],
       "server": "https://apis.roblox.com",
       "stability": "BETA",
-      "note": "Known defect: `subscription get` (src/rbx/v2/subscription.rs) owns this operation but requests .../subscription-products/{product} without /subscriptions/{subscription_id}, so it does not reach the documented path. Fix when the subscriptions family is migrated."
+      "note": "Defective: `subscription get` (src/rbx/v2/subscription.rs) requests .../subscription-products/{product} and never appends /subscriptions/{subscription_id}, so it does not reach this operation."
     },
     {
       "id": "GET /cloud/v2/universes/{universe_id}/user-restrictions",
@@ -2415,7 +2428,8 @@
         "Users"
       ],
       "server": "https://apis.roblox.com",
-      "stability": "BETA"
+      "stability": "BETA",
+      "note": "Partial: the client sends a `filter` query parameter that the spec does not list for this operation (spec: `maxPageSize`, `pageToken`)."
     },
     {
       "id": "GET /cloud/v2/universes/{universe_id}/user-restrictions/{user_restriction_id}",
@@ -2455,7 +2469,8 @@
         "Users"
       ],
       "server": "https://apis.roblox.com",
-      "stability": "BETA"
+      "stability": "BETA",
+      "note": "Partial: `updateMask` is hard-coded to `gameJoinRestriction`; the caller cannot choose the mask."
     },
     {
       "id": "GET /cloud/v2/universes/{universe_id}/user-restrictions:listLogs",
@@ -3058,7 +3073,8 @@
         "Data and memory stores"
       ],
       "server": "https://apis.roblox.com",
-      "stability": "BETA"
+      "stability": "BETA",
+      "note": "Partial: the client sends the query parameter as `AllScopes`; the spec name is `allScopes`."
     },
     {
       "id": "GET /datastores/v1/universes/{universeId}/standard-datastores/datastore/entries/entry",
@@ -6424,7 +6440,8 @@
         "Universes"
       ],
       "server": "https://apis.roblox.com",
-      "stability": "EXPERIMENTAL"
+      "stability": "EXPERIMENTAL",
+      "note": "Partial: the client sends only `versionType`; the spec also has `isOldVersionAllowed` and `shouldForceRestart`."
     },
     {
       "id": "GET /v1/asset-types/{assetType}/agents",
