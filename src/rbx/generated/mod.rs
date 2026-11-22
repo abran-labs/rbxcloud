@@ -3,5 +3,7 @@ pub mod storage;
 pub use storage::CloudClient;
 pub mod asset_models;
 pub mod assets;
+pub mod creator_models;
+pub mod creators;
 pub mod multipart;
 pub mod multipart_models;

@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 86,
-    "not_covered": 311,
+    "covered": 115,
+    "not_covered": 282,
     "existing": 45,
-    "implemented": 41,
+    "implemented": 70,
     "unverified": 0,
-    "defective": 1,
-    "pending": 310,
+    "defective": 0,
+    "pending": 282,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -1193,8 +1193,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group list-group-forum-categories",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group list-group-forum-categories",
+      "status": "implemented",
       "operation_id": "Cloud_ListGroupForumCategories",
       "tags": [
         "Groups"
@@ -1211,8 +1211,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group list-group-forum-posts",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group list-group-forum-posts",
+      "status": "implemented",
       "operation_id": "Cloud_ListGroupForumPosts",
       "tags": [
         "Groups"
@@ -1229,8 +1229,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group list-group-forum-comments",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group list-group-forum-comments",
+      "status": "implemented",
       "operation_id": "Cloud_ListGroupForumComments",
       "tags": [
         "Groups"
@@ -1247,8 +1247,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group list-group-join-requests",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group list-group-join-requests",
+      "status": "implemented",
       "operation_id": "Cloud_ListGroupJoinRequests",
       "tags": [
         "Groups"
@@ -1265,8 +1265,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group accept-group-join-request",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group accept-group-join-request",
+      "status": "implemented",
       "operation_id": "Cloud_AcceptGroupJoinRequest",
       "tags": [
         "Groups"
@@ -1283,8 +1283,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group decline-group-join-request",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group decline-group-join-request",
+      "status": "implemented",
       "operation_id": "Cloud_DeclineGroupJoinRequest",
       "tags": [
         "Groups"
@@ -1319,8 +1319,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group update-group-membership",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group update-group-membership",
+      "status": "implemented",
       "operation_id": "Cloud_UpdateGroupMembership",
       "tags": [
         "Groups"
@@ -1337,8 +1337,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group assign-role-group-membership",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group assign-role-group-membership",
+      "status": "implemented",
       "operation_id": "Cloud_AssignRoleGroupMembership",
       "tags": [
         "Groups"
@@ -1355,8 +1355,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group unassign-role-group-membership",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group unassign-role-group-membership",
+      "status": "implemented",
       "operation_id": "Cloud_UnassignRoleGroupMembership",
       "tags": [
         "Groups"
@@ -1391,8 +1391,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group get-group-role",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group get-group-role",
+      "status": "implemented",
       "operation_id": "Cloud_GetGroupRole",
       "tags": [
         "Groups"
@@ -1903,8 +1903,8 @@
         "api-key"
       ],
       "family": "luau_execution",
-      "cli": "rbxcloud luau create-luau-execution-session-task-binary-input",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools luau create-luau-execution-session-task-binary-input",
+      "status": "implemented",
       "operation_id": "Cloud_CreateLuauExecutionSessionTaskBinaryInput",
       "tags": [
         "Luau Execution"
@@ -2192,8 +2192,8 @@
         "api-key"
       ],
       "family": "place_instances",
-      "cli": "rbxcloud place-instances get-instance",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools place-instances get-instance",
+      "status": "implemented",
       "operation_id": "Cloud_GetInstance",
       "tags": [
         "Places",
@@ -2228,8 +2228,8 @@
         "api-key"
       ],
       "family": "place_instances",
-      "cli": "rbxcloud place-instances get-update-instance-operation",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools place-instances get-update-instance-operation",
+      "status": "implemented",
       "operation_id": "Cloud_GetUpdateInstanceOperation",
       "tags": [
         "Places"
@@ -2245,8 +2245,8 @@
         "api-key"
       ],
       "family": "place_instances",
-      "cli": "rbxcloud place-instances list-instance-children",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools place-instances list-instance-children",
+      "status": "implemented",
       "operation_id": "Cloud_ListInstanceChildren",
       "tags": [
         "Places",
@@ -2401,8 +2401,8 @@
         "oauth2"
       ],
       "family": "subscriptions",
-      "cli": "rbxcloud subscription get",
-      "status": "defective",
+      "cli": "rbxcloud creator-tools subscription get",
+      "status": "implemented",
       "operation_id": "Cloud_GetSubscription",
       "tags": [
         "Users"
@@ -2631,8 +2631,8 @@
         "oauth2"
       ],
       "family": "users",
-      "cli": "rbxcloud user get-thumbnail-operation",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools user get-thumbnail-operation",
+      "status": "implemented",
       "operation_id": "Cloud_GetUserThumbnailGenerationOperation",
       "tags": [
         "Avatars",
@@ -3397,8 +3397,8 @@
         "oauth2"
       ],
       "family": "universes",
-      "cli": "rbxcloud universe list-permissions",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools universe list-permissions",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Universes"
@@ -3434,8 +3434,8 @@
         "oauth2"
       ],
       "family": "universes",
-      "cli": "rbxcloud universe activate",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools universe activate",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Universes"
@@ -3452,8 +3452,8 @@
         "oauth2"
       ],
       "family": "universes",
-      "cli": "rbxcloud universe deactivate",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools universe deactivate",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Universes"
@@ -3470,8 +3470,8 @@
         "oauth2"
       ],
       "family": "universes",
-      "cli": "rbxcloud universe get-permissions",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools universe get-permissions",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Universes"
@@ -3545,8 +3545,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group list-manageable",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group list-manageable",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Groups",
@@ -4446,8 +4446,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group get-policies",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group get-policies",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Groups"
@@ -4464,8 +4464,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group get-audit-log",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group get-audit-log",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Groups"
@@ -4482,8 +4482,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group update-description",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group update-description",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Groups"
@@ -4500,8 +4500,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group update-notification-preference",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group update-notification-preference",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Groups"
@@ -4518,8 +4518,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group get-settings",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group get-settings",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Groups"
@@ -4536,8 +4536,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group update-settings",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group update-settings",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Groups"
@@ -4554,8 +4554,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group update-status",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group update-status",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Groups"
@@ -4572,8 +4572,8 @@
         "oauth2"
       ],
       "family": "groups",
-      "cli": "rbxcloud group list-pending-join-requests",
-      "status": "pending",
+      "cli": "rbxcloud creator-tools group list-pending-join-requests",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Groups",
