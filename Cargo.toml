@@ -14,9 +14,21 @@ anyhow = "1.0.81"
 base64 = "0.22.0"
 clap = { version = "4.5.4", features = ["derive", "env"] }
 md-5 = "0.10.6"
-reqwest = { version = "0.12.2", default-features = false, features = ["rustls-tls", "http2", "charset", "json", "multipart"] }
+reqwest = { version = "0.12.2", default-features = false, features = ["rustls-tls", "http2", "charset", "json", "multipart", "blocking"] }
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.115"
 tokio = { version = "1.36.0", features = ["full"] }
 chrono = { version = "0.4.38", features = ["serde"] }
 rand = "0.9.0"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[features]
+# Synthetic operations for tests/transport.rs. They let the transport be tested
+# from an integration test while its request constructors stay crate-private.
+transport-fixtures = []
+
+[dev-dependencies]
+rbxcloud = { path = ".", features = ["transport-fixtures"] }
+tempfile = "3"
