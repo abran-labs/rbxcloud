@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 346,
-    "not_covered": 51,
+    "covered": 351,
+    "not_covered": 46,
     "existing": 45,
-    "implemented": 301,
+    "implemented": 306,
     "unverified": 0,
     "defective": 0,
-    "pending": 51,
+    "pending": 46,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -59,8 +59,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising create-audience-estimate",
-      "status": "pending",
+      "cli": "rbxcloud campaign-management estimate-audience",
+      "status": "implemented",
       "operation_id": "CreateAudienceEstimate",
       "tags": [
         "Advertising"
@@ -207,8 +207,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising create-campaign",
-      "status": "pending",
+      "cli": "rbxcloud campaign-management create-campaign",
+      "status": "implemented",
       "operation_id": "CreateCampaign",
       "tags": [
         "Advertising"
@@ -302,8 +302,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising update-campaign",
-      "status": "pending",
+      "cli": "rbxcloud campaign-management update-campaign",
+      "status": "implemented",
       "operation_id": "UpdateCampaign",
       "tags": [
         "Advertising"
@@ -340,8 +340,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising validate-campaign",
-      "status": "pending",
+      "cli": "rbxcloud campaign-management validate-campaign",
+      "status": "implemented",
       "operation_id": "ValidateCampaign",
       "tags": [
         "Advertising"
@@ -435,8 +435,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising create-performance-estimate",
-      "status": "pending",
+      "cli": "rbxcloud campaign-management estimate-performance",
+      "status": "implemented",
       "operation_id": "CreatePerformanceEstimate",
       "tags": [
         "Advertising"

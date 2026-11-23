@@ -21,3 +21,5 @@ pub mod types;
 pub(crate) mod util;
 pub mod v1;
 pub mod v2;
+
+pub mod campaign_management;

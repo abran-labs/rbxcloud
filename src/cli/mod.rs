@@ -2,6 +2,7 @@ mod analytics_query;
 mod asset_download;
 mod asset_multipart_start;
 mod assets_cli;
+mod campaign_management;
 mod campaign_planning;
 mod cloud;
 mod config_publishing;
@@ -72,6 +73,8 @@ pub(crate) enum Command {
     PlayerAttributes(matchmaking_attributes::PlayerAttributes),
     /// Run typed analytics metric and benchmark queries
     AnalyticsQuery(analytics_query::AnalyticsQuery),
+    /// Manage typed advertising campaigns and estimates
+    CampaignManagement(campaign_management::CampaignManagement),
     /// Create a typed advertising campaign recommendation
     CampaignPlanning(campaign_planning::CampaignRecommendation),
     /// Download authenticated binary Roblox assets
@@ -141,6 +144,7 @@ impl Cli {
             Command::AssetMultipartStart(command) => command.run().await,
             Command::AssetDownload(command) => command.run().await,
             Command::CampaignPlanning(command) => command.run().await,
+            Command::CampaignManagement(command) => command.run().await,
             Command::AnalyticsQuery(command) => command.run().await,
             Command::PlayerAttributes(command) => command.run().await,
             Command::ConfigPublishing(command) => command.run().await,
