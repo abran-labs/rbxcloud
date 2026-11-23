@@ -81,7 +81,10 @@ async fn resource_paths_queries_and_thumbnail_host_are_fixed() {
     assert_eq!(requests[2].target, "/v1/folders/f/items?limit=10&cursor=c");
     assert_eq!(requests[3].target, "/cloud/v2/universes/1/secrets?limit=2");
     let thumbnail = thumbnails.requests();
-    assert_eq!(thumbnail[0].target, "/v1/assets-thumbnail-3d?assetId=8&useGltf=true");
+    assert_eq!(
+        thumbnail[0].target,
+        "/v1/assets-thumbnail-3d?assetId=8&useGltf=true"
+    );
     assert_eq!(thumbnail[0].header("roblox-place-id"), Some("3"));
 }
 
