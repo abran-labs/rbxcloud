@@ -65,6 +65,26 @@ fn assets_create_help_keeps_flags() {
 }
 
 #[test]
+fn legacy_help_names_credential_env_var_without_printing_value() {
+    let secret = "fake-help-contract-secret";
+    for args in [
+        ["assets", "create", "--help"],
+        ["datastore", "get", "--help"],
+        ["luau", "execute", "--help"],
+    ] {
+        let out = Command::new(env!("CARGO_BIN_EXE_rbxcloud"))
+            .args(args)
+            .env("RBXCLOUD_API_KEY", secret)
+            .output()
+            .unwrap();
+        assert!(out.status.success(), "{args:?}: {:?}", out.stderr);
+        let help = String::from_utf8(out.stdout).unwrap();
+        assert!(help.contains("RBXCLOUD_API_KEY"));
+        assert!(!help.contains(secret), "{args:?} leaked key");
+    }
+}
+
+#[test]
 fn datastore_help_keeps_subcommands() {
     let help = stdout(&["datastore", "--help"]);
     for sub in [

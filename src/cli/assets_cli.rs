@@ -21,6 +21,9 @@ pub enum CreatorType {
 
 #[derive(Debug, Subcommand)]
 pub enum AssetsCommands {
+    /// Create assets from local files with a resumable manifest
+    UploadBatch(super::asset_batch::BatchArgs),
+
     /// Create an asset
     Create {
         /// Asset type
@@ -150,7 +153,7 @@ pub enum AssetsCommands {
 #[derive(Debug, Args)]
 pub struct Assets {
     #[clap(subcommand)]
-    command: AssetsCommands,
+    pub(super) command: AssetsCommands,
 }
 
 fn create_context_from_creator_type(
@@ -191,6 +194,8 @@ fn infer_asset_type_from_filepath(filepath: &String) -> Result<AssetType, Error>
 impl Assets {
     pub async fn run(self) -> anyhow::Result<Option<String>> {
         match self.command {
+            AssetsCommands::UploadBatch(args) => args.run().await.map(Some),
+
             AssetsCommands::Create {
                 asset_type,
                 display_name,

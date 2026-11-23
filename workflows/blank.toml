@@ -1,0 +1,4 @@
+version = 1
+
+# Declare typed inputs in [inputs.NAME] and commands in [[steps]].
+# Run `rbxcloud workflow validate NAME` before running the workflow.

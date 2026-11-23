@@ -20,6 +20,12 @@ serde_json = "1.0.115"
 tokio = { version = "1.36.0", features = ["full"] }
 chrono = { version = "0.4.38", features = ["serde"] }
 rand = "0.9.0"
+fs2 = "0.4"
+futures-util = { version = "0.3", default-features = false, features = ["std"] }
+glob = "0.3"
+sha2 = "0.10"
+tempfile = "3"
+toml = { version = "0.9", default-features = false, features = ["std", "serde", "parse"] }
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
@@ -31,4 +37,3 @@ transport-fixtures = []
 
 [dev-dependencies]
 rbxcloud = { path = ".", features = ["transport-fixtures"] }
-tempfile = "3"

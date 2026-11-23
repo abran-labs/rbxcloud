@@ -1,0 +1,17 @@
+version = 1
+
+[inputs.creator_type]
+type = "string"
+default = "group"
+
+[inputs.creator_id]
+type = "integer"
+
+[inputs.paths]
+type = "strings"
+default = ["icons/**/*.png"]
+
+[[steps]]
+id = "images"
+command = ["assets", "upload-batch"]
+args = ["--creator-type", "${inputs.creator_type}", "--creator-id", "${inputs.creator_id}", "--asset-type", "image", "--", "${inputs.paths}"]
