@@ -16,32 +16,25 @@ Possible use-cases:
 
 ## Supported APIs
 
-| | API v1 |
-| -- | -- |
-| :white_check_mark: | Assets |
-| :white_check_mark: | Data Stores |
-| :white_check_mark: | Messaging |
-| :white_check_mark: | Place Publishing |
+All 397 operations in the current Roblox Open API snapshot that accept API-key authentication are covered by typed SDK methods and explicit CLI commands. See [docs/COVERAGE.md](docs/COVERAGE.md) for the per-operation ledger, exclusions, and legacy-client notes.
 
-| | API v2 |
+| API | Status |
 | -- | -- |
-| :x: | Data Stores |
-| :white_check_mark: | Groups |
-| :white_check_mark: | Universes |
-| :white_check_mark: | Places |
-| :x: | Instances |
-| :white_check_mark: | Subscriptions |
-| :white_check_mark: | Inventory |
-| :white_check_mark: | User Notifications |
-| :white_check_mark: | User |
-| :white_check_mark: | User Restrictions |
-| :x: | Creator Store |
-| :white_check_mark: | Luau Execution |
+| Assets, asset delivery, asset permissions | :white_check_mark: |
+| Data Stores v1/v2, ordered Data Stores, Memory Stores | :white_check_mark: |
+| Groups, Universes, Places, Place Versions, Instances, Users | :white_check_mark: |
+| Inventory, Subscriptions, User Notifications, User Restrictions | :white_check_mark: |
+| Marketplace, Team Create, Thumbnails, Universe Followings | :white_check_mark: |
+| Messaging, Place Publishing, Luau Execution | :white_check_mark: |
+| Creator Store, Toolbox, Avatar Bundles, Item Folders, Collectibles | :white_check_mark: |
+| Advertising, Analytics, Service Efficiency | :white_check_mark: |
+| Matchmaking, Localization, Experience Configs, Experiments | :white_check_mark: |
+| Developer Products, Game Passes, Badges | :white_check_mark: |
+| Virtual Events, Server Management | :white_check_mark: |
+| Generative AI, Secrets | :white_check_mark: |
 
 - :white_check_mark: = Supported
-- :x: = Not yet supported
-
-The goal of this project is to support all API endpoints that Roblox provides.
+- Operations without API-key authentication are tracked as exclusions in the coverage ledger.
 
 ## Install CLI
 ### Aftman
