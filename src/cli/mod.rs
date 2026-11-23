@@ -10,6 +10,7 @@ mod generated;
 mod group_cli;
 mod inventory_cli;
 mod luau_execution_cli;
+mod matchmaking_attributes;
 mod messaging_cli;
 mod notification_cli;
 mod ordered_datastore_cli;
@@ -61,6 +62,8 @@ pub(crate) enum Command {
     LiveopsTools(generated::liveops::LiveOpsTools),
     /// Access typed creator and experience management APIs
     CreatorTools(generated::creators::CreatorTools),
+    /// Manage typed matchmaking player attributes
+    PlayerAttributes(matchmaking_attributes::PlayerAttributes),
     /// Run typed analytics metric and benchmark queries
     AnalyticsQuery(analytics_query::AnalyticsQuery),
     /// Create a typed advertising campaign recommendation
@@ -133,6 +136,7 @@ impl Cli {
             Command::AssetDownload(command) => command.run().await,
             Command::CampaignPlanning(command) => command.run().await,
             Command::AnalyticsQuery(command) => command.run().await,
+            Command::PlayerAttributes(command) => command.run().await,
             Command::CreatorTools(command) => command.run().await,
             Command::LiveopsTools(command) => command.run().await,
             Command::InsightsTools(command) => command.run().await,

@@ -13,6 +13,7 @@ pub mod credentials;
 pub mod error;
 #[path = "generated/mod.rs"]
 pub mod generated;
+pub mod matchmaking_attributes;
 pub mod service_efficiency;
 pub mod types;
 pub(crate) mod util;

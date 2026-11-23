@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 338,
-    "not_covered": 59,
+    "covered": 340,
+    "not_covered": 57,
     "existing": 45,
-    "implemented": 293,
+    "implemented": 295,
     "unverified": 0,
     "defective": 0,
-    "pending": 59,
+    "pending": 57,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -4930,8 +4930,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking create-player-attribute",
-      "status": "pending",
+      "cli": "rbxcloud player-attributes create-player-attribute",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -4949,8 +4949,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking update-player-attribute",
-      "status": "pending",
+      "cli": "rbxcloud player-attributes update-player-attribute",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"

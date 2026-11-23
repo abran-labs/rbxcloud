@@ -14,8 +14,8 @@ Generated from `openapi/coverage.json` by `python3 scripts/gen_coverage.py`. Do 
 |---|---:|
 | Operations in the spec | 997 |
 | Accept an API key (coverage target) | 397 |
-| Covered (`existing` + `implemented`) | 338 |
-| Not covered (`defective` + `pending`) | 59 |
+| Covered (`existing` + `implemented`) | 340 |
+| Not covered (`defective` + `pending`) | 57 |
 | Excluded (no API-key auth) | 600 |
 
 An operation is in the target when its `security` list contains exactly `{"roblox-api-key": []}` as one alternative. Operations that also accept OAuth 2.0 or a legacy cookie stay in the target; operations that never accept an API key are listed under `excluded` in the manifest and are never counted as required.
@@ -30,9 +30,9 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | Status | Operations | Covered | Meaning |
 |---|---:|---|---|
 | `existing` | 45 | yes | A legacy client (`src/rbx/v1`, `src/rbx/v2`) and its command reach this method and path. Request parameters may be incomplete; see Notes. No new work may use this status. |
-| `implemented` | 293 | yes | A typed method on the shared transport plus an explicit command. Every newly built or migrated operation gets this status. |
+| `implemented` | 295 | yes | A typed method on the shared transport plus an explicit command. Every newly built or migrated operation gets this status. |
 | `defective` | 0 | no | A legacy command targets this operation but does not send the documented request. Needs a `note`. |
-| `pending` | 59 | no | No owner code yet. `cli` is the planned command and may still be renamed. |
+| `pending` | 57 | no | No owner code yet. `cli` is the planned command and may still be renamed. |
 
 ## Families
 
@@ -68,7 +68,7 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `localization_tables` | `action-tools`, `localization-tables`, `resource-tools` | 0 | 8 | 0 | 0 | 2 | 10 |
 | `luau_execution` | `creator-tools`, `luau` | 4 | 1 | 0 | 0 | 0 | 5 |
 | `marketplace_items` | `resource-tools`, `utility-tools` | 0 | 13 | 0 | 0 | 0 | 13 |
-| `matchmaking` | `action-tools`, `liveops-tools`, `matchmaking` | 0 | 15 | 0 | 0 | 8 | 23 |
+| `matchmaking` | `action-tools`, `liveops-tools`, `matchmaking`, `player-attributes` | 0 | 17 | 0 | 0 | 6 | 23 |
 | `memory_stores` | `memory-store` | 0 | 10 | 0 | 0 | 0 | 10 |
 | `messaging` | `action-tools`, `messaging` | 1 | 1 | 0 | 0 | 0 | 2 |
 | `notifications` | `notification` | 1 | 0 | 0 | 0 | 0 | 1 |
@@ -87,7 +87,7 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `universes` | `creator-tools`, `universe` | 3 | 4 | 0 | 0 | 0 | 7 |
 | `user_restrictions` | `user-restriction` | 7 | 0 | 0 | 0 | 0 | 7 |
 | `users` | `creator-tools`, `user` | 2 | 1 | 0 | 0 | 0 | 3 |
-| **Total** | | **45** | **293** | **0** | **0** | **59** | **397** |
+| **Total** | | **45** | **295** | **0** | **0** | **57** | **397** |
 
 ## Servers
 
