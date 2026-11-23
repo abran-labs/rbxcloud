@@ -490,7 +490,7 @@ impl ResourcesCloudClient {
     }
     pub async fn localization_tables_get_auto_localization_metadata(
         &self,
-        params: LocalizationTablesGetAutoLocalizationMetadataParams,
+        _params: LocalizationTablesGetAutoLocalizationMetadataParams,
     ) -> Result<RobloxLocalizationTablesApiAutoLocalizationMetadataResponse, Error> {
         let request = Request::new(TransportOperation::get(
             Server::Apis,
@@ -504,7 +504,7 @@ impl ResourcesCloudClient {
     }
     pub async fn localization_tables_get_limits(
         &self,
-        params: LocalizationTablesGetLimitsParams,
+        _params: LocalizationTablesGetLimitsParams,
     ) -> Result<RobloxLocalizationTablesApiGetLimitsResponse, Error> {
         let request = Request::new(TransportOperation::get(
             Server::Apis,
@@ -1110,7 +1110,7 @@ impl ResourcesCloudClient {
     }
     pub async fn avatar_bundles_get_metadata(
         &self,
-        params: AvatarBundlesGetMetadataParams,
+        _params: AvatarBundlesGetMetadataParams,
     ) -> Result<RobloxItemConfigurationApiModelsResponseBundleBundleMetadataResponse, Error> {
         let request = Request::new(TransportOperation::get(
             Server::ItemConfiguration,
@@ -1189,7 +1189,7 @@ impl ResourcesCloudClient {
     }
     pub async fn collectibles_get_commission_rates(
         &self,
-        params: CollectiblesGetCommissionRatesParams,
+        _params: CollectiblesGetCommissionRatesParams,
     ) -> Result<RobloxItemConfigurationApiGetCommissionRatesResponse, Error> {
         let request = Request::new(TransportOperation::get(
             Server::ItemConfiguration,
@@ -1203,7 +1203,7 @@ impl ResourcesCloudClient {
     }
     pub async fn collectibles_get_metadata(
         &self,
-        params: CollectiblesGetMetadataParams,
+        _params: CollectiblesGetMetadataParams,
     ) -> Result<RobloxItemConfigurationApiCollectiblesMetadataResponse, Error> {
         let request = Request::new(TransportOperation::get(
             Server::ItemConfiguration,
@@ -1293,7 +1293,7 @@ impl ResourcesCloudClient {
     }
     pub async fn collectibles_list_representative_countries(
         &self,
-        params: CollectiblesListRepresentativeCountriesParams,
+        _params: CollectiblesListRepresentativeCountriesParams,
     ) -> Result<RobloxItemConfigurationApiGetRepresentativeCountriesResponse, Error> {
         let request = Request::new(TransportOperation::get(
             Server::ItemConfiguration,

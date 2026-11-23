@@ -400,7 +400,6 @@ impl std::fmt::Display for SearchAudioTypeModel {
             Self::Music => "Music",
             Self::SoundEffect => "SoundEffect",
             Self::Unknown => "Unknown",
-            Self::Unknown => "UNKNOWN",
         })
     }
 }
