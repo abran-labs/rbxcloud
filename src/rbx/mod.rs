@@ -25,3 +25,6 @@ pub mod v2;
 pub mod campaign_management;
 
 pub mod matchmaking_configuration;
+
+pub mod game_localization;
+pub mod localization_table_contents;

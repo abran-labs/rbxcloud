@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 357,
-    "not_covered": 40,
+    "covered": 366,
+    "not_covered": 31,
     "existing": 45,
-    "implemented": 312,
+    "implemented": 321,
     "unverified": 0,
     "defective": 0,
-    "pending": 40,
+    "pending": 31,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -3721,8 +3721,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-badge-icon",
-      "status": "pending",
+      "cli": "rbxcloud game-localization upload-badge-icon",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Badges",
@@ -3873,8 +3873,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-developer-product-icon",
-      "status": "pending",
+      "cli": "rbxcloud game-localization upload-developer-product-icon",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Developer products",
@@ -4006,8 +4006,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-game-icon",
-      "status": "pending",
+      "cli": "rbxcloud game-localization upload-game-icon",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization",
@@ -4082,8 +4082,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-game-pass-icon",
-      "status": "pending",
+      "cli": "rbxcloud game-localization upload-game-pass-icon",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Game passes",
@@ -4217,7 +4217,7 @@
       ],
       "family": "game_localization",
       "cli": "rbxcloud game-localization upload-game-thumbnail",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization",
@@ -4295,8 +4295,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-game-name-description",
-      "status": "pending",
+      "cli": "rbxcloud game-localization update-name-descriptions",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization",
@@ -4334,7 +4334,7 @@
       ],
       "family": "game_localization",
       "cli": "rbxcloud game-localization update-supported-languages",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization",
@@ -4704,8 +4704,8 @@
         "oauth2"
       ],
       "family": "localization_tables",
-      "cli": "rbxcloud localization-tables update-table",
-      "status": "pending",
+      "cli": "rbxcloud localization-table-contents update-table",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization"
@@ -4740,8 +4740,8 @@
         "oauth2"
       ],
       "family": "localization_tables",
-      "cli": "rbxcloud localization-tables get-entry-translation-history",
-      "status": "pending",
+      "cli": "rbxcloud localization-table-contents translation-history",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization"

@@ -9,9 +9,11 @@ mod config_publishing;
 mod datastore_cli;
 mod experience_cli;
 mod experiment_management;
+mod game_localization;
 mod generated;
 mod group_cli;
 mod inventory_cli;
+mod localization_table_contents;
 mod luau_execution_cli;
 mod matchmaking_attributes;
 mod matchmaking_configuration;
@@ -68,6 +70,10 @@ pub(crate) enum Command {
     CreatorTools(generated::creators::CreatorTools),
     /// Create and evaluate typed experiments
     Experiments(experiment_management::Experiments),
+    /// Manage typed localized game content and images
+    GameLocalization(game_localization::GameLocalization),
+    /// Update typed localization table contents and history queries
+    LocalizationTableContents(localization_table_contents::LocalizationTableContents),
     /// Update and publish typed Experience Config drafts
     ConfigPublishing(config_publishing::ConfigPublishing),
     /// Manage typed matchmaking player attributes
@@ -159,6 +165,8 @@ impl Cli {
             Command::CustomSignals(command) => command.run().await,
             Command::ConfigPublishing(command) => command.run().await,
             Command::Experiments(command) => command.run().await,
+            Command::GameLocalization(command) => command.run().await,
+            Command::LocalizationTableContents(command) => command.run().await,
             Command::CreatorTools(command) => command.run().await,
             Command::LiveopsTools(command) => command.run().await,
             Command::InsightsTools(command) => command.run().await,
