@@ -200,6 +200,8 @@ def emit_cli(contract, operations, models, prefixed_names=False):
                     typ = f"Option<{typ}>"
                 chunks.append(f"        #[arg(long)]\n        {field}: {typ},\n")
             schema = request_body_schema(contract, operation)
+            if schema and schema.get("type") == "boolean":
+                chunks.append("        #[arg(long)]\n        body_value: bool,\n")
             if schema:
                 properties = {name: value for name, value in schema.get("properties", {}).items() if not value.get("readOnly")}
                 required_body = set(schema.get("required", []))
@@ -230,7 +232,7 @@ def emit_cli(contract, operations, models, prefixed_names=False):
             schema = request_body_schema(contract, operation)
             body_fields = []
             if schema:
-                body_fields = ["body_" + snake(name) for name, value in schema.get("properties", {}).items() if not value.get("readOnly")]
+                body_fields = ["body_value"] if schema.get("type") == "boolean" else ["body_" + snake(name) for name, value in schema.get("properties", {}).items() if not value.get("readOnly")]
             pattern = fields + body_fields
             chunks.append(f"            {enum}::{variant} {{ {', '.join(pattern)} }} => {{\n")
             chunks.append(f"                let result = client.{name_for(operation)}(rbxcloud::rbx::generated::storage::{pascal(name_for(operation))}Params {{\n")
@@ -240,7 +242,9 @@ def emit_cli(contract, operations, models, prefixed_names=False):
                 if parameter.location == "query" and parameter.required:
                     value = field
                 chunks.append(f"                    {field}: {value},\n")
-            if schema:
+            if schema and schema.get("type") == "boolean":
+                chunks.append("                    body: body_value,\n")
+            elif schema:
                 body_type = pascal(schema["x-generated-name"]) if "$ref" not in schema else pascal(schema["$ref"].split("/")[-1]) + "Input"
                 chunks.append(f"                    body: rbxcloud::rbx::generated::models::{body_type} {{\n")
                 required = set(schema.get("required", []))

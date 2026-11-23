@@ -15,3 +15,5 @@ pub mod multipart;
 pub mod multipart_models;
 pub mod resources;
 pub mod resources_models;
+pub mod utility;
+pub mod utility_models;

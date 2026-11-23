@@ -128,12 +128,12 @@ class Models:
             for value in values:
                 lines.append(f'    #[serde(rename = "{value}")]')
                 lines.append(f"    {pascal(str(value))},")
-            if name not in self.request_enums:
+            if name not in self.request_enums and "Unknown" not in values:
                 lines.append("    #[serde(other)]\n    #[value(skip)]\n    Unknown,\n")
             lines.append("}\n")
         for name, values in sorted(self.enums.items()):
             arms = [f'            Self::{pascal(str(value))} => "{value}",' for value in values]
-            if name not in self.request_enums:
+            if name not in self.request_enums and "Unknown" not in values:
                 arms.append('            Self::Unknown => "UNKNOWN",')
             lines.append(f"impl std::fmt::Display for {pascal(name)} {{\n    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {{\n        f.write_str(match self {{\n" + "\n".join(arms) + "\n        })\n    }\n}\n")
         for name, body in sorted(self.definitions.items()):

@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 307,
-    "not_covered": 90,
+    "covered": 316,
+    "not_covered": 81,
     "existing": 45,
-    "implemented": 262,
+    "implemented": 271,
     "unverified": 0,
     "defective": 0,
-    "pending": 90,
+    "pending": 81,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -321,8 +321,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising batch-get-campaign-status",
-      "status": "pending",
+      "cli": "rbxcloud utility-tools advertising batch-get-campaign-status",
+      "status": "implemented",
       "operation_id": "BatchGetCampaignStatus",
       "tags": [
         "Advertising"
@@ -2538,8 +2538,8 @@
         "api-key"
       ],
       "family": "generative_ai",
-      "cli": "rbxcloud generative-ai translate-text",
-      "status": "pending",
+      "cli": "rbxcloud utility-tools generative-ai translate-text",
+      "status": "implemented",
       "operation_id": "Cloud_TranslateText",
       "tags": [
         "Generative AI"
@@ -4236,8 +4236,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization order-game-thumbnails",
-      "status": "pending",
+      "cli": "rbxcloud utility-tools game-localization order-game-thumbnails",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization",
@@ -4371,8 +4371,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization set-automatic-translation-status",
-      "status": "pending",
+      "cli": "rbxcloud utility-tools game-localization set-automatic-translation-status",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization",
@@ -4390,8 +4390,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization set-image-translation-status",
-      "status": "pending",
+      "cli": "rbxcloud utility-tools game-localization set-image-translation-status",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization"
@@ -4408,8 +4408,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization set-display-info-translation-settings",
-      "status": "pending",
+      "cli": "rbxcloud utility-tools game-localization set-display-info-translation-settings",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization",
@@ -6299,8 +6299,8 @@
         "legacy-cookie"
       ],
       "family": "creator_store",
-      "cli": "rbxcloud creator-store create-save",
-      "status": "pending",
+      "cli": "rbxcloud utility-tools creator-store create-save",
+      "status": "implemented",
       "operation_id": "Saves_CreateSave",
       "tags": [
         "Creator Store"
@@ -6511,8 +6511,8 @@
         "legacy-cookie"
       ],
       "family": "avatar_bundles",
-      "cli": "rbxcloud avatar-bundles create",
-      "status": "pending",
+      "cli": "rbxcloud utility-tools avatar-bundles create",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets",
@@ -6970,8 +6970,8 @@
         "legacy-cookie"
       ],
       "family": "marketplace_items",
-      "cli": "rbxcloud marketplace-items get-asset-details",
-      "status": "pending",
+      "cli": "rbxcloud utility-tools marketplace-items get-asset-details",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets"
