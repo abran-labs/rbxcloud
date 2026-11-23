@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 351,
-    "not_covered": 46,
+    "covered": 357,
+    "not_covered": 40,
     "existing": 45,
-    "implemented": 306,
+    "implemented": 312,
     "unverified": 0,
     "defective": 0,
-    "pending": 46,
+    "pending": 40,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -5006,8 +5006,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking create-scoring-configuration",
-      "status": "pending",
+      "cli": "rbxcloud scoring-configurations create-scoring-configuration",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5120,8 +5120,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking update-scoring-configuration",
-      "status": "pending",
+      "cli": "rbxcloud scoring-configurations update-scoring-configuration",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5158,8 +5158,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking create-signal",
-      "status": "pending",
+      "cli": "rbxcloud custom-signals create-custom-signal",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5177,8 +5177,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking update-signal",
-      "status": "pending",
+      "cli": "rbxcloud custom-signals update-custom-signal",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5253,8 +5253,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking create-server-attribute",
-      "status": "pending",
+      "cli": "rbxcloud server-attributes create-server-attribute",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5272,8 +5272,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking update-server-attribute",
-      "status": "pending",
+      "cli": "rbxcloud server-attributes update-server-attribute",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"

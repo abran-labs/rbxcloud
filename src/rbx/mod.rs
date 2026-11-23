@@ -23,3 +23,5 @@ pub mod v1;
 pub mod v2;
 
 pub mod campaign_management;
+
+pub mod matchmaking_configuration;

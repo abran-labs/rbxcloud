@@ -14,6 +14,7 @@ mod group_cli;
 mod inventory_cli;
 mod luau_execution_cli;
 mod matchmaking_attributes;
+mod matchmaking_configuration;
 mod messaging_cli;
 mod notification_cli;
 mod ordered_datastore_cli;
@@ -71,6 +72,12 @@ pub(crate) enum Command {
     ConfigPublishing(config_publishing::ConfigPublishing),
     /// Manage typed matchmaking player attributes
     PlayerAttributes(matchmaking_attributes::PlayerAttributes),
+    /// Manage typed matchmaking server attributes
+    ServerAttributes(matchmaking_configuration::ServerAttributes),
+    /// Manage typed matchmaking scoring configurations
+    ScoringConfigurations(matchmaking_configuration::ScoringConfigurations),
+    /// Manage typed custom matchmaking signals
+    CustomSignals(matchmaking_configuration::CustomSignals),
     /// Run typed analytics metric and benchmark queries
     AnalyticsQuery(analytics_query::AnalyticsQuery),
     /// Manage typed advertising campaigns and estimates
@@ -147,6 +154,9 @@ impl Cli {
             Command::CampaignManagement(command) => command.run().await,
             Command::AnalyticsQuery(command) => command.run().await,
             Command::PlayerAttributes(command) => command.run().await,
+            Command::ServerAttributes(command) => command.run().await,
+            Command::ScoringConfigurations(command) => command.run().await,
+            Command::CustomSignals(command) => command.run().await,
             Command::ConfigPublishing(command) => command.run().await,
             Command::Experiments(command) => command.run().await,
             Command::CreatorTools(command) => command.run().await,
