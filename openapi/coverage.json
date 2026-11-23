@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 340,
-    "not_covered": 57,
+    "covered": 343,
+    "not_covered": 54,
     "existing": 45,
-    "implemented": 295,
+    "implemented": 298,
     "unverified": 0,
     "defective": 0,
-    "pending": 57,
+    "pending": 54,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -2710,8 +2710,8 @@
         "legacy-cookie"
       ],
       "family": "configs",
-      "cli": "rbxcloud configs update-draft",
-      "status": "pending",
+      "cli": "rbxcloud config-publishing update-draft",
+      "status": "implemented",
       "operation_id": "CreatorConfigsPublicApi_UpdateDraft",
       "tags": [
         "Configs"
@@ -2748,8 +2748,8 @@
         "legacy-cookie"
       ],
       "family": "configs",
-      "cli": "rbxcloud configs overwrite-draft",
-      "status": "pending",
+      "cli": "rbxcloud config-publishing overwrite-draft",
+      "status": "implemented",
       "operation_id": "CreatorConfigsPublicApi_OverwriteDraft",
       "tags": [
         "Configs"
@@ -2786,8 +2786,8 @@
         "legacy-cookie"
       ],
       "family": "configs",
-      "cli": "rbxcloud configs publish-draft",
-      "status": "pending",
+      "cli": "rbxcloud config-publishing publish-draft",
+      "status": "implemented",
       "operation_id": "CreatorConfigsPublicApi_PublishDraft",
       "tags": [
         "Configs"

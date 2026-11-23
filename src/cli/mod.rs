@@ -4,6 +4,7 @@ mod asset_multipart_start;
 mod assets_cli;
 mod campaign_planning;
 mod cloud;
+mod config_publishing;
 mod datastore_cli;
 mod experience_cli;
 mod generated;
@@ -62,6 +63,8 @@ pub(crate) enum Command {
     LiveopsTools(generated::liveops::LiveOpsTools),
     /// Access typed creator and experience management APIs
     CreatorTools(generated::creators::CreatorTools),
+    /// Update and publish typed Experience Config drafts
+    ConfigPublishing(config_publishing::ConfigPublishing),
     /// Manage typed matchmaking player attributes
     PlayerAttributes(matchmaking_attributes::PlayerAttributes),
     /// Run typed analytics metric and benchmark queries
@@ -137,6 +140,7 @@ impl Cli {
             Command::CampaignPlanning(command) => command.run().await,
             Command::AnalyticsQuery(command) => command.run().await,
             Command::PlayerAttributes(command) => command.run().await,
+            Command::ConfigPublishing(command) => command.run().await,
             Command::CreatorTools(command) => command.run().await,
             Command::LiveopsTools(command) => command.run().await,
             Command::InsightsTools(command) => command.run().await,

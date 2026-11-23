@@ -9,6 +9,7 @@ pub mod asset_delivery;
 pub mod asset_multipart;
 pub mod campaign_planning;
 pub mod client;
+pub mod config_publishing;
 pub mod credentials;
 pub mod error;
 #[path = "generated/mod.rs"]
