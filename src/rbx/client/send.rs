@@ -29,6 +29,14 @@ const RESERVED_HEADERS: [&str; 9] = [
     "proxy-authorization",
 ];
 
+pub(crate) enum ResponseBody {
+    Json(Value),
+    Binary {
+        bytes: Vec<u8>,
+        content_type: Option<String>,
+    },
+}
+
 enum Failure {
     /// Worth another attempt if the operation allows it.
     Retry {
@@ -47,7 +55,8 @@ impl Client {
         request: &Request,
         deadline: Instant,
         checks: u32,
-    ) -> Result<Value, Error> {
+        binary: bool,
+    ) -> Result<ResponseBody, Error> {
         let label = request.operation.label();
         let invalid = |reason: String| Error::InvalidRequest {
             operation: label.clone(),
@@ -74,7 +83,8 @@ impl Client {
             }
             attempt += 1;
             let allowed = self.policy.timeout.min(left);
-            let (error, wait) = match self.attempt(request, &url, &label, attempt, allowed) {
+            let (error, wait) = match self.attempt(request, &url, &label, attempt, allowed, binary)
+            {
                 Ok(value) => return Ok(value),
                 Err(Failure::Fatal(error)) => return Err(error),
                 Err(Failure::Retry { error, wait }) => (error, wait),
@@ -103,7 +113,8 @@ impl Client {
         label: &str,
         attempt: u32,
         allowed: Duration,
-    ) -> Result<Value, Failure> {
+        binary: bool,
+    ) -> Result<ResponseBody, Failure> {
         let timed_out = |what: &str| Failure::Retry {
             error: Error::Transport {
                 operation: label.to_string(),
@@ -202,6 +213,16 @@ impl Client {
         }
 
         if status.is_success() {
+            if binary {
+                let content_type = headers
+                    .get(CONTENT_TYPE)
+                    .and_then(|v| v.to_str().ok())
+                    .map(str::to_string);
+                return Ok(ResponseBody::Binary {
+                    bytes,
+                    content_type,
+                });
+            }
             let mut value = response::parse_success(&headers, &bytes).map_err(|reason| {
                 Failure::Fatal(Error::InvalidResponse {
                     operation: label.to_string(),
@@ -210,7 +231,7 @@ impl Client {
                 })
             })?;
             self.redactor.value(&mut value);
-            return Ok(value);
+            return Ok(ResponseBody::Json(value));
         }
 
         let error = Error::Status {

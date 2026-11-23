@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 use serde_json::Value;
 
-use super::{Client, ClientPolicy, Error, Request};
+use super::{BinaryResponse, Client, ClientPolicy, Error, Request};
 use crate::rbx::credentials::Credentials;
 
 thread_local! {
@@ -86,6 +86,13 @@ impl AsyncClient {
         let label = request.operation.label();
         self.spawn(label, move |client| client.execute(request))
             .await
+    }
+
+    pub async fn execute_binary(&self, request: Request) -> Result<BinaryResponse, Error> {
+        self.spawn("binary asset download".into(), move |client| {
+            client.execute_binary(request)
+        })
+        .await
     }
 
     /// Runs `work` with the blocking client on the blocking thread pool. Use

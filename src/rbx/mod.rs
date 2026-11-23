@@ -4,6 +4,7 @@
 //!
 //! [`client`] and [`credentials`] are the shared transport that new typed
 //! API families are built on. The `v1` and `v2` clients do not use it yet.
+pub mod asset_delivery;
 pub mod asset_multipart;
 pub mod client;
 pub mod credentials;

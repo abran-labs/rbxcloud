@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 332,
-    "not_covered": 65,
+    "covered": 334,
+    "not_covered": 63,
     "existing": 45,
-    "implemented": 287,
+    "implemented": 289,
     "unverified": 0,
     "defective": 0,
-    "pending": 65,
+    "pending": 63,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -814,8 +814,8 @@
         "oauth2"
       ],
       "family": "asset_delivery",
-      "cli": "rbxcloud asset-delivery get-asset",
-      "status": "pending",
+      "cli": "rbxcloud asset-download get-asset",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets"
@@ -832,8 +832,8 @@
         "oauth2"
       ],
       "family": "asset_delivery",
-      "cli": "rbxcloud asset-delivery get-asset-version",
-      "status": "pending",
+      "cli": "rbxcloud asset-download get-asset-version",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets"

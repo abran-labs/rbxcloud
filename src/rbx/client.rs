@@ -65,6 +65,11 @@ use redact::Redactor;
 
 /// A blocking Open Cloud client. Cheap to share by reference. In async code
 /// use [`AsyncClient`].
+pub struct BinaryResponse {
+    pub bytes: Vec<u8>,
+    pub content_type: Option<String>,
+}
+
 pub struct Client {
     http: reqwest::blocking::Client,
     credentials: Credentials,
@@ -119,6 +124,21 @@ impl Client {
         &self.policy
     }
 
+    pub fn execute_binary(&self, request: Request) -> Result<BinaryResponse, Error> {
+        async_client::refuse_on_async_thread()?;
+        let deadline = Instant::now() + self.policy.max_total_time;
+        match self.send(&request, deadline, 0, true)? {
+            send::ResponseBody::Binary {
+                bytes,
+                content_type,
+            } => Ok(BinaryResponse {
+                bytes,
+                content_type,
+            }),
+            _ => unreachable!(),
+        }
+    }
+
     /// Sends the request and returns the response body as JSON.
     ///
     /// An empty body (for example HTTP 204) is `Value::Null`; a `text/*` body
@@ -133,7 +153,10 @@ impl Client {
         fixtures::refuse_in_production(&request, &self.policy)?;
 
         let deadline = Instant::now() + self.policy.max_total_time;
-        let mut value = self.send(&request, deadline, 0)?;
+        let mut value = match self.send(&request, deadline, 0, false)? {
+            super::client::send::ResponseBody::Json(value) => value,
+            _ => unreachable!(),
+        };
         let Some(poll) = request.poll else {
             return Ok(value);
         };
@@ -180,7 +203,10 @@ impl Client {
             }
             thread::sleep(self.policy.poll_delay);
             checks += 1;
-            value = self.send(&next, deadline, checks)?;
+            value = match self.send(&next, deadline, checks, false)? {
+                send::ResponseBody::Json(value) => value,
+                _ => unreachable!(),
+            };
         }
     }
 }
