@@ -39,3 +39,10 @@ pub mod item_folders;
 
 pub mod asset_permission_grants;
 pub mod economy_uploads;
+
+pub mod collectible_management;
+pub mod place_instance_management;
+pub mod server_restarts;
+pub mod service_efficiency_configuration;
+pub mod speech_assets;
+pub mod virtual_event_management;

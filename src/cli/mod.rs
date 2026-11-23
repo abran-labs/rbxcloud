@@ -12,6 +12,7 @@ mod datastore_cli;
 mod economy_uploads;
 mod experience_cli;
 mod experiment_management;
+mod final_operations;
 mod game_localization;
 mod generated;
 mod group_cli;
@@ -79,6 +80,18 @@ pub(crate) enum Command {
     AssetPermissionGrants(economy_uploads::AssetPermissionGrants),
     /// Manage typed localized game content and images
     GameLocalization(game_localization::GameLocalization),
+    /// Publish and update typed collectibles
+    CollectibleManagement(final_operations::CollectibleManagement),
+    /// Update typed place data-model instances
+    PlaceInstanceManagement(final_operations::PlaceInstanceManagement),
+    /// Generate typed speech assets
+    SpeechAssets(final_operations::SpeechAssets),
+    /// Launch typed server restarts
+    ServerRestarts(final_operations::ServerRestarts),
+    /// Update typed service-efficiency configurations
+    ServiceEfficiencyConfiguration(final_operations::ServiceEfficiencyConfiguration),
+    /// Create and update typed virtual events
+    VirtualEventManagement(final_operations::VirtualEventManagement),
     /// Update typed localization table contents and history queries
     LocalizationTableContents(localization_table_contents::LocalizationTableContents),
     /// Update and publish typed Experience Config drafts
@@ -196,6 +209,12 @@ impl Cli {
             Command::EconomyUploads(command) => command.run().await,
             Command::AssetPermissionGrants(command) => command.run().await,
             Command::GameLocalization(command) => command.run().await,
+            Command::CollectibleManagement(command) => command.run().await,
+            Command::PlaceInstanceManagement(command) => command.run().await,
+            Command::SpeechAssets(command) => command.run().await,
+            Command::ServerRestarts(command) => command.run().await,
+            Command::ServiceEfficiencyConfiguration(command) => command.run().await,
+            Command::VirtualEventManagement(command) => command.run().await,
             Command::LocalizationTableContents(command) => command.run().await,
             Command::CreatorTools(command) => command.run().await,
             Command::LiveopsTools(command) => command.run().await,

@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 388,
-    "not_covered": 9,
+    "covered": 397,
+    "not_covered": 0,
     "existing": 45,
-    "implemented": 343,
+    "implemented": 352,
     "unverified": 0,
     "defective": 0,
-    "pending": 9,
+    "pending": 0,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -2210,8 +2210,8 @@
         "api-key"
       ],
       "family": "place_instances",
-      "cli": "rbxcloud place-instances update-instance",
-      "status": "pending",
+      "cli": "rbxcloud place-instance-management update",
+      "status": "implemented",
       "operation_id": "Cloud_UpdateInstance",
       "tags": [
         "Places",
@@ -2502,8 +2502,8 @@
         "oauth2"
       ],
       "family": "generative_ai",
-      "cli": "rbxcloud generative-ai generate-speech-asset",
-      "status": "pending",
+      "cli": "rbxcloud speech-assets generate",
+      "status": "implemented",
       "operation_id": "Cloud_GenerateSpeechAsset",
       "tags": [
         "Assets",
@@ -5764,8 +5764,8 @@
         "legacy-cookie"
       ],
       "family": "server_management",
-      "cli": "rbxcloud server-management launch-restart",
-      "status": "pending",
+      "cli": "rbxcloud server-restarts restart",
+      "status": "implemented",
       "operation_id": "Restarts_LaunchRestart",
       "tags": [
         "Observability"
@@ -5990,8 +5990,8 @@
         "legacy-cookie"
       ],
       "family": "service_efficiency",
-      "cli": "rbxcloud service-efficiency update-consumer-configurations-by-universe",
-      "status": "pending",
+      "cli": "rbxcloud service-efficiency-configuration update",
+      "status": "implemented",
       "operation_id": "ServiceEfficiencyApi_UpdateConsumerConfigurationsByUniverse",
       "tags": [
         "Service Efficiency",
@@ -6588,8 +6588,8 @@
         "legacy-cookie"
       ],
       "family": "collectibles",
-      "cli": "rbxcloud collectibles publish",
-      "status": "pending",
+      "cli": "rbxcloud collectible-management publish",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets",
@@ -6607,8 +6607,8 @@
         "legacy-cookie"
       ],
       "family": "collectibles",
-      "cli": "rbxcloud collectibles bulk-update",
-      "status": "pending",
+      "cli": "rbxcloud collectible-management bulk-update",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets",
@@ -6875,8 +6875,8 @@
         "legacy-cookie"
       ],
       "family": "collectibles",
-      "cli": "rbxcloud collectibles update",
-      "status": "pending",
+      "cli": "rbxcloud collectible-management update",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets",
@@ -7395,8 +7395,8 @@
         "legacy-cookie"
       ],
       "family": "game_events",
-      "cli": "rbxcloud game-events update-game-event",
-      "status": "pending",
+      "cli": "rbxcloud virtual-event-management update",
+      "status": "implemented",
       "operation_id": "GameEvent_UpdateGameEvent",
       "tags": [
         "Game Events"
@@ -7452,8 +7452,8 @@
         "legacy-cookie"
       ],
       "family": "game_events",
-      "cli": "rbxcloud game-events create-game-event",
-      "status": "pending",
+      "cli": "rbxcloud virtual-event-management create",
+      "status": "implemented",
       "operation_id": "GameEvents_CreateGameEvent",
       "tags": [
         "Game Events"
