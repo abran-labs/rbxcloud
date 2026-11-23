@@ -12,6 +12,7 @@ pub mod client;
 pub mod config_publishing;
 pub mod credentials;
 pub mod error;
+pub mod experiment_management;
 #[path = "generated/mod.rs"]
 pub mod generated;
 pub mod matchmaking_attributes;

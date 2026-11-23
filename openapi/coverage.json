@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 343,
-    "not_covered": 54,
+    "covered": 346,
+    "not_covered": 51,
     "existing": 45,
-    "implemented": 298,
+    "implemented": 301,
     "unverified": 0,
     "defective": 0,
-    "pending": 54,
+    "pending": 51,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -2863,7 +2863,7 @@
       ],
       "family": "experiments",
       "cli": "rbxcloud experiments create-experiment",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_CreateExperiment",
       "tags": [
         "Experiments"
@@ -2901,7 +2901,7 @@
       ],
       "family": "experiments",
       "cli": "rbxcloud experiments update-experiment",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_UpdateExperiment",
       "tags": [
         "Experiments"
@@ -3015,7 +3015,7 @@
       ],
       "family": "experiments",
       "cli": "rbxcloud experiments calculate-experiment-mde",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_CalculateExperimentMde",
       "tags": [
         "Experiments"

@@ -7,6 +7,7 @@ mod cloud;
 mod config_publishing;
 mod datastore_cli;
 mod experience_cli;
+mod experiment_management;
 mod generated;
 mod group_cli;
 mod inventory_cli;
@@ -63,6 +64,8 @@ pub(crate) enum Command {
     LiveopsTools(generated::liveops::LiveOpsTools),
     /// Access typed creator and experience management APIs
     CreatorTools(generated::creators::CreatorTools),
+    /// Create and evaluate typed experiments
+    Experiments(experiment_management::Experiments),
     /// Update and publish typed Experience Config drafts
     ConfigPublishing(config_publishing::ConfigPublishing),
     /// Manage typed matchmaking player attributes
@@ -141,6 +144,7 @@ impl Cli {
             Command::AnalyticsQuery(command) => command.run().await,
             Command::PlayerAttributes(command) => command.run().await,
             Command::ConfigPublishing(command) => command.run().await,
+            Command::Experiments(command) => command.run().await,
             Command::CreatorTools(command) => command.run().await,
             Command::LiveopsTools(command) => command.run().await,
             Command::InsightsTools(command) => command.run().await,
