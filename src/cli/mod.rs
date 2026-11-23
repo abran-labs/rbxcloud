@@ -1,3 +1,4 @@
+mod asset_multipart_start;
 mod assets_cli;
 mod cloud;
 mod datastore_cli;
@@ -57,6 +58,8 @@ pub(crate) enum Command {
     LiveopsTools(generated::liveops::LiveOpsTools),
     /// Access typed creator and experience management APIs
     CreatorTools(generated::creators::CreatorTools),
+    /// Start typed multipart asset uploads
+    AssetMultipartStart(asset_multipart_start::AssetMultipartStart),
     /// Control typed asset multipart upload sessions
     AssetMultipart(generated::multipart::Assets),
     /// Access typed asset versions and quotas
@@ -117,6 +120,7 @@ impl Cli {
             Command::Assets(command) => command.run().await,
             Command::AssetTools(command) => command.run().await,
             Command::AssetMultipart(command) => command.run().await,
+            Command::AssetMultipartStart(command) => command.run().await,
             Command::CreatorTools(command) => command.run().await,
             Command::LiveopsTools(command) => command.run().await,
             Command::InsightsTools(command) => command.run().await,
