@@ -5,6 +5,8 @@ pub mod actions;
 pub mod actions_models;
 pub mod asset_models;
 pub mod assets;
+pub mod composed;
+pub mod composed_models;
 pub mod creator_models;
 pub mod creators;
 pub mod insights;

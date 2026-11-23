@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 316,
-    "not_covered": 81,
+    "covered": 326,
+    "not_covered": 71,
     "existing": 45,
-    "implemented": 271,
+    "implemented": 281,
     "unverified": 0,
     "defective": 0,
-    "pending": 81,
+    "pending": 71,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -2729,8 +2729,8 @@
         "legacy-cookie"
       ],
       "family": "configs",
-      "cli": "rbxcloud configs delete-draft",
-      "status": "pending",
+      "cli": "rbxcloud composed-tools configs delete-draft",
+      "status": "implemented",
       "operation_id": "CreatorConfigsPublicApi_DeleteDraft",
       "tags": [
         "Configs"
@@ -2957,8 +2957,8 @@
         "legacy-cookie"
       ],
       "family": "experiments",
-      "cli": "rbxcloud experiments complete-experiment",
-      "status": "pending",
+      "cli": "rbxcloud composed-tools experiments complete-experiment",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_CompleteExperiment",
       "tags": [
         "Experiments"
@@ -2976,8 +2976,8 @@
         "legacy-cookie"
       ],
       "family": "experiments",
-      "cli": "rbxcloud experiments schedule-experiment",
-      "status": "pending",
+      "cli": "rbxcloud composed-tools experiments schedule-experiment",
+      "status": "implemented",
       "operation_id": "PublicExperimentation_ScheduleExperiment",
       "tags": [
         "Experiments"
@@ -4892,8 +4892,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_logs",
-      "cli": "rbxcloud analytics-logs reorder-log-regex",
-      "status": "pending",
+      "cli": "rbxcloud composed-tools analytics-logs reorder-log-regex",
+      "status": "implemented",
       "operation_id": "LogAttributeService_Reorder",
       "tags": [
         "Analytics"
@@ -5385,8 +5385,8 @@
         "legacy-cookie"
       ],
       "family": "experience_notifications",
-      "cli": "rbxcloud experience-notifications archive-notification",
-      "status": "pending",
+      "cli": "rbxcloud composed-tools experience-notifications archive-notification",
+      "status": "implemented",
       "operation_id": "NotificationsDeveloperConfiguration_ArchiveNotificationString",
       "tags": [
         "Notifications"
@@ -5403,8 +5403,8 @@
         "legacy-cookie"
       ],
       "family": "experience_notifications",
-      "cli": "rbxcloud experience-notifications create-notification",
-      "status": "pending",
+      "cli": "rbxcloud composed-tools experience-notifications create-notification",
+      "status": "implemented",
       "operation_id": "NotificationsDeveloperConfiguration_CreateNotificationString",
       "tags": [
         "Notifications"
@@ -5457,8 +5457,8 @@
         "legacy-cookie"
       ],
       "family": "experience_notifications",
-      "cli": "rbxcloud experience-notifications update-notification",
-      "status": "pending",
+      "cli": "rbxcloud composed-tools experience-notifications update-notification",
+      "status": "implemented",
       "operation_id": "NotificationsDeveloperConfiguration_UpdateNotificationString",
       "tags": [
         "Notifications"
@@ -5475,8 +5475,8 @@
         "legacy-cookie"
       ],
       "family": "experience_notifications",
-      "cli": "rbxcloud experience-notifications unfollow-experience-notification",
-      "status": "pending",
+      "cli": "rbxcloud composed-tools experience-notifications unfollow-experience-notification",
+      "status": "implemented",
       "operation_id": "NotificationsApi_UnfollowExperienceNotification",
       "tags": [
         "Interactions",
@@ -5494,8 +5494,8 @@
         "legacy-cookie"
       ],
       "family": "experience_notifications",
-      "cli": "rbxcloud experience-notifications report-notification",
-      "status": "pending",
+      "cli": "rbxcloud composed-tools experience-notifications report-notification",
+      "status": "implemented",
       "operation_id": "NotificationsApi_ReportNotification",
       "tags": [
         "Notifications"
@@ -5650,8 +5650,8 @@
         "legacy-cookie"
       ],
       "family": "place_versions",
-      "cli": "rbxcloud place-versions update-place-version-notes",
-      "status": "pending",
+      "cli": "rbxcloud composed-tools place-versions update-place-version-notes",
+      "status": "implemented",
       "operation_id": "PlaceVersion_UpdatePlaceVersionNotes",
       "tags": [
         "Places"

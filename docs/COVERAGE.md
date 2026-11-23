@@ -14,8 +14,8 @@ Generated from `openapi/coverage.json` by `python3 scripts/gen_coverage.py`. Do 
 |---|---:|
 | Operations in the spec | 997 |
 | Accept an API key (coverage target) | 397 |
-| Covered (`existing` + `implemented`) | 316 |
-| Not covered (`defective` + `pending`) | 81 |
+| Covered (`existing` + `implemented`) | 326 |
+| Not covered (`defective` + `pending`) | 71 |
 | Excluded (no API-key auth) | 600 |
 
 An operation is in the target when its `security` list contains exactly `{"roblox-api-key": []}` as one alternative. Operations that also accept OAuth 2.0 or a legacy cookie stay in the target; operations that never accept an API key are listed under `excluded` in the manifest and are never counted as required.
@@ -30,9 +30,9 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | Status | Operations | Covered | Meaning |
 |---|---:|---|---|
 | `existing` | 45 | yes | A legacy client (`src/rbx/v1`, `src/rbx/v2`) and its command reach this method and path. Request parameters may be incomplete; see Notes. No new work may use this status. |
-| `implemented` | 271 | yes | A typed method on the shared transport plus an explicit command. Every newly built or migrated operation gets this status. |
+| `implemented` | 281 | yes | A typed method on the shared transport plus an explicit command. Every newly built or migrated operation gets this status. |
 | `defective` | 0 | no | A legacy command targets this operation but does not send the documented request. Needs a `note`. |
-| `pending` | 81 | no | No owner code yet. `cli` is the planned command and may still be renamed. |
+| `pending` | 71 | no | No owner code yet. `cli` is the planned command and may still be renamed. |
 
 ## Families
 
@@ -43,7 +43,7 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `advertising` | `action-tools`, `advertising`, `insights-tools`, `utility-tools` | 0 | 16 | 0 | 0 | 6 | 22 |
 | `analytics_alerts` | `analytics-alerts`, `insights-tools` | 0 | 3 | 0 | 0 | 2 | 5 |
 | `analytics_dashboards` | `action-tools`, `analytics-dashboards`, `insights-tools` | 0 | 5 | 0 | 0 | 4 | 9 |
-| `analytics_logs` | `analytics-logs`, `insights-tools` | 0 | 4 | 0 | 0 | 3 | 7 |
+| `analytics_logs` | `analytics-logs`, `composed-tools`, `insights-tools` | 0 | 5 | 0 | 0 | 2 | 7 |
 | `analytics_queries` | `analytics-queries`, `insights-tools` | 0 | 2 | 0 | 0 | 3 | 5 |
 | `asset_delivery` | `asset-delivery` | 0 | 0 | 0 | 0 | 2 | 2 |
 | `asset_permissions` | `asset-permissions` | 0 | 0 | 0 | 0 | 1 | 1 |
@@ -51,13 +51,13 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `avatar_bundles` | `action-tools`, `avatar-bundles`, `resource-tools`, `utility-tools` | 0 | 4 | 0 | 0 | 1 | 5 |
 | `badges` | `action-tools`, `badges` | 0 | 1 | 0 | 0 | 2 | 3 |
 | `collectibles` | `action-tools`, `collectibles`, `resource-tools` | 0 | 17 | 0 | 0 | 3 | 20 |
-| `configs` | `configs`, `liveops-tools` | 0 | 5 | 0 | 0 | 4 | 9 |
+| `configs` | `composed-tools`, `configs`, `liveops-tools` | 0 | 6 | 0 | 0 | 3 | 9 |
 | `creator_store` | `creator-store`, `resource-tools`, `utility-tools` | 0 | 6 | 0 | 0 | 4 | 10 |
 | `data_stores` | `datastore-v2` | 0 | 18 | 0 | 0 | 0 | 18 |
 | `data_stores_v1` | `datastore` | 8 | 0 | 0 | 0 | 0 | 8 |
 | `developer_products` | `developer-products`, `liveops-tools` | 0 | 2 | 0 | 0 | 2 | 4 |
-| `experience_notifications` | `experience-notifications`, `resource-tools` | 0 | 3 | 0 | 0 | 5 | 8 |
-| `experiments` | `experiments`, `liveops-tools` | 0 | 6 | 0 | 0 | 5 | 11 |
+| `experience_notifications` | `composed-tools`, `resource-tools` | 0 | 8 | 0 | 0 | 0 | 8 |
+| `experiments` | `composed-tools`, `experiments`, `liveops-tools` | 0 | 8 | 0 | 0 | 3 | 11 |
 | `game_events` | `game-events`, `liveops-tools` | 0 | 3 | 0 | 0 | 2 | 5 |
 | `game_localization` | `action-tools`, `game-localization`, `resource-tools`, `utility-tools` | 0 | 33 | 0 | 0 | 7 | 40 |
 | `game_passes` | `game-passes`, `liveops-tools` | 0 | 2 | 0 | 0 | 2 | 4 |
@@ -75,7 +75,7 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `ordered_data_stores` | `ordered-datastore-v2` | 0 | 6 | 0 | 0 | 0 | 6 |
 | `ordered_data_stores_v1` | `ordered-datastore` | 6 | 0 | 0 | 0 | 0 | 6 |
 | `place_instances` | `creator-tools`, `place-instances` | 0 | 3 | 0 | 0 | 1 | 4 |
-| `place_versions` | `place-versions`, `resource-tools` | 0 | 2 | 0 | 0 | 1 | 3 |
+| `place_versions` | `composed-tools`, `resource-tools` | 0 | 3 | 0 | 0 | 0 | 3 |
 | `places` | `experience`, `place` | 3 | 0 | 0 | 0 | 0 | 3 |
 | `secrets` | `action-tools`, `resource-tools` | 0 | 5 | 0 | 0 | 0 | 5 |
 | `server_management` | `liveops-tools`, `server-management` | 0 | 6 | 0 | 0 | 1 | 7 |
@@ -87,7 +87,7 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `universes` | `creator-tools`, `universe` | 3 | 4 | 0 | 0 | 0 | 7 |
 | `user_restrictions` | `user-restriction` | 7 | 0 | 0 | 0 | 0 | 7 |
 | `users` | `creator-tools`, `user` | 2 | 1 | 0 | 0 | 0 | 3 |
-| **Total** | | **45** | **271** | **0** | **0** | **81** | **397** |
+| **Total** | | **45** | **281** | **0** | **0** | **71** | **397** |
 
 ## Servers
 

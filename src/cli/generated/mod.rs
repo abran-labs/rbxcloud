@@ -1,5 +1,6 @@
 pub mod actions;
 pub mod assets;
+pub mod composed;
 pub mod creators;
 pub mod insights;
 pub mod liveops;

@@ -40,6 +40,8 @@ pub(crate) struct Cli {
 pub(crate) enum Command {
     /// Access the Roblox Assets API
     Assets(Assets),
+    /// Execute typed composed request bodies
+    ComposedTools(generated::composed::ComposedTools),
     /// Execute typed translation and utility requests
     UtilityTools(generated::utility::UtilityTools),
     /// Execute typed resource actions with flat request bodies
@@ -118,6 +120,7 @@ impl Cli {
             Command::ResourceTools(command) => command.run().await,
             Command::ActionTools(command) => command.run().await,
             Command::UtilityTools(command) => command.run().await,
+            Command::ComposedTools(command) => command.run().await,
             Command::Experience(command) => command.run().await,
             Command::Messaging(command) => command.run().await,
             Command::Datastore(command) => command.run().await,

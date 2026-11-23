@@ -29,6 +29,17 @@ def request_body_schema(contract, operation):
     if not schema:
         return None
     schema = dict(schema)
+    if schema.get("allOf"):
+        properties = {}
+        required = set(schema.get("required", []))
+        for component in schema["allOf"]:
+            resolved = contract.resolve(component)
+            properties.update(resolved.get("properties", {}))
+            required.update(resolved.get("required", []))
+        schema.pop("allOf")
+        schema["type"] = "object"
+        schema["properties"] = properties
+        schema["required"] = sorted(required)
     schema["x-request-model"] = True
     if schema.get("x-source-ref"):
         schema["$ref"] = schema["x-source-ref"]
@@ -259,9 +270,6 @@ def emit_cli(contract, operations, models, prefixed_names=False):
                         value = f"{cli_name}.as_deref().map(serde_json::from_str).transpose()?" if wire not in required else f"serde_json::from_str(&{cli_name})?"
                     else:
                         value = cli_name
-                    model_optional = wire not in required
-                    if not model_optional and original.get("nullable"):
-                        value = f"Some({value})"
                     chunks.append(f"                        {field}: {value},\n")
                 chunks.append("                    },\n")
             chunks.append("                }).await?;\n")
