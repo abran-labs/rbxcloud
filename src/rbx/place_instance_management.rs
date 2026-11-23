@@ -81,6 +81,7 @@ impl PlaceInstanceClient {
         place_id: u64,
         instance_id: &str,
         input: UpdatePlaceInstanceInput,
+        update_mask: Option<String>,
     ) -> Result<Value, Error> {
         let request = Request::new(Operation::patch(
             Server::Apis,
@@ -89,6 +90,7 @@ impl PlaceInstanceClient {
         .path_param("universe_id", universe_id)
         .path_param("place_id", place_id)
         .path_param("instance_id", instance_id)
+        .query_opt("updateMask", update_mask)
         .json(&input)?;
         self.transport.execute(request).await
     }

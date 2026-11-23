@@ -234,12 +234,16 @@ impl CreatorStoreProductClient {
         &self,
         id: String,
         input: UpdateCreatorStoreProductInput,
+        update_mask: Option<String>,
+        allow_missing: Option<bool>,
     ) -> Result<Value, Error> {
         let request = Request::new(Operation::patch(
             Server::Apis,
             "/cloud/v2/creator-store-products/{creator_store_product_id}",
         ))
         .path_param("creator_store_product_id", id)
+        .query_opt("updateMask", update_mask)
+        .query_opt("allowMissing", allow_missing)
         .json(&input)?;
         self.transport.execute(request).await
     }

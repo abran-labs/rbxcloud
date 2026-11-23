@@ -145,6 +145,7 @@ impl LocalizationTableContentClient {
     pub async fn update_table(
         &self,
         table_id: String,
+        game_id: Option<u64>,
         input: UpdateTableContentsInput,
     ) -> Result<Value, Error> {
         let request = Request::new(Operation::patch(
@@ -152,6 +153,7 @@ impl LocalizationTableContentClient {
             "/legacy-localization-tables/v1/localization-table/tables/{tableId}",
         ))
         .path_param("tableId", table_id)
+        .query_opt("gameId", game_id)
         .json(&input)?;
         self.transport.execute(request).await
     }
@@ -159,10 +161,12 @@ impl LocalizationTableContentClient {
     pub async fn translation_history(
         &self,
         table_id: String,
+        game_id: Option<u64>,
         input: TranslationHistoryInput,
     ) -> Result<Value, Error> {
         let request = Request::new(Operation::post(Server::Apis, "/legacy-localization-tables/v1/localization-table/tables/{tableId}/entries/translation-history"))
             .path_param("tableId", table_id)
+            .query_opt("gameId", game_id)
             .json(&input)?;
         self.transport.execute(request).await
     }

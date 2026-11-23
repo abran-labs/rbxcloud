@@ -89,6 +89,10 @@ struct UpdateProductArgs {
     purchase: PurchasePriceArgs,
     #[arg(long)]
     published: Option<bool>,
+    #[arg(long)]
+    update_mask: Option<String>,
+    #[arg(long)]
+    allow_missing: Option<bool>,
 }
 impl CreatorStoreProducts {
     pub async fn run(self) -> anyhow::Result<Option<String>> {
@@ -137,6 +141,8 @@ impl CreatorStoreProducts {
                             ),
                             published: args.published,
                         },
+                        args.update_mask,
+                        args.allow_missing,
                     )
                     .await?
             }

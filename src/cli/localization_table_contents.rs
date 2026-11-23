@@ -21,6 +21,8 @@ enum Command {
 struct UpdateArgs {
     table_id: String,
     #[arg(long)]
+    game_id: Option<u64>,
+    #[arg(long)]
     name: Option<String>,
     #[arg(long)]
     entries_json: String,
@@ -29,6 +31,8 @@ struct UpdateArgs {
 #[derive(Debug, Args)]
 struct HistoryArgs {
     table_id: String,
+    #[arg(long)]
+    game_id: Option<u64>,
     #[arg(long)]
     locale: Option<String>,
     #[arg(long)]
@@ -48,6 +52,7 @@ impl LocalizationTableContents {
                 client
                     .update_table(
                         args.table_id,
+                        args.game_id,
                         UpdateTableContentsInput {
                             name: args.name,
                             entries,
@@ -61,6 +66,7 @@ impl LocalizationTableContents {
                 client
                     .translation_history(
                         args.table_id,
+                        args.game_id,
                         TranslationHistoryInput {
                             locale: args.locale,
                             entries,

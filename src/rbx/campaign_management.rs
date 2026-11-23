@@ -24,7 +24,6 @@ string_enum!(AgeGroup { Age13To17 => "AGE_13_17", Age18To24 => "AGE_18_24", Age2
 string_enum!(Device { Phone => "PHONE", Tablet => "TABLET", Desktop => "DESKTOP", Console => "CONSOLE" });
 string_enum!(Region { All => "ALL", WesternEurope => "WESTERN_EUROPE", EasternEurope => "EASTERN_EUROPE", EastAsia => "EAST_ASIA", SoutheastAsia => "SOUTHEAST_ASIA", MiddleEast => "MIDDLE_EAST", LatinAmerica => "LATIN_AMERICA", Africa => "AFRICA", Anz => "ANZ", Row => "ROW", Uac => "UAC" });
 string_enum!(BudgetType { Daily => "DAILY", Lifetime => "LIFETIME" });
-string_enum!(CampaignGoal { Plays => "PLAYS", Engagement => "ENGAGEMENT", Awareness => "AWARENESS", Reach => "REACH", VideoViews => "VIDEO_VIEWS", RobuxSpend => "ROBUX_SPEND", HighValueAction => "HIGH_VALUE_ACTION" });
 string_enum!(PaymentType { CreditCard => "CREDIT_CARD", AdsCredit => "ADS_CREDIT", Invoice => "INVOICE" });
 string_enum!(CampaignStatus { Active => "ACTIVE", Paused => "PAUSED", Cancelled => "CANCELLED" });
 string_enum!(VideoSource { ImageOnly => "IMAGE_ONLY", PreviewVideo => "PREVIEW_VIDEO" });
@@ -86,15 +85,15 @@ pub struct CampaignInput {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creative_asset_ids: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub idempotency_key: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub objective: Option<CampaignGoal>,
+    pub objective: Option<CampaignObjective>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_type: Option<PaymentType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule: Option<ScheduleInput>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<CampaignStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_universe_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -108,15 +108,15 @@ struct CampaignFields {
     #[arg(long, value_delimiter = ',')]
     creative_asset_ids: Vec<String>,
     #[arg(long)]
+    idempotency_key: Option<String>,
+    #[arg(long)]
     name: Option<String>,
     #[arg(long)]
-    objective: Option<CampaignGoal>,
+    objective: Option<CampaignObjective>,
     #[arg(long)]
     payment_type: Option<PaymentType>,
     #[command(flatten)]
     schedule: ScheduleArgs,
-    #[arg(long)]
-    status: Option<CampaignStatus>,
     #[arg(long)]
     target_universe_id: Option<String>,
     #[command(flatten)]
@@ -133,11 +133,11 @@ impl CampaignFields {
             budget: self.budget.build(),
             creative_asset_ids: (!self.creative_asset_ids.is_empty())
                 .then_some(self.creative_asset_ids),
+            idempotency_key: self.idempotency_key,
             name: self.name,
             objective: self.objective,
             payment_type: self.payment_type,
             schedule: self.schedule.build(),
-            status: self.status,
             target_universe_id: self.target_universe_id,
             targeting: self.targeting.build(),
             video: self.video_source.map(|source| VideoInput { source }),

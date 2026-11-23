@@ -4,11 +4,11 @@ use std::time::Duration;
 
 use rbxcloud::rbx::{
     campaign_management::{
-        AudienceEstimateInput, BudgetInput, BudgetType, CampaignClient, CampaignGoal,
-        CampaignInput, CampaignStatus, CampaignUpdateInput, Device, PaymentType,
-        PerformanceEstimateInput, PerformanceForecastInput, PerformanceObjective, PerformanceScope,
-        PerformanceTargetOutcome, Region, ScheduleInput, TargetingInput, UpdateBudgetInput,
-        UpdateScheduleInput, VideoInput, VideoSource,
+        AudienceEstimateInput, BudgetInput, BudgetType, CampaignClient, CampaignInput,
+        CampaignStatus, CampaignUpdateInput, Device, PaymentType, PerformanceEstimateInput,
+        PerformanceForecastInput, PerformanceObjective, PerformanceScope, PerformanceTargetOutcome,
+        Region, ScheduleInput, TargetingInput, UpdateBudgetInput, UpdateScheduleInput, VideoInput,
+        VideoSource,
     },
     campaign_planning::{AudienceType, CampaignObjective},
     client::{AsyncClient, ClientPolicy},
@@ -73,7 +73,9 @@ async fn campaign_create_serializes_nested_budget_schedule_and_video() {
                 duration_in_days: 7,
                 start_time: "2027-01-01T00:00:00Z".into(),
             }),
-            objective: Some(CampaignGoal::HighValueAction),
+            creative_asset_ids: Some(vec!["asset-1".into()]),
+            idempotency_key: Some("00000000-0000-0000-0000-000000000001".into()),
+            objective: Some(CampaignObjective::RobuxSpend),
             payment_type: Some(PaymentType::AdsCredit),
             target_universe_id: Some("123".into()),
             video: Some(VideoInput {
@@ -87,7 +89,13 @@ async fn campaign_create_serializes_nested_budget_schedule_and_video() {
     let requests = server.requests();
     assert_eq!(requests[0].target, "/ads-management/v1/campaigns");
     let body: serde_json::Value = serde_json::from_str(&requests[0].body_text()).unwrap();
-    assert_eq!(body["objective"], "HIGH_VALUE_ACTION");
+    assert_eq!(body["objective"], "ROBUX_SPEND");
+    assert_eq!(body["creativeAssetIds"], serde_json::json!(["asset-1"]));
+    assert_eq!(
+        body["idempotencyKey"],
+        "00000000-0000-0000-0000-000000000001"
+    );
+    assert!(body.get("status").is_none());
     assert_eq!(body["budget"]["amountMicros"], "5000000");
     assert_eq!(body["budget"]["type"], "DAILY");
     assert_eq!(body["schedule"]["durationInDays"], 7);

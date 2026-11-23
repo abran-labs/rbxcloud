@@ -18,19 +18,27 @@ impl std::fmt::Display for AttributeDataType {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AttributeValue {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub bool_value: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub numeric_value: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub string_value: Option<String>,
     #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub value_type: Option<AttributeDataType>,
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DataStoreLocationInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub data_store_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub key_template: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub value_path: Option<String>,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -44,16 +52,23 @@ pub struct AttributeLocation {
 #[serde(rename_all = "camelCase")]
 pub struct CreatePlayerAttributeInput {
     pub universe_id: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub data_type: Option<AttributeDataType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<AttributeValue>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub attribute_value_location: Option<AttributeLocation>,
 }
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdatePlayerAttributeInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub attribute_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<AttributeValue>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub attribute_value_location: Option<AttributeLocation>,
 }
 

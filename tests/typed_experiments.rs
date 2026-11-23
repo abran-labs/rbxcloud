@@ -1,6 +1,7 @@
 mod support;
 use rbxcloud::rbx::{
     client::{AsyncClient, ClientPolicy},
+    config_publishing::ConditionalRuleDefinitionInput,
     credentials::{Credentials, SecretString},
     experiment_management::*,
 };
@@ -25,11 +26,16 @@ async fn experiment_configuration_targeting_and_mde_fields_serialize() {
     let input = ExperimentInput {
         name: Some("Test".into()),
         description: None,
-        experiment_configuration: Some(
-            serde_json::json!({"productType":"EXPERIMENT_PRODUCT_TYPE_IN_GAME_CONFIGS"}),
-        ),
+        experiment_configuration: Some(ExperimentConfigurationInput {
+            product_type: Some(ExperimentProductType::InGameConfigs),
+            ..Default::default()
+        }),
         exposure_percent: Some(50),
-        targeting_criteria: Some(serde_json::json!({"rule":{"tokens":[]}})),
+        targeting_criteria: Some(TargetingCriteriaInput {
+            rule: Some(ConditionalRuleDefinitionInput {
+                tokens: Some(vec![]),
+            }),
+        }),
         duration_seconds: Some(86400),
         universe_goal_metric: Some(GoalMetric::Day1Retention),
     };
@@ -73,6 +79,7 @@ async fn experiment_configuration_targeting_and_mde_fields_serialize() {
         requests[1].target,
         "/creator-configs-public-api/v1/experimentation/universes/7/experiments/e"
     );
+    assert_eq!(requests[1].body_text(), r#"{"name":"Updated"}"#);
     let mde: serde_json::Value = serde_json::from_str(&requests[2].body_text()).unwrap();
     assert_eq!(mde["variantWeights"], serde_json::json!([25.0, 25.0]));
     assert_eq!(

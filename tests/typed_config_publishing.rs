@@ -4,7 +4,7 @@ use rbxcloud::rbx::{
     config_publishing::*,
     credentials::{Credentials, SecretString},
 };
-use std::time::Duration;
+use std::{collections::BTreeMap, time::Duration};
 use support::{Reply, TestServer};
 
 #[tokio::test]
@@ -24,9 +24,17 @@ async fn draft_and_publish_bodies_keep_typed_maps_and_enums() {
     );
     let update = DraftUpdateInput {
         draft_hash: Some("hash".into()),
-        entries: Some(serde_json::json!({"BossHealth":100})),
+        entries: Some(BTreeMap::from([(
+            "BossHealth".into(),
+            serde_json::json!(100),
+        )])),
         conditional_rules: Some(ConditionalRulesInput {
-            rules: Some(serde_json::json!({"vip":{"tokens":[]}})),
+            rules: Some(BTreeMap::from([(
+                "vip".into(),
+                Some(ConditionalRuleDefinitionInput {
+                    tokens: Some(vec![]),
+                }),
+            )])),
             rules_order: Some(vec!["vip".into()]),
         }),
     };
@@ -43,7 +51,7 @@ async fn draft_and_publish_bodies_keep_typed_maps_and_enums() {
             "1".into(),
             "repo".into(),
             DraftPublishInput {
-                draft_hash: Some("hash".into()),
+                draft_hash: None,
                 message: Some("Release".into()),
                 deployment_strategy: Some(DeploymentStrategy::Immediate),
             },
@@ -59,6 +67,8 @@ async fn draft_and_publish_bodies_keep_typed_maps_and_enums() {
         serde_json::json!(["vip"])
     );
     assert!(requests[1].target.ends_with("/draft:overwrite"));
-    let publish: serde_json::Value = serde_json::from_str(&requests[2].body_text()).unwrap();
-    assert_eq!(publish["deploymentStrategy"], "Immediate");
+    assert_eq!(
+        requests[2].body_text(),
+        r#"{"message":"Release","deploymentStrategy":"Immediate"}"#
+    );
 }

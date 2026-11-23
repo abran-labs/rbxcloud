@@ -71,6 +71,8 @@ async fn player_attributes_serialize_nested_values_and_locations() {
         requests[1].target,
         "/matchmaking-api/v1/matchmaking/player-attribute/a"
     );
-    let update: serde_json::Value = serde_json::from_str(&requests[1].body_text()).unwrap();
-    assert_eq!(update["defaultValue"]["stringValue"], "gold");
+    assert_eq!(
+        requests[1].body_text(),
+        r#"{"attributeId":"a","defaultValue":{"stringValue":"gold","type":"String"}}"#
+    );
 }

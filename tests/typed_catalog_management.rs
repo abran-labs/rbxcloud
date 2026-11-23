@@ -48,16 +48,11 @@ async fn creator_store_products_use_typed_money_and_immutable_create_fields() {
         .update_product(
             "456".into(),
             UpdateCreatorStoreProductInput {
-                base_price: Some(MoneyInput {
-                    currency_code: Some("USD".into()),
-                    quantity: Some(DecimalInput {
-                        significand: Some(0),
-                        exponent: Some(0),
-                    }),
-                }),
                 published: Some(false),
                 ..Default::default()
             },
+            Some("published".into()),
+            Some(false),
         )
         .await
         .unwrap();
@@ -71,11 +66,11 @@ async fn creator_store_products_use_typed_money_and_immutable_create_fields() {
     );
     assert_eq!(create["basePrice"]["quantity"]["exponent"], -9);
     assert_eq!(create["pluginAssetId"], "123");
-    assert_eq!(requests[1].target, "/cloud/v2/creator-store-products/456");
     assert_eq!(
-        requests[1].body_text(),
-        r#"{"basePrice":{"currencyCode":"USD","quantity":{"significand":0,"exponent":0}},"published":false}"#
+        requests[1].target,
+        "/cloud/v2/creator-store-products/456?updateMask=published&allowMissing=false"
     );
+    assert_eq!(requests[1].body_text(), r#"{"published":false}"#);
 }
 
 #[tokio::test]

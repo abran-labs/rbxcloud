@@ -1,6 +1,7 @@
 use clap::{Args, Subcommand};
 use rbxcloud::rbx::{
     client::{AsyncClient, ClientPolicy},
+    config_publishing::ConditionalRuleDefinitionInput,
     credentials::Credentials,
     experiment_management::*,
 };
@@ -13,6 +14,7 @@ pub struct Experiments {
 #[derive(Debug, Subcommand)]
 enum Command {
     CreateExperiment(ExperimentArgs),
+    /// Replace experiment fields; provide the complete desired state
     UpdateExperiment(UpdateArgs),
     CalculateExperimentMde(MdeArgs),
 }
@@ -74,6 +76,17 @@ struct MdeArgs {
     #[arg(long)]
     targeting_rule_json: Option<String>,
 }
+fn targeting(value: Option<String>) -> anyhow::Result<Option<TargetingCriteriaInput>> {
+    value
+        .as_deref()
+        .map(|value| {
+            serde_json::from_str::<Option<ConditionalRuleDefinitionInput>>(value)
+                .map(|rule| TargetingCriteriaInput { rule })
+        })
+        .transpose()
+        .map_err(Into::into)
+}
+
 fn experiment_input(fields: ExperimentFields) -> anyhow::Result<ExperimentInput> {
     Ok(ExperimentInput {
         name: fields.name,
@@ -84,14 +97,7 @@ fn experiment_input(fields: ExperimentFields) -> anyhow::Result<ExperimentInput>
             .map(serde_json::from_str)
             .transpose()?,
         exposure_percent: fields.exposure_percent,
-        targeting_criteria: fields
-            .targeting_rule_json
-            .as_deref()
-            .map(|value| {
-                serde_json::from_str::<serde_json::Value>(value)
-                    .map(|rule| serde_json::json!({"rule":rule}))
-            })
-            .transpose()?,
+        targeting_criteria: targeting(fields.targeting_rule_json)?,
         duration_seconds: fields.duration_seconds,
         universe_goal_metric: fields.universe_goal_metric,
     })
@@ -137,14 +143,7 @@ impl Experiments {
                             baseline_weight: args.baseline_weight,
                             variant_weights: args.variant_weights,
                             universe_goal_metric: args.universe_goal_metric,
-                            targeting_criteria: args
-                                .targeting_rule_json
-                                .as_deref()
-                                .map(|value| {
-                                    serde_json::from_str::<serde_json::Value>(value)
-                                        .map(|rule| serde_json::json!({"rule":rule}))
-                                })
-                                .transpose()?,
+                            targeting_criteria: targeting(args.targeting_rule_json)?,
                         },
                     )
                     .await?

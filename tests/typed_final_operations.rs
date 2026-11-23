@@ -120,13 +120,14 @@ async fn place_instance_update_serializes_engine_script_details() {
                     }),
                 }),
             },
+            Some("engineInstance".into()),
         )
         .await
         .unwrap();
     let requests = server.requests();
     assert_eq!(
         requests[0].target,
-        "/cloud/v2/universes/1/places/2/instances/instance"
+        "/cloud/v2/universes/1/places/2/instances/instance?updateMask=engineInstance"
     );
     let body: serde_json::Value = serde_json::from_str(&requests[0].body_text()).unwrap();
     assert_eq!(body["engineInstance"]["Name"], "Bootstrap");

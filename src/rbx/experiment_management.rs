@@ -1,5 +1,8 @@
 //! Typed experiment create, update, and MDE calculation operations.
-use super::client::{AsyncClient, Error, Operation, Request, Server};
+use super::{
+    client::{AsyncClient, Error, Operation, Request, Server},
+    config_publishing::ConditionalRuleDefinitionInput,
+};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -36,26 +39,133 @@ impl std::fmt::Display for GoalMetric {
     }
 }
 
+#[derive(Debug, Clone, Copy, clap::ValueEnum, Serialize, Deserialize)]
+pub enum ExperimentProductType {
+    #[serde(rename = "EXPERIMENT_PRODUCT_TYPE_IN_GAME_CONFIGS")]
+    InGameConfigs,
+    #[serde(rename = "EXPERIMENT_PRODUCT_TYPE_MATCHMAKING")]
+    Matchmaking,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct VariantMetaInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub variant_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_baseline: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub weight: Option<i32>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct ExperimentConfigEntryInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entry_value: Option<Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct SingleConfigExperimentVariantInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub variant_meta: Option<VariantMetaInput>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub config_entry: Option<ExperimentConfigEntryInput>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct PlaceScoringConfigInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_id: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub matchmaking_scoring_config_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub use_platform_default: Option<bool>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct MatchmakingExperimentVariantInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub variant_meta: Option<VariantMetaInput>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place_matchmaking_configs: Option<Vec<PlaceScoringConfigInput>>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct InGameConfigExperimentConfigurationInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub variants: Option<Vec<SingleConfigExperimentVariantInput>>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct MatchmakingExperimentConfigurationInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub variants: Option<Vec<MatchmakingExperimentVariantInput>>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct ExperimentConfigurationInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_type: Option<ExperimentProductType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub in_game_config_experiment_configuration: Option<InGameConfigExperimentConfigurationInput>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub matchmaking_experiment_configuration: Option<MatchmakingExperimentConfigurationInput>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct TargetingCriteriaInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rule: Option<ConditionalRuleDefinitionInput>,
+}
+
 #[derive(Debug, Clone, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExperimentInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    pub experiment_configuration: Option<Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub experiment_configuration: Option<ExperimentConfigurationInput>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub exposure_percent: Option<u8>,
-    pub targeting_criteria: Option<Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub targeting_criteria: Option<TargetingCriteriaInput>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub duration_seconds: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub universe_goal_metric: Option<GoalMetric>,
 }
+
 #[derive(Debug, Clone, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MdeInput {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub exposure_percent: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub duration_seconds: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub baseline_weight: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub variant_weights: Option<Vec<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub universe_goal_metric: Option<GoalMetric>,
-    pub targeting_criteria: Option<Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub targeting_criteria: Option<TargetingCriteriaInput>,
 }
 
 #[derive(Debug, Clone)]

@@ -132,6 +132,7 @@ async fn table_update_serializes_nested_identifiers_metadata_and_translations() 
     client
         .update_table(
             "table".into(),
+            Some(7),
             UpdateTableContentsInput {
                 name: Some("Strings".into()),
                 entries: vec![PatchEntryInput {
@@ -168,7 +169,7 @@ async fn table_update_serializes_nested_identifiers_metadata_and_translations() 
     let requests = server.requests();
     assert_eq!(
         requests[0].target,
-        "/legacy-localization-tables/v1/localization-table/tables/table"
+        "/legacy-localization-tables/v1/localization-table/tables/table?gameId=7"
     );
     let body: serde_json::Value = serde_json::from_str(&requests[0].body_text()).unwrap();
     assert_eq!(body["entries"][0]["identifier"]["entryFormat"], "Icu");
@@ -189,6 +190,7 @@ async fn translation_history_serializes_cursors_counts_and_sort_order() {
     client
         .translation_history(
             "table".into(),
+            Some(7),
             TranslationHistoryInput {
                 locale: Some("fr".into()),
                 entries: vec![CursorEntryIdentifierInput {
@@ -207,7 +209,7 @@ async fn translation_history_serializes_cursors_counts_and_sort_order() {
         .unwrap();
 
     let requests = server.requests();
-    assert_eq!(requests[0].target, "/legacy-localization-tables/v1/localization-table/tables/table/entries/translation-history");
+    assert_eq!(requests[0].target, "/legacy-localization-tables/v1/localization-table/tables/table/entries/translation-history?gameId=7");
     let body: serde_json::Value = serde_json::from_str(&requests[0].body_text()).unwrap();
     assert_eq!(body["entries"][0]["cursor"], "next");
     assert_eq!(body["entries"][0]["count"], 20);

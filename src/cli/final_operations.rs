@@ -236,6 +236,8 @@ struct PlaceInstanceArgs {
     #[arg(long)]
     path: Option<String>,
     #[arg(long)]
+    update_mask: Option<String>,
+    #[arg(long)]
     engine_id: Option<String>,
     #[arg(long)]
     engine_parent: Option<String>,
@@ -309,6 +311,7 @@ impl PlaceInstanceManagement {
                     path: args.path,
                     engine_instance: engine,
                 },
+                args.update_mask,
             )
             .await?;
         Ok(Some(serde_json::to_string_pretty(&value)?))
