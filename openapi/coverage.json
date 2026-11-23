@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 335,
-    "not_covered": 62,
+    "covered": 338,
+    "not_covered": 59,
     "existing": 45,
-    "implemented": 290,
+    "implemented": 293,
     "unverified": 0,
     "defective": 0,
-    "pending": 62,
+    "pending": 59,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -553,8 +553,8 @@
         "oauth2"
       ],
       "family": "analytics_queries",
-      "cli": "rbxcloud analytics-queries query-benchmarks",
-      "status": "pending",
+      "cli": "rbxcloud analytics-query query-benchmarks",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Analytics"
@@ -742,8 +742,8 @@
         "oauth2"
       ],
       "family": "analytics_queries",
-      "cli": "rbxcloud analytics-queries query-dimension-values",
-      "status": "pending",
+      "cli": "rbxcloud analytics-query query-dimension-values",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Analytics"
@@ -760,8 +760,8 @@
         "oauth2"
       ],
       "family": "analytics_queries",
-      "cli": "rbxcloud analytics-queries query-metrics",
-      "status": "pending",
+      "cli": "rbxcloud analytics-query query-metrics",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Analytics"
