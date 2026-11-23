@@ -14,8 +14,8 @@ Generated from `openapi/coverage.json` by `python3 scripts/gen_coverage.py`. Do 
 |---|---:|
 | Operations in the spec | 997 |
 | Accept an API key (coverage target) | 397 |
-| Covered (`existing` + `implemented`) | 381 |
-| Not covered (`defective` + `pending`) | 16 |
+| Covered (`existing` + `implemented`) | 388 |
+| Not covered (`defective` + `pending`) | 9 |
 | Excluded (no API-key auth) | 600 |
 
 An operation is in the target when its `security` list contains exactly `{"roblox-api-key": []}` as one alternative. Operations that also accept OAuth 2.0 or a legacy cookie stay in the target; operations that never accept an API key are listed under `excluded` in the manifest and are never counted as required.
@@ -30,9 +30,9 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | Status | Operations | Covered | Meaning |
 |---|---:|---|---|
 | `existing` | 45 | yes | A legacy client (`src/rbx/v1`, `src/rbx/v2`) and its command reach this method and path. Request parameters may be incomplete; see Notes. No new work may use this status. |
-| `implemented` | 336 | yes | A typed method on the shared transport plus an explicit command. Every newly built or migrated operation gets this status. |
+| `implemented` | 343 | yes | A typed method on the shared transport plus an explicit command. Every newly built or migrated operation gets this status. |
 | `defective` | 0 | no | A legacy command targets this operation but does not send the documented request. Needs a `note`. |
-| `pending` | 16 | no | No owner code yet. `cli` is the planned command and may still be renamed. |
+| `pending` | 9 | no | No owner code yet. `cli` is the planned command and may still be renamed. |
 
 ## Families
 
@@ -46,21 +46,21 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `analytics_logs` | `analytics-log-regexes`, `composed-tools`, `insights-tools` | 0 | 7 | 0 | 0 | 0 | 7 |
 | `analytics_queries` | `analytics-query`, `insights-tools` | 0 | 5 | 0 | 0 | 0 | 5 |
 | `asset_delivery` | `asset-download` | 0 | 2 | 0 | 0 | 0 | 2 |
-| `asset_permissions` | `asset-permissions` | 0 | 0 | 0 | 0 | 1 | 1 |
+| `asset_permissions` | `asset-permission-grants` | 0 | 1 | 0 | 0 | 0 | 1 |
 | `assets` | `asset-multipart`, `asset-multipart-start`, `asset-tools`, `assets` | 6 | 9 | 0 | 0 | 0 | 15 |
 | `avatar_bundles` | `action-tools`, `avatar-bundle-context`, `resource-tools`, `utility-tools` | 0 | 5 | 0 | 0 | 0 | 5 |
-| `badges` | `action-tools`, `badges` | 0 | 1 | 0 | 0 | 2 | 3 |
+| `badges` | `action-tools`, `economy-uploads` | 0 | 3 | 0 | 0 | 0 | 3 |
 | `collectibles` | `action-tools`, `collectibles`, `resource-tools` | 0 | 17 | 0 | 0 | 3 | 20 |
 | `configs` | `composed-tools`, `config-publishing`, `liveops-tools` | 0 | 9 | 0 | 0 | 0 | 9 |
 | `creator_store` | `creator-store-products`, `resource-tools`, `toolbox-assets`, `utility-tools` | 0 | 10 | 0 | 0 | 0 | 10 |
 | `data_stores` | `datastore-v2` | 0 | 18 | 0 | 0 | 0 | 18 |
 | `data_stores_v1` | `datastore` | 8 | 0 | 0 | 0 | 0 | 8 |
-| `developer_products` | `developer-products`, `liveops-tools` | 0 | 2 | 0 | 0 | 2 | 4 |
+| `developer_products` | `economy-uploads`, `liveops-tools` | 0 | 4 | 0 | 0 | 0 | 4 |
 | `experience_notifications` | `composed-tools`, `resource-tools` | 0 | 8 | 0 | 0 | 0 | 8 |
 | `experiments` | `composed-tools`, `experiments`, `liveops-tools` | 0 | 11 | 0 | 0 | 0 | 11 |
 | `game_events` | `game-events`, `liveops-tools` | 0 | 3 | 0 | 0 | 2 | 5 |
 | `game_localization` | `action-tools`, `game-localization`, `resource-tools`, `utility-tools` | 0 | 40 | 0 | 0 | 0 | 40 |
-| `game_passes` | `game-passes`, `liveops-tools` | 0 | 2 | 0 | 0 | 2 | 4 |
+| `game_passes` | `economy-uploads`, `liveops-tools` | 0 | 4 | 0 | 0 | 0 | 4 |
 | `generative_ai` | `generative-ai`, `utility-tools` | 0 | 1 | 0 | 0 | 1 | 2 |
 | `groups` | `creator-tools`, `group` | 3 | 19 | 0 | 0 | 0 | 22 |
 | `inventory` | `inventory` | 1 | 0 | 0 | 0 | 0 | 1 |
@@ -87,7 +87,7 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `universes` | `creator-tools`, `universe` | 3 | 4 | 0 | 0 | 0 | 7 |
 | `user_restrictions` | `user-restriction` | 7 | 0 | 0 | 0 | 0 | 7 |
 | `users` | `creator-tools`, `user` | 2 | 1 | 0 | 0 | 0 | 3 |
-| **Total** | | **45** | **336** | **0** | **0** | **16** | **397** |
+| **Total** | | **45** | **343** | **0** | **0** | **9** | **397** |
 
 ## Servers
 

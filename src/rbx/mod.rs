@@ -36,3 +36,6 @@ pub mod analytics_log_regexes;
 pub mod avatar_bundle_context;
 pub mod creator_store_management;
 pub mod item_folders;
+
+pub mod asset_permission_grants;
+pub mod economy_uploads;

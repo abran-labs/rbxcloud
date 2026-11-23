@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 381,
-    "not_covered": 16,
+    "covered": 388,
+    "not_covered": 9,
     "existing": 45,
-    "implemented": 336,
+    "implemented": 343,
     "unverified": 0,
     "defective": 0,
-    "pending": 16,
+    "pending": 9,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -850,8 +850,8 @@
         "legacy-cookie"
       ],
       "family": "asset_permissions",
-      "cli": "rbxcloud asset-permissions grant-permissions",
-      "status": "pending",
+      "cli": "rbxcloud asset-permission-grants batch-grant",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets"
@@ -3189,8 +3189,8 @@
         "legacy-cookie"
       ],
       "family": "developer_products",
-      "cli": "rbxcloud developer-products create-developer-product-v2",
-      "status": "pending",
+      "cli": "rbxcloud economy-uploads create-developer-product",
+      "status": "implemented",
       "operation_id": "DeveloperProducts_CreateDeveloperProductV2",
       "tags": [
         "Developer products"
@@ -3227,8 +3227,8 @@
         "legacy-cookie"
       ],
       "family": "developer_products",
-      "cli": "rbxcloud developer-products update-developer-product-v2",
-      "status": "pending",
+      "cli": "rbxcloud economy-uploads update-developer-product",
+      "status": "implemented",
       "operation_id": "DeveloperProducts_UpdateDeveloperProductV2",
       "tags": [
         "Developer products"
@@ -3265,8 +3265,8 @@
         "legacy-cookie"
       ],
       "family": "game_passes",
-      "cli": "rbxcloud game-passes create-game-pass",
-      "status": "pending",
+      "cli": "rbxcloud economy-uploads create-game-pass",
+      "status": "implemented",
       "operation_id": "GamePasses_CreateGamePass",
       "tags": [
         "Game passes"
@@ -3303,8 +3303,8 @@
         "legacy-cookie"
       ],
       "family": "game_passes",
-      "cli": "rbxcloud game-passes update-game-pass",
-      "status": "pending",
+      "cli": "rbxcloud economy-uploads update-game-pass",
+      "status": "implemented",
       "operation_id": "GamePasses_UpdateGamePass",
       "tags": [
         "Game passes"
@@ -3358,8 +3358,8 @@
         "oauth2"
       ],
       "family": "badges",
-      "cli": "rbxcloud badges create-badge",
-      "status": "pending",
+      "cli": "rbxcloud economy-uploads create-badge",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Badges",
@@ -4776,8 +4776,8 @@
         "oauth2"
       ],
       "family": "badges",
-      "cli": "rbxcloud badges update-badge-icon",
-      "status": "pending",
+      "cli": "rbxcloud economy-uploads update-badge-icon",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets",

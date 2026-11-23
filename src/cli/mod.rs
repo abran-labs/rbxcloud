@@ -9,6 +9,7 @@ mod catalog_management;
 mod cloud;
 mod config_publishing;
 mod datastore_cli;
+mod economy_uploads;
 mod experience_cli;
 mod experiment_management;
 mod game_localization;
@@ -72,6 +73,10 @@ pub(crate) enum Command {
     CreatorTools(generated::creators::CreatorTools),
     /// Create and evaluate typed experiments
     Experiments(experiment_management::Experiments),
+    /// Manage typed economy multipart uploads
+    EconomyUploads(economy_uploads::EconomyUploads),
+    /// Grant typed batch asset permissions
+    AssetPermissionGrants(economy_uploads::AssetPermissionGrants),
     /// Manage typed localized game content and images
     GameLocalization(game_localization::GameLocalization),
     /// Update typed localization table contents and history queries
@@ -188,6 +193,8 @@ impl Cli {
             Command::CustomSignals(command) => command.run().await,
             Command::ConfigPublishing(command) => command.run().await,
             Command::Experiments(command) => command.run().await,
+            Command::EconomyUploads(command) => command.run().await,
+            Command::AssetPermissionGrants(command) => command.run().await,
             Command::GameLocalization(command) => command.run().await,
             Command::LocalizationTableContents(command) => command.run().await,
             Command::CreatorTools(command) => command.run().await,
