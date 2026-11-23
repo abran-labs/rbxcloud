@@ -1,6 +1,7 @@
 mod asset_download;
 mod asset_multipart_start;
 mod assets_cli;
+mod campaign_planning;
 mod cloud;
 mod datastore_cli;
 mod experience_cli;
@@ -59,6 +60,8 @@ pub(crate) enum Command {
     LiveopsTools(generated::liveops::LiveOpsTools),
     /// Access typed creator and experience management APIs
     CreatorTools(generated::creators::CreatorTools),
+    /// Create a typed advertising campaign recommendation
+    CampaignPlanning(campaign_planning::CampaignRecommendation),
     /// Download authenticated binary Roblox assets
     AssetDownload(asset_download::AssetDownload),
     /// Start typed multipart asset uploads
@@ -125,6 +128,7 @@ impl Cli {
             Command::AssetMultipart(command) => command.run().await,
             Command::AssetMultipartStart(command) => command.run().await,
             Command::AssetDownload(command) => command.run().await,
+            Command::CampaignPlanning(command) => command.run().await,
             Command::CreatorTools(command) => command.run().await,
             Command::LiveopsTools(command) => command.run().await,
             Command::InsightsTools(command) => command.run().await,

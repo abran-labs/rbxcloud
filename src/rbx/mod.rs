@@ -6,6 +6,7 @@
 //! API families are built on. The `v1` and `v2` clients do not use it yet.
 pub mod asset_delivery;
 pub mod asset_multipart;
+pub mod campaign_planning;
 pub mod client;
 pub mod credentials;
 pub mod error;

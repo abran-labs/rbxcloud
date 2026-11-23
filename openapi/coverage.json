@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 334,
-    "not_covered": 63,
+    "covered": 335,
+    "not_covered": 62,
     "existing": 45,
-    "implemented": 289,
+    "implemented": 290,
     "unverified": 0,
     "defective": 0,
-    "pending": 63,
+    "pending": 62,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -169,8 +169,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising create-campaign-recommendation",
-      "status": "pending",
+      "cli": "rbxcloud campaign-planning recommend",
+      "status": "implemented",
       "operation_id": "CreateCampaignRecommendation",
       "tags": [
         "Advertising"
