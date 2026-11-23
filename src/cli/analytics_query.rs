@@ -28,7 +28,8 @@ struct FilterArgs {
 }
 impl FilterArgs {
     fn build(&self) -> anyhow::Result<Option<Vec<QueryFilter>>> {
-        if self.filter_dimensions.is_empty() && self.operations.is_empty() && self.values.is_empty() {
+        if self.filter_dimensions.is_empty() && self.operations.is_empty() && self.values.is_empty()
+        {
             return Ok(None);
         }
         if self.filter_dimensions.len() != self.operations.len()
