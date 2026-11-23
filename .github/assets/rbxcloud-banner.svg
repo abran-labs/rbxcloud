@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="380" viewBox="0 0 1800 380" role="img" aria-labelledby="title desc">
+  <title id="title">rbxcloud</title>
+  <desc id="desc">rbxcloud wordmark beside a cloud emblem.</desc>
+  <defs>
+    <linearGradient id="frame" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#f1e8e3"/><stop offset="1" stop-color="#b8afa9"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1800" height="380" fill="#1b1d21"/>
+  <path d="M144 190H260M1540 190H1656" stroke="#4d5056" stroke-width="2"/>
+  <g transform="translate(354 78)">
+    <rect width="224" height="224" rx="8" fill="none" stroke="url(#frame)" stroke-width="7"/>
+    <rect x="22" y="22" width="180" height="180" rx="4" fill="none" stroke="#63676e" stroke-width="2"/>
+    <g transform="translate(32 48) scale(.56)">
+      <path fill="#f1e8e3" d="M223.58,58.48c-4.06-13.01-11.23-24.66-20.64-34.06C187.86,9.33,167.02,0,144,0c-37.44,0-69.12,24.69-79.64,58.67-15.97,2.96-30.25,10.73-41.27,21.76C8.82,94.69,0,114.4,0,136.17c0,43.54,35.29,78.83,78.83,78.83H210.17c21.77,0,41.48-8.82,55.74-23.09,14.27-14.26,23.09-33.97,23.09-55.74,0-38.97-28.27-71.33-65.42-77.69Z"/>
+      <path fill="#e8695c" d="M161.19,122.46l-2.35,7.67c-2.01,6.58-8.97,10.28-15.55,8.27l-7.67-2.34c-6.57-2.01-10.27-8.98-8.26-15.55l2.34-7.67c2.01-6.58,8.97-10.28,15.55-8.27l7.67,2.34c6.58,2.01,10.28,8.98,8.27,15.55Z" filter="url(#glow)"/>
+    </g>
+  </g>
+  <g fill="#f1e8e3">
+    <text x="646" y="190" font-family="Inter, Arial, sans-serif" font-size="126" font-weight="600" letter-spacing="-5">rbxcloud</text>
+    <text x="651" y="246" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="600" letter-spacing="2" fill="#c8c1bc">EVERY API-KEY OPEN CLOUD OPERATION.</text>
+  </g>
+  <path d="M648 282H1400" stroke="#55595f" stroke-width="2"/>
+  <path d="M648 282H880" stroke="#e8695c" stroke-width="4"/>
+</svg>

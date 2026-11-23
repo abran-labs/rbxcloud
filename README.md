@@ -1,68 +1,53 @@
-# Roblox Open Cloud CLI &emsp; ![Logo](imgs/icon_32_bottom.png)
-[![CI](https://github.com/Sleitnick/rbxcloud/actions/workflows/ci.yaml/badge.svg)](https://github.com/Sleitnick/rbxcloud/actions/workflows/ci.yaml)
-[![Release](https://github.com/Sleitnick/rbxcloud/actions/workflows/release.yaml/badge.svg?event=push)](https://github.com/Sleitnick/rbxcloud/actions/workflows/release.yaml)
-[![Crate](https://img.shields.io/crates/v/rbxcloud.svg)](https://crates.io/crates/rbxcloud)
-[![Docs](https://docs.rs/rbxcloud/badge.svg)](https://docs.rs/rbxcloud)
+![rbxcloud banner showing a cloud emblem beside the product name](.github/assets/rbxcloud-banner.svg)
 
-The `rbxcloud` CLI lets developers easily communicate with the Roblox Open Cloud APIs. The underlying library can also be used to build tools and applications that utilize the various APIs.
+# rbxcloud
 
-Possible use-cases:
-- Deployment pipelines
-- Asset management
-- Live-ops
-- Custom analytics
-- Handling data removal requests (see [GDPR & CCPA info](https://create.roblox.com/docs/production/publishing/about-GDPR-and-CCPA))
-- Debugging DataStores and OrderedDataStores
+[![CI](https://github.com/abran-labs/rbxcloud/actions/workflows/ci.yaml/badge.svg)](https://github.com/abran-labs/rbxcloud/actions/workflows/ci.yaml)
+
+**Typed access to every API-key Roblox Open Cloud operation.**
+
+## Install
+
+```sh
+cargo install --git https://github.com/abran-labs/rbxcloud --branch main
+```
+
+## Configure
+
+```sh
+export RBXCLOUD_API_KEY="your-api-key"
+```
+
+Create API keys on the [Roblox Credentials page](https://create.roblox.com/credentials).
+
+## Commands
+
+| Command | Use |
+| -- | -- |
+| `rbxcloud coverage` | Coverage summary by API family |
+| `rbxcloud datastore-v2 --help` | Data Stores, scopes, snapshots, revisions |
+| `rbxcloud memory-store --help` | Memory Store queues and sorted maps |
+| `rbxcloud campaign-management --help` | Advertising campaigns and estimates |
+| `rbxcloud asset-multipart-start --help` | Resumable multipart asset uploads |
+| `rbxcloud analytics-query --help` | Analytics metrics and benchmarks |
 
 ## Supported APIs
 
-All 397 operations in the current Roblox Open API snapshot that accept API-key authentication are covered by typed SDK methods and explicit CLI commands. See [docs/COVERAGE.md](docs/COVERAGE.md) for the per-operation ledger, exclusions, and legacy-client notes.
+397 of 397 Open Cloud operations with API-key authentication are covered by typed SDK methods and explicit commands. Operations without API-key authentication are recorded as exclusions, not silent gaps.
 
-| API | Status |
+| Scope | Covered |
 | -- | -- |
-| Assets, asset delivery, asset permissions | :white_check_mark: |
-| Data Stores v1/v2, ordered Data Stores, Memory Stores | :white_check_mark: |
-| Groups, Universes, Places, Place Versions, Instances, Users | :white_check_mark: |
-| Inventory, Subscriptions, User Notifications, User Restrictions | :white_check_mark: |
-| Marketplace, Team Create, Thumbnails, Universe Followings | :white_check_mark: |
-| Messaging, Place Publishing, Luau Execution | :white_check_mark: |
-| Creator Store, Toolbox, Avatar Bundles, Item Folders, Collectibles | :white_check_mark: |
-| Advertising, Analytics, Service Efficiency | :white_check_mark: |
-| Matchmaking, Localization, Experience Configs, Experiments | :white_check_mark: |
-| Developer Products, Game Passes, Badges | :white_check_mark: |
-| Virtual Events, Server Management | :white_check_mark: |
-| Generative AI, Secrets | :white_check_mark: |
+| Assets, Data Stores, Memory Stores, Messaging | Yes |
+| Groups, Universes, Places, Users, Inventory | Yes |
+| Advertising, Analytics, Matchmaking, Localization | Yes |
+| Economy, Creator Store, Collectibles, Virtual Events | Yes |
+| Configs, Experiments, Server Management, Generative AI | Yes |
 
-- :white_check_mark: = Supported
-- Operations without API-key authentication are tracked as exclusions in the coverage ledger.
+See [docs/COVERAGE.md](docs/COVERAGE.md) for the per-operation ledger.
 
-## Install CLI
-### Aftman
-Run the `aftman add` command within your project directory. This will add `rbxcloud` to the project's `aftman.toml` file (or create one if it doesn't yet exist).
-```sh
-$ aftman add Sleitnick/rbxcloud@0.17.0
-```
+## Rust SDK
 
-### From Release
-Download and unzip the tool for your OS from the [releases](https://github.com/Sleitnick/rbxcloud/releases) page. You will then need to put it in your desired location and point your path variable to the executable location.
-
-## CLI Documentation
-Visit the documentation site for information on installation and usage: https://sleitnick.github.io/rbxcloud/
-
-## Install Rust Library
-The library built for the CLI tool is available to use directly in Rust projects. This is essentially an SDK for the Roblox Open Cloud APIs.
-
-### Add Dependency
-
-To use `rbxcloud` in a Rust project, simply add `rbxcloud` to the `Cargo.toml` dependency list.
 ```toml
 [dependencies]
-rbxcloud = "0.17.0"
+rbxcloud = { git = "https://github.com/abran-labs/rbxcloud", branch = "main" }
 ```
-
-Alternatively, use `cargo add`.
-```sh
-$ cargo add rbxcloud
-```
-
-See the [docs.rs](https://docs.rs/rbxcloud/latest/rbxcloud/) page for library documentation.
