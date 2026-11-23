@@ -65,7 +65,7 @@ async fn all_eighteen_data_store_methods_hit_the_generated_client() {
             universe_id: "u".into(),
             data_store_id: "d".into(),
             id: Some("entry".into()),
-            body: CreateDataStoreEntryRequest {
+            body: DataStoreEntryInput {
                 value: Some(json!({"nested":[1,true,"x"]})),
                 attributes: Some(json!({"tag":"a"})),
                 ..Default::default()
@@ -87,7 +87,7 @@ async fn all_eighteen_data_store_methods_hit_the_generated_client() {
             data_store_id: "d".into(),
             entry_id: "e".into(),
             allow_missing: Some(true),
-            body: UpdateDataStoreEntryRequest {
+            body: DataStoreEntryInput {
                 value: Some(json!(null)),
                 ..Default::default()
             },
@@ -107,7 +107,7 @@ async fn all_eighteen_data_store_methods_hit_the_generated_client() {
             universe_id: "u".into(),
             data_store_id: "d".into(),
             entry_id: "e".into(),
-            body: IncrementDataStoreEntryRequest {
+            body: IncrementDataStoreEntryRequestInput {
                 amount: Some(5),
                 users: None,
                 attributes: None,
@@ -144,7 +144,7 @@ async fn all_eighteen_data_store_methods_hit_the_generated_client() {
             data_store_id: "d".into(),
             scope_id: "s".into(),
             id: Some("e".into()),
-            body: CreateScopedDataStoreEntryRequest {
+            body: DataStoreEntryInput {
                 value: Some(json!(["a", 2])),
                 ..Default::default()
             },
@@ -167,7 +167,7 @@ async fn all_eighteen_data_store_methods_hit_the_generated_client() {
             scope_id: "s".into(),
             entry_id: "e".into(),
             allow_missing: None,
-            body: UpdateScopedDataStoreEntryRequest {
+            body: DataStoreEntryInput {
                 value: Some(json!("quoted string")),
                 ..Default::default()
             },
@@ -189,7 +189,7 @@ async fn all_eighteen_data_store_methods_hit_the_generated_client() {
             data_store_id: "d".into(),
             scope_id: "s".into(),
             entry_id: "e".into(),
-            body: IncrementScopedDataStoreEntryRequest {
+            body: IncrementDataStoreEntryRequestInput {
                 amount: Some(-3),
                 users: None,
                 attributes: None,
@@ -213,14 +213,14 @@ async fn all_eighteen_data_store_methods_hit_the_generated_client() {
         .undelete_data_store(UndeleteDataStoreParams {
             universe_id: "u".into(),
             data_store_id: "d".into(),
-            body: UndeleteDataStoreRequest {},
+            body: UndeleteDataStoreRequestInput {},
         })
         .await
         .unwrap();
     client
         .snapshot_data_stores(SnapshotDataStoresParams {
             universe_id: "u".into(),
-            body: SnapshotDataStoresRequest {},
+            body: SnapshotDataStoresRequestInput {},
         })
         .await
         .unwrap();
@@ -280,7 +280,7 @@ async fn all_ten_memory_store_methods_hit_the_generated_client() {
         .create_memory_store_queue_item(CreateMemoryStoreQueueItemParams {
             universe_id: 1,
             queue_id: "q".into(),
-            body: CreateMemoryStoreQueueItemRequest {
+            body: CreateMemoryStoreQueueItemRequestInput {
                 data: Some(json!({"x":1})),
                 ttl: Some("3s".into()),
                 priority: Some(2.5),
@@ -292,7 +292,7 @@ async fn all_ten_memory_store_methods_hit_the_generated_client() {
         .discard_memory_store_queue_items(DiscardMemoryStoreQueueItemsParams {
             universe_id: 1,
             queue_id: "q".into(),
-            body: DiscardMemoryStoreQueueItemsRequest {
+            body: DiscardMemoryStoreQueueItemsRequestInput {
                 read_id: Some("r".into()),
             },
         })
@@ -324,7 +324,7 @@ async fn all_ten_memory_store_methods_hit_the_generated_client() {
             universe_id: 1,
             sorted_map_id: "m".into(),
             id: "i".into(),
-            body: CreateMemoryStoreSortedMapItemRequest {
+            body: MemoryStoreSortedMapItemInput {
                 value: Some(json!({"a":1})),
                 ttl: Some("3s".into()),
                 ..Default::default()
@@ -346,7 +346,7 @@ async fn all_ten_memory_store_methods_hit_the_generated_client() {
             sorted_map_id: "m".into(),
             item_id: "i".into(),
             allow_missing: Some(true),
-            body: UpdateMemoryStoreSortedMapItemRequest {
+            body: MemoryStoreSortedMapItemInput {
                 value: Some(json!([1, 2])),
                 ttl: Some("4s".into()),
                 ..Default::default()
@@ -420,7 +420,7 @@ async fn all_six_ordered_store_methods_hit_the_generated_client() {
             ordered_data_store_id: "d".into(),
             scope_id: "s".into(),
             id: Some("e".into()),
-            body: CreateOrderedDataStoreEntryRequest {
+            body: OrderedDataStoreEntryInput {
                 value: Some(5),
                 ..Default::default()
             },
@@ -443,7 +443,7 @@ async fn all_six_ordered_store_methods_hit_the_generated_client() {
             scope_id: "s".into(),
             entry_id: "e".into(),
             allow_missing: None,
-            body: UpdateOrderedDataStoreEntryRequest {
+            body: OrderedDataStoreEntryInput {
                 value: Some(7),
                 ..Default::default()
             },
@@ -465,7 +465,7 @@ async fn all_six_ordered_store_methods_hit_the_generated_client() {
             ordered_data_store_id: "d".into(),
             scope_id: "s".into(),
             entry_id: "e".into(),
-            body: IncrementOrderedDataStoreEntryRequest { amount: Some(2) },
+            body: IncrementOrderedDataStoreEntryRequestInput { amount: Some(2) },
         })
         .await
         .unwrap();

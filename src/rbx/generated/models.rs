@@ -91,69 +91,13 @@ impl std::fmt::Display for GetMemoryStoreFlushOperationScope {
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct CreateDataStoreEntryRequest {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub etag: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<GoogleProtobufValue>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub users: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<serde_json::Value>,
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct CreateMemoryStoreQueueItemRequest {
+pub struct CreateMemoryStoreQueueItemRequestInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ttl: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<f64>,
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct CreateMemoryStoreSortedMapItemRequest {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<serde_json::Value>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub etag: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ttl: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-    #[serde(rename = "stringSortKey")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub string_sort_key: Option<String>,
-    #[serde(rename = "numericSortKey")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub numeric_sort_key: Option<f64>,
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct CreateOrderedDataStoreEntryRequest {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<i64>,
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct CreateScopedDataStoreEntryRequest {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub etag: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<GoogleProtobufValue>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub users: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
@@ -200,7 +144,21 @@ pub struct DataStoreEntry {
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct DiscardMemoryStoreQueueItemsRequest {
+pub struct DataStoreEntryInput {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub etag: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<GoogleProtobufValue>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub users: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<serde_json::Value>,
+}
+
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct DiscardMemoryStoreQueueItemsRequestInput {
     #[serde(rename = "readId")]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub read_id: Option<String>,
@@ -209,7 +167,7 @@ pub struct DiscardMemoryStoreQueueItemsRequest {
 pub type GoogleProtobufValue = serde_json::Value;
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct IncrementDataStoreEntryRequest {
+pub struct IncrementDataStoreEntryRequestInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -219,19 +177,9 @@ pub struct IncrementDataStoreEntryRequest {
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct IncrementOrderedDataStoreEntryRequest {
+pub struct IncrementOrderedDataStoreEntryRequestInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct IncrementScopedDataStoreEntryRequest {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub users: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
@@ -330,56 +278,7 @@ pub struct MemoryStoreSortedMapItem {
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct OrderedDataStoreEntry {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ReadMemoryStoreQueueItemsResponse {
-    #[serde(rename = "queueItems")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub queue_items: Option<Vec<MemoryStoreQueueItem>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct SnapshotDataStoresRequest {}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct SnapshotDataStoresResponse {
-    #[serde(rename = "newSnapshotTaken")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub new_snapshot_taken: Option<bool>,
-    #[serde(rename = "latestSnapshotTime")]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub latest_snapshot_time: Option<String>,
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct UndeleteDataStoreRequest {}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct UpdateDataStoreEntryRequest {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub etag: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<GoogleProtobufValue>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub users: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<serde_json::Value>,
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct UpdateMemoryStoreSortedMapItemRequest {
+pub struct MemoryStoreSortedMapItemInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -399,7 +298,17 @@ pub struct UpdateMemoryStoreSortedMapItemRequest {
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct UpdateOrderedDataStoreEntryRequest {
+pub struct OrderedDataStoreEntry {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+}
+
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct OrderedDataStoreEntryInput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -407,15 +316,26 @@ pub struct UpdateOrderedDataStoreEntryRequest {
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct UpdateScopedDataStoreEntryRequest {
+pub struct ReadMemoryStoreQueueItemsResponse {
+    #[serde(rename = "queueItems")]
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
+    pub queue_items: Option<Vec<MemoryStoreQueueItem>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub etag: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<GoogleProtobufValue>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub users: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<serde_json::Value>,
+    pub id: Option<String>,
 }
+
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct SnapshotDataStoresRequestInput {}
+
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct SnapshotDataStoresResponse {
+    #[serde(rename = "newSnapshotTaken")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub new_snapshot_taken: Option<bool>,
+    #[serde(rename = "latestSnapshotTime")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub latest_snapshot_time: Option<String>,
+}
+
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct UndeleteDataStoreRequestInput {}

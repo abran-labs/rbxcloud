@@ -353,7 +353,7 @@ impl DatastoreV2 {
                             universe_id: universe_id,
                             data_store_id: data_store_id,
                             id: id,
-                            body: rbxcloud::rbx::generated::models::CreateDataStoreEntryRequest {
+                            body: rbxcloud::rbx::generated::models::DataStoreEntryInput {
                                 path: body_path,
                                 etag: body_etag,
                                 value: body_value
@@ -413,7 +413,7 @@ impl DatastoreV2 {
                             data_store_id: data_store_id,
                             entry_id: entry_id,
                             allow_missing: allow_missing,
-                            body: rbxcloud::rbx::generated::models::UpdateDataStoreEntryRequest {
+                            body: rbxcloud::rbx::generated::models::DataStoreEntryInput {
                                 path: body_path,
                                 etag: body_etag,
                                 value: body_value
@@ -463,24 +463,16 @@ impl DatastoreV2 {
                 body_users,
                 body_attributes,
             } => {
-                let result = client
-                    .increment_data_store_entry(
-                        rbxcloud::rbx::generated::storage::IncrementDataStoreEntryParams {
-                            universe_id: universe_id,
-                            data_store_id: data_store_id,
-                            entry_id: entry_id,
-                            body:
-                                rbxcloud::rbx::generated::models::IncrementDataStoreEntryRequest {
-                                    amount: body_amount,
-                                    users: body_users,
-                                    attributes: body_attributes
-                                        .as_deref()
-                                        .map(serde_json::from_str)
-                                        .transpose()?,
-                                },
-                        },
-                    )
-                    .await?;
+                let result = client.increment_data_store_entry(rbxcloud::rbx::generated::storage::IncrementDataStoreEntryParams {
+                    universe_id: universe_id,
+                    data_store_id: data_store_id,
+                    entry_id: entry_id,
+                    body: rbxcloud::rbx::generated::models::IncrementDataStoreEntryRequestInput {
+                        amount: body_amount,
+                        users: body_users,
+                        attributes: body_attributes.as_deref().map(serde_json::from_str).transpose()?,
+                    },
+                }).await?;
                 if serde_json::to_value(&result)?.is_null() {
                     Ok(None)
                 } else {
@@ -552,19 +544,29 @@ impl DatastoreV2 {
                 body_users,
                 body_attributes,
             } => {
-                let result = client.create_scoped_data_store_entry(rbxcloud::rbx::generated::storage::CreateScopedDataStoreEntryParams {
-                    universe_id: universe_id,
-                    data_store_id: data_store_id,
-                    scope_id: scope_id,
-                    id: id,
-                    body: rbxcloud::rbx::generated::models::CreateScopedDataStoreEntryRequest {
-                        path: body_path,
-                        etag: body_etag,
-                        value: body_value.as_deref().map(serde_json::from_str).transpose()?,
-                        users: body_users,
-                        attributes: body_attributes.as_deref().map(serde_json::from_str).transpose()?,
-                    },
-                }).await?;
+                let result = client
+                    .create_scoped_data_store_entry(
+                        rbxcloud::rbx::generated::storage::CreateScopedDataStoreEntryParams {
+                            universe_id: universe_id,
+                            data_store_id: data_store_id,
+                            scope_id: scope_id,
+                            id: id,
+                            body: rbxcloud::rbx::generated::models::DataStoreEntryInput {
+                                path: body_path,
+                                etag: body_etag,
+                                value: body_value
+                                    .as_deref()
+                                    .map(serde_json::from_str)
+                                    .transpose()?,
+                                users: body_users,
+                                attributes: body_attributes
+                                    .as_deref()
+                                    .map(serde_json::from_str)
+                                    .transpose()?,
+                            },
+                        },
+                    )
+                    .await?;
                 if serde_json::to_value(&result)?.is_null() {
                     Ok(None)
                 } else {
@@ -605,20 +607,30 @@ impl DatastoreV2 {
                 body_users,
                 body_attributes,
             } => {
-                let result = client.update_scoped_data_store_entry(rbxcloud::rbx::generated::storage::UpdateScopedDataStoreEntryParams {
-                    universe_id: universe_id,
-                    data_store_id: data_store_id,
-                    scope_id: scope_id,
-                    entry_id: entry_id,
-                    allow_missing: allow_missing,
-                    body: rbxcloud::rbx::generated::models::UpdateScopedDataStoreEntryRequest {
-                        path: body_path,
-                        etag: body_etag,
-                        value: body_value.as_deref().map(serde_json::from_str).transpose()?,
-                        users: body_users,
-                        attributes: body_attributes.as_deref().map(serde_json::from_str).transpose()?,
-                    },
-                }).await?;
+                let result = client
+                    .update_scoped_data_store_entry(
+                        rbxcloud::rbx::generated::storage::UpdateScopedDataStoreEntryParams {
+                            universe_id: universe_id,
+                            data_store_id: data_store_id,
+                            scope_id: scope_id,
+                            entry_id: entry_id,
+                            allow_missing: allow_missing,
+                            body: rbxcloud::rbx::generated::models::DataStoreEntryInput {
+                                path: body_path,
+                                etag: body_etag,
+                                value: body_value
+                                    .as_deref()
+                                    .map(serde_json::from_str)
+                                    .transpose()?,
+                                users: body_users,
+                                attributes: body_attributes
+                                    .as_deref()
+                                    .map(serde_json::from_str)
+                                    .transpose()?,
+                            },
+                        },
+                    )
+                    .await?;
                 if serde_json::to_value(&result)?.is_null() {
                     Ok(None)
                 } else {
@@ -661,7 +673,7 @@ impl DatastoreV2 {
                     data_store_id: data_store_id,
                     scope_id: scope_id,
                     entry_id: entry_id,
-                    body: rbxcloud::rbx::generated::models::IncrementScopedDataStoreEntryRequest {
+                    body: rbxcloud::rbx::generated::models::IncrementDataStoreEntryRequestInput {
                         amount: body_amount,
                         users: body_users,
                         attributes: body_attributes.as_deref().map(serde_json::from_str).transpose()?,
@@ -701,15 +713,12 @@ impl DatastoreV2 {
                 universe_id,
                 data_store_id,
             } => {
-                let result = client
-                    .undelete_data_store(
-                        rbxcloud::rbx::generated::storage::UndeleteDataStoreParams {
-                            universe_id: universe_id,
-                            data_store_id: data_store_id,
-                            body: rbxcloud::rbx::generated::models::UndeleteDataStoreRequest {},
-                        },
-                    )
-                    .await?;
+                let result = client.undelete_data_store(rbxcloud::rbx::generated::storage::UndeleteDataStoreParams {
+                    universe_id: universe_id,
+                    data_store_id: data_store_id,
+                    body: rbxcloud::rbx::generated::models::UndeleteDataStoreRequestInput {
+                    },
+                }).await?;
                 if serde_json::to_value(&result)?.is_null() {
                     Ok(None)
                 } else {
@@ -721,7 +730,8 @@ impl DatastoreV2 {
                     .snapshot_data_stores(
                         rbxcloud::rbx::generated::storage::SnapshotDataStoresParams {
                             universe_id: universe_id,
-                            body: rbxcloud::rbx::generated::models::SnapshotDataStoresRequest {},
+                            body:
+                                rbxcloud::rbx::generated::models::SnapshotDataStoresRequestInput {},
                         },
                     )
                     .await?;
@@ -910,7 +920,7 @@ impl MemoryStore {
                 let result = client.create_memory_store_queue_item(rbxcloud::rbx::generated::storage::CreateMemoryStoreQueueItemParams {
                     universe_id: universe_id,
                     queue_id: queue_id,
-                    body: rbxcloud::rbx::generated::models::CreateMemoryStoreQueueItemRequest {
+                    body: rbxcloud::rbx::generated::models::CreateMemoryStoreQueueItemRequestInput {
                         data: body_data.as_deref().map(serde_json::from_str).transpose()?,
                         ttl: body_ttl,
                         priority: body_priority,
@@ -930,7 +940,7 @@ impl MemoryStore {
                 let result = client.discard_memory_store_queue_items(rbxcloud::rbx::generated::storage::DiscardMemoryStoreQueueItemsParams {
                     universe_id: universe_id,
                     queue_id: queue_id,
-                    body: rbxcloud::rbx::generated::models::DiscardMemoryStoreQueueItemsRequest {
+                    body: rbxcloud::rbx::generated::models::DiscardMemoryStoreQueueItemsRequestInput {
                         read_id: body_read_id,
                     },
                 }).await?;
@@ -1002,20 +1012,27 @@ impl MemoryStore {
                 body_string_sort_key,
                 body_numeric_sort_key,
             } => {
-                let result = client.create_memory_store_sorted_map_item(rbxcloud::rbx::generated::storage::CreateMemoryStoreSortedMapItemParams {
-                    universe_id: universe_id,
-                    sorted_map_id: sorted_map_id,
-                    id: id,
-                    body: rbxcloud::rbx::generated::models::CreateMemoryStoreSortedMapItemRequest {
-                        path: body_path,
-                        value: body_value.as_deref().map(serde_json::from_str).transpose()?,
-                        etag: body_etag,
-                        ttl: body_ttl,
-                        id: body_id,
-                        string_sort_key: body_string_sort_key,
-                        numeric_sort_key: body_numeric_sort_key,
-                    },
-                }).await?;
+                let result = client
+                    .create_memory_store_sorted_map_item(
+                        rbxcloud::rbx::generated::storage::CreateMemoryStoreSortedMapItemParams {
+                            universe_id: universe_id,
+                            sorted_map_id: sorted_map_id,
+                            id: id,
+                            body: rbxcloud::rbx::generated::models::MemoryStoreSortedMapItemInput {
+                                path: body_path,
+                                value: body_value
+                                    .as_deref()
+                                    .map(serde_json::from_str)
+                                    .transpose()?,
+                                etag: body_etag,
+                                ttl: body_ttl,
+                                id: body_id,
+                                string_sort_key: body_string_sort_key,
+                                numeric_sort_key: body_numeric_sort_key,
+                            },
+                        },
+                    )
+                    .await?;
                 if serde_json::to_value(&result)?.is_null() {
                     Ok(None)
                 } else {
@@ -1055,21 +1072,28 @@ impl MemoryStore {
                 body_string_sort_key,
                 body_numeric_sort_key,
             } => {
-                let result = client.update_memory_store_sorted_map_item(rbxcloud::rbx::generated::storage::UpdateMemoryStoreSortedMapItemParams {
-                    universe_id: universe_id,
-                    sorted_map_id: sorted_map_id,
-                    item_id: item_id,
-                    allow_missing: allow_missing,
-                    body: rbxcloud::rbx::generated::models::UpdateMemoryStoreSortedMapItemRequest {
-                        path: body_path,
-                        value: body_value.as_deref().map(serde_json::from_str).transpose()?,
-                        etag: body_etag,
-                        ttl: body_ttl,
-                        id: body_id,
-                        string_sort_key: body_string_sort_key,
-                        numeric_sort_key: body_numeric_sort_key,
-                    },
-                }).await?;
+                let result = client
+                    .update_memory_store_sorted_map_item(
+                        rbxcloud::rbx::generated::storage::UpdateMemoryStoreSortedMapItemParams {
+                            universe_id: universe_id,
+                            sorted_map_id: sorted_map_id,
+                            item_id: item_id,
+                            allow_missing: allow_missing,
+                            body: rbxcloud::rbx::generated::models::MemoryStoreSortedMapItemInput {
+                                path: body_path,
+                                value: body_value
+                                    .as_deref()
+                                    .map(serde_json::from_str)
+                                    .transpose()?,
+                                etag: body_etag,
+                                ttl: body_ttl,
+                                id: body_id,
+                                string_sort_key: body_string_sort_key,
+                                numeric_sort_key: body_numeric_sort_key,
+                            },
+                        },
+                    )
+                    .await?;
                 if serde_json::to_value(&result)?.is_null() {
                     Ok(None)
                 } else {
@@ -1246,16 +1270,20 @@ impl OrderedDatastoreV2 {
                 body_path,
                 body_value,
             } => {
-                let result = client.create_ordered_data_store_entry(rbxcloud::rbx::generated::storage::CreateOrderedDataStoreEntryParams {
-                    universe_id: universe_id,
-                    ordered_data_store_id: ordered_data_store_id,
-                    scope_id: scope_id,
-                    id: id,
-                    body: rbxcloud::rbx::generated::models::CreateOrderedDataStoreEntryRequest {
-                        path: body_path,
-                        value: body_value,
-                    },
-                }).await?;
+                let result = client
+                    .create_ordered_data_store_entry(
+                        rbxcloud::rbx::generated::storage::CreateOrderedDataStoreEntryParams {
+                            universe_id: universe_id,
+                            ordered_data_store_id: ordered_data_store_id,
+                            scope_id: scope_id,
+                            id: id,
+                            body: rbxcloud::rbx::generated::models::OrderedDataStoreEntryInput {
+                                path: body_path,
+                                value: body_value,
+                            },
+                        },
+                    )
+                    .await?;
                 if serde_json::to_value(&result)?.is_null() {
                     Ok(None)
                 } else {
@@ -1293,17 +1321,21 @@ impl OrderedDatastoreV2 {
                 body_path,
                 body_value,
             } => {
-                let result = client.update_ordered_data_store_entry(rbxcloud::rbx::generated::storage::UpdateOrderedDataStoreEntryParams {
-                    universe_id: universe_id,
-                    ordered_data_store_id: ordered_data_store_id,
-                    scope_id: scope_id,
-                    entry_id: entry_id,
-                    allow_missing: allow_missing,
-                    body: rbxcloud::rbx::generated::models::UpdateOrderedDataStoreEntryRequest {
-                        path: body_path,
-                        value: body_value,
-                    },
-                }).await?;
+                let result = client
+                    .update_ordered_data_store_entry(
+                        rbxcloud::rbx::generated::storage::UpdateOrderedDataStoreEntryParams {
+                            universe_id: universe_id,
+                            ordered_data_store_id: ordered_data_store_id,
+                            scope_id: scope_id,
+                            entry_id: entry_id,
+                            allow_missing: allow_missing,
+                            body: rbxcloud::rbx::generated::models::OrderedDataStoreEntryInput {
+                                path: body_path,
+                                value: body_value,
+                            },
+                        },
+                    )
+                    .await?;
                 if serde_json::to_value(&result)?.is_null() {
                     Ok(None)
                 } else {
@@ -1344,7 +1376,7 @@ impl OrderedDatastoreV2 {
                     ordered_data_store_id: ordered_data_store_id,
                     scope_id: scope_id,
                     entry_id: entry_id,
-                    body: rbxcloud::rbx::generated::models::IncrementOrderedDataStoreEntryRequest {
+                    body: rbxcloud::rbx::generated::models::IncrementOrderedDataStoreEntryRequestInput {
                         amount: body_amount,
                     },
                 }).await?;

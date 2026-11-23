@@ -14,8 +14,8 @@ Generated from `openapi/coverage.json` by `python3 scripts/gen_coverage.py`. Do 
 |---|---:|
 | Operations in the spec | 997 |
 | Accept an API key (coverage target) | 397 |
-| Covered (`existing` + `implemented`) | 277 |
-| Not covered (`defective` + `pending`) | 120 |
+| Covered (`existing` + `implemented`) | 307 |
+| Not covered (`defective` + `pending`) | 90 |
 | Excluded (no API-key auth) | 600 |
 
 An operation is in the target when its `security` list contains exactly `{"roblox-api-key": []}` as one alternative. Operations that also accept OAuth 2.0 or a legacy cookie stay in the target; operations that never accept an API key are listed under `excluded` in the manifest and are never counted as required.
@@ -30,9 +30,9 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | Status | Operations | Covered | Meaning |
 |---|---:|---|---|
 | `existing` | 45 | yes | A legacy client (`src/rbx/v1`, `src/rbx/v2`) and its command reach this method and path. Request parameters may be incomplete; see Notes. No new work may use this status. |
-| `implemented` | 232 | yes | A typed method on the shared transport plus an explicit command. Every newly built or migrated operation gets this status. |
+| `implemented` | 262 | yes | A typed method on the shared transport plus an explicit command. Every newly built or migrated operation gets this status. |
 | `defective` | 0 | no | A legacy command targets this operation but does not send the documented request. Needs a `note`. |
-| `pending` | 120 | no | No owner code yet. `cli` is the planned command and may still be renamed. |
+| `pending` | 90 | no | No owner code yet. `cli` is the planned command and may still be renamed. |
 
 ## Families
 
@@ -40,17 +40,17 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 
 | Family | CLI group | Existing | Implemented | Defective | Pending | Total |
 |---|---|---:|---:|---:|---:|---:|
-| `advertising` | `advertising`, `insights-tools` | 0 | 11 | 0 | 0 | 11 | 22 |
+| `advertising` | `action-tools`, `advertising`, `insights-tools` | 0 | 15 | 0 | 0 | 7 | 22 |
 | `analytics_alerts` | `analytics-alerts`, `insights-tools` | 0 | 3 | 0 | 0 | 2 | 5 |
-| `analytics_dashboards` | `analytics-dashboards`, `insights-tools` | 0 | 4 | 0 | 0 | 5 | 9 |
+| `analytics_dashboards` | `action-tools`, `analytics-dashboards`, `insights-tools` | 0 | 5 | 0 | 0 | 4 | 9 |
 | `analytics_logs` | `analytics-logs`, `insights-tools` | 0 | 4 | 0 | 0 | 3 | 7 |
 | `analytics_queries` | `analytics-queries`, `insights-tools` | 0 | 2 | 0 | 0 | 3 | 5 |
 | `asset_delivery` | `asset-delivery` | 0 | 0 | 0 | 0 | 2 | 2 |
 | `asset_permissions` | `asset-permissions` | 0 | 0 | 0 | 0 | 1 | 1 |
 | `assets` | `asset-multipart`, `asset-tools`, `assets` | 6 | 7 | 0 | 0 | 2 | 15 |
-| `avatar_bundles` | `avatar-bundles`, `resource-tools` | 0 | 2 | 0 | 0 | 3 | 5 |
-| `badges` | `badges` | 0 | 0 | 0 | 0 | 3 | 3 |
-| `collectibles` | `collectibles`, `resource-tools` | 0 | 15 | 0 | 0 | 5 | 20 |
+| `avatar_bundles` | `action-tools`, `avatar-bundles`, `resource-tools` | 0 | 3 | 0 | 0 | 2 | 5 |
+| `badges` | `action-tools`, `badges` | 0 | 1 | 0 | 0 | 2 | 3 |
+| `collectibles` | `action-tools`, `collectibles`, `resource-tools` | 0 | 17 | 0 | 0 | 3 | 20 |
 | `configs` | `configs`, `liveops-tools` | 0 | 5 | 0 | 0 | 4 | 9 |
 | `creator_store` | `creator-store`, `resource-tools` | 0 | 5 | 0 | 0 | 5 | 10 |
 | `data_stores` | `datastore-v2` | 0 | 18 | 0 | 0 | 0 | 18 |
@@ -59,35 +59,35 @@ An operation is in the target when its `security` list contains exactly `{"roblo
 | `experience_notifications` | `experience-notifications`, `resource-tools` | 0 | 3 | 0 | 0 | 5 | 8 |
 | `experiments` | `experiments`, `liveops-tools` | 0 | 6 | 0 | 0 | 5 | 11 |
 | `game_events` | `game-events`, `liveops-tools` | 0 | 3 | 0 | 0 | 2 | 5 |
-| `game_localization` | `game-localization`, `resource-tools` | 0 | 18 | 0 | 0 | 22 | 40 |
+| `game_localization` | `action-tools`, `game-localization`, `resource-tools` | 0 | 29 | 0 | 0 | 11 | 40 |
 | `game_passes` | `game-passes`, `liveops-tools` | 0 | 2 | 0 | 0 | 2 | 4 |
 | `generative_ai` | `generative-ai` | 0 | 0 | 0 | 0 | 2 | 2 |
 | `groups` | `creator-tools`, `group` | 3 | 19 | 0 | 0 | 0 | 22 |
 | `inventory` | `inventory` | 1 | 0 | 0 | 0 | 0 | 1 |
-| `item_folders` | `item-folders`, `resource-tools` | 0 | 4 | 0 | 0 | 4 | 8 |
-| `localization_tables` | `localization-tables`, `resource-tools` | 0 | 7 | 0 | 0 | 3 | 10 |
+| `item_folders` | `action-tools`, `item-folders`, `resource-tools` | 0 | 6 | 0 | 0 | 2 | 8 |
+| `localization_tables` | `action-tools`, `localization-tables`, `resource-tools` | 0 | 8 | 0 | 0 | 2 | 10 |
 | `luau_execution` | `creator-tools`, `luau` | 4 | 1 | 0 | 0 | 0 | 5 |
 | `marketplace_items` | `marketplace-items`, `resource-tools` | 0 | 12 | 0 | 0 | 1 | 13 |
-| `matchmaking` | `liveops-tools`, `matchmaking` | 0 | 13 | 0 | 0 | 10 | 23 |
+| `matchmaking` | `action-tools`, `liveops-tools`, `matchmaking` | 0 | 15 | 0 | 0 | 8 | 23 |
 | `memory_stores` | `memory-store` | 0 | 10 | 0 | 0 | 0 | 10 |
-| `messaging` | `messaging` | 1 | 0 | 0 | 0 | 1 | 2 |
+| `messaging` | `action-tools`, `messaging` | 1 | 1 | 0 | 0 | 0 | 2 |
 | `notifications` | `notification` | 1 | 0 | 0 | 0 | 0 | 1 |
 | `ordered_data_stores` | `ordered-datastore-v2` | 0 | 6 | 0 | 0 | 0 | 6 |
 | `ordered_data_stores_v1` | `ordered-datastore` | 6 | 0 | 0 | 0 | 0 | 6 |
 | `place_instances` | `creator-tools`, `place-instances` | 0 | 3 | 0 | 0 | 1 | 4 |
 | `place_versions` | `place-versions`, `resource-tools` | 0 | 2 | 0 | 0 | 1 | 3 |
 | `places` | `experience`, `place` | 3 | 0 | 0 | 0 | 0 | 3 |
-| `secrets` | `resource-tools`, `secrets` | 0 | 3 | 0 | 0 | 2 | 5 |
+| `secrets` | `action-tools`, `resource-tools` | 0 | 5 | 0 | 0 | 0 | 5 |
 | `server_management` | `liveops-tools`, `server-management` | 0 | 6 | 0 | 0 | 1 | 7 |
 | `service_efficiency` | `resource-tools`, `service-efficiency` | 0 | 18 | 0 | 0 | 5 | 23 |
 | `subscriptions` | `creator-tools` | 0 | 1 | 0 | 0 | 0 | 1 |
-| `team_create` | `resource-tools`, `team-create` | 0 | 4 | 0 | 0 | 2 | 6 |
+| `team_create` | `action-tools`, `resource-tools` | 0 | 6 | 0 | 0 | 0 | 6 |
 | `thumbnails` | `resource-tools` | 0 | 3 | 0 | 0 | 0 | 3 |
 | `universe_followings` | `resource-tools` | 0 | 5 | 0 | 0 | 0 | 5 |
 | `universes` | `creator-tools`, `universe` | 3 | 4 | 0 | 0 | 0 | 7 |
 | `user_restrictions` | `user-restriction` | 7 | 0 | 0 | 0 | 0 | 7 |
 | `users` | `creator-tools`, `user` | 2 | 1 | 0 | 0 | 0 | 3 |
-| **Total** | | **45** | **232** | **0** | **0** | **120** | **397** |
+| **Total** | | **45** | **262** | **0** | **0** | **90** | **397** |
 
 ## Servers
 

@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 277,
-    "not_covered": 120,
+    "covered": 307,
+    "not_covered": 90,
     "existing": 45,
-    "implemented": 232,
+    "implemented": 262,
     "unverified": 0,
     "defective": 0,
-    "pending": 120,
+    "pending": 90,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -113,8 +113,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising preview-ad-credit-conversion",
-      "status": "pending",
+      "cli": "rbxcloud action-tools advertising preview-ad-credit-conversion",
+      "status": "implemented",
       "operation_id": "PreviewAdCreditConversion",
       "tags": [
         "Advertising"
@@ -264,8 +264,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising update-campaign-ad",
-      "status": "pending",
+      "cli": "rbxcloud action-tools advertising update-campaign-ad",
+      "status": "implemented",
       "operation_id": "UpdateCampaignAd",
       "tags": [
         "Advertising"
@@ -378,8 +378,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising create-creative",
-      "status": "pending",
+      "cli": "rbxcloud action-tools advertising create-creative",
+      "status": "implemented",
       "operation_id": "CreateCreative",
       "tags": [
         "Advertising"
@@ -416,8 +416,8 @@
         "legacy-cookie"
       ],
       "family": "advertising",
-      "cli": "rbxcloud advertising update-creative",
-      "status": "pending",
+      "cli": "rbxcloud action-tools advertising update-creative",
+      "status": "implemented",
       "operation_id": "UpdateCreative",
       "tags": [
         "Advertising"
@@ -686,8 +686,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_dashboards",
-      "cli": "rbxcloud analytics-dashboards delete-dashboard",
-      "status": "pending",
+      "cli": "rbxcloud action-tools analytics-dashboards delete-dashboard",
+      "status": "implemented",
       "operation_id": "CustomDashboards_DeleteDashboard",
       "tags": [
         "Analytics"
@@ -1508,8 +1508,8 @@
         "oauth2"
       ],
       "family": "secrets",
-      "cli": "rbxcloud secrets create",
-      "status": "pending",
+      "cli": "rbxcloud action-tools secrets create",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Universes"
@@ -1544,8 +1544,8 @@
         "oauth2"
       ],
       "family": "secrets",
-      "cli": "rbxcloud secrets update",
-      "status": "pending",
+      "cli": "rbxcloud action-tools secrets update",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Universes"
@@ -2521,8 +2521,8 @@
         "oauth2"
       ],
       "family": "messaging",
-      "cli": "rbxcloud messaging publish-universe-message",
-      "status": "pending",
+      "cli": "rbxcloud action-tools messaging publish-universe-message",
+      "status": "implemented",
       "operation_id": "Cloud_PublishUniverseMessage",
       "tags": [
         "Universes"
@@ -3340,8 +3340,8 @@
         "oauth2"
       ],
       "family": "badges",
-      "cli": "rbxcloud badges update-badge",
-      "status": "pending",
+      "cli": "rbxcloud action-tools badges update-badge",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Badges"
@@ -3507,8 +3507,8 @@
         "oauth2"
       ],
       "family": "team_create",
-      "cli": "rbxcloud team-create update-settings",
-      "status": "pending",
+      "cli": "rbxcloud action-tools team-create update-settings",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Team Create",
@@ -3526,8 +3526,8 @@
         "oauth2"
       ],
       "family": "team_create",
-      "cli": "rbxcloud team-create remove-member",
-      "status": "pending",
+      "cli": "rbxcloud action-tools team-create remove-member",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Team Create",
@@ -3683,8 +3683,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-badge-description",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization update-badge-description",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Badges",
@@ -3778,8 +3778,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-badge-name-description",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization update-badge-name-description",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Badges",
@@ -3816,8 +3816,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-badge-name",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization update-badge-name",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Badges",
@@ -3835,8 +3835,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-developer-product-description",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization update-developer-product-description",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Developer products",
@@ -3930,8 +3930,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-developer-product-name-description",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization update-developer-product-name-description",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Developer products",
@@ -3968,8 +3968,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-developer-product-name",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization update-developer-product-name",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Developer products",
@@ -4044,8 +4044,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-game-pass-description",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization update-game-pass-description",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Game passes",
@@ -4139,8 +4139,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-game-pass-name-description",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization update-game-pass-name-description",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Game passes",
@@ -4177,8 +4177,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-game-pass-name",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization update-game-pass-name",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Game passes",
@@ -4196,8 +4196,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization update-game-thumbnail-alt-text",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization update-game-thumbnail-alt-text",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization",
@@ -4276,8 +4276,8 @@
         "oauth2"
       ],
       "family": "game_localization",
-      "cli": "rbxcloud game-localization get-game-name-description-history",
-      "status": "pending",
+      "cli": "rbxcloud action-tools game-localization get-game-name-description-history",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization",
@@ -4610,8 +4610,8 @@
         "oauth2"
       ],
       "family": "localization_tables",
-      "cli": "rbxcloud localization-tables update-auto-localization-settings",
-      "status": "pending",
+      "cli": "rbxcloud action-tools localization-tables update-auto-localization-settings",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Localization",
@@ -4911,8 +4911,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking shutdown-game-instances",
-      "status": "pending",
+      "cli": "rbxcloud action-tools matchmaking shutdown-game-instances",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -5063,8 +5063,8 @@
         "legacy-cookie"
       ],
       "family": "matchmaking",
-      "cli": "rbxcloud matchmaking set-place-scoring-configuration",
-      "status": "pending",
+      "cli": "rbxcloud action-tools matchmaking set-place-scoring-configuration",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Matchmaking"
@@ -6492,8 +6492,8 @@
         "legacy-cookie"
       ],
       "family": "avatar_bundles",
-      "cli": "rbxcloud avatar-bundles create-item-update-context",
-      "status": "pending",
+      "cli": "rbxcloud action-tools avatar-bundles create-item-update-context",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets",
@@ -6856,8 +6856,8 @@
         "legacy-cookie"
       ],
       "family": "collectibles",
-      "cli": "rbxcloud collectibles update-item-display-information",
-      "status": "pending",
+      "cli": "rbxcloud action-tools collectibles update-item-display-information",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets",
@@ -6894,8 +6894,8 @@
         "legacy-cookie"
       ],
       "family": "collectibles",
-      "cli": "rbxcloud collectibles restock",
-      "status": "pending",
+      "cli": "rbxcloud action-tools collectibles restock",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets",
@@ -7042,8 +7042,8 @@
         "legacy-cookie"
       ],
       "family": "item_folders",
-      "cli": "rbxcloud item-folders create",
-      "status": "pending",
+      "cli": "rbxcloud action-tools item-folders create",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets"
@@ -7078,8 +7078,8 @@
         "legacy-cookie"
       ],
       "family": "item_folders",
-      "cli": "rbxcloud item-folders update",
-      "status": "pending",
+      "cli": "rbxcloud action-tools item-folders update",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets"

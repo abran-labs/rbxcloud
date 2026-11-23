@@ -466,7 +466,7 @@ pub struct CreateDataStoreEntryParams {
     pub universe_id: String,
     pub data_store_id: String,
     pub id: Option<String>,
-    pub body: CreateDataStoreEntryRequest,
+    pub body: DataStoreEntryInput,
 }
 #[derive(Debug, Clone)]
 pub struct GetDataStoreEntryParams {
@@ -480,7 +480,7 @@ pub struct UpdateDataStoreEntryParams {
     pub data_store_id: String,
     pub entry_id: String,
     pub allow_missing: Option<bool>,
-    pub body: UpdateDataStoreEntryRequest,
+    pub body: DataStoreEntryInput,
 }
 #[derive(Debug, Clone)]
 pub struct DeleteDataStoreEntryParams {
@@ -493,7 +493,7 @@ pub struct IncrementDataStoreEntryParams {
     pub universe_id: String,
     pub data_store_id: String,
     pub entry_id: String,
-    pub body: IncrementDataStoreEntryRequest,
+    pub body: IncrementDataStoreEntryRequestInput,
 }
 #[derive(Debug, Clone)]
 pub struct ListDataStoreEntryRevisionsParams {
@@ -520,7 +520,7 @@ pub struct CreateScopedDataStoreEntryParams {
     pub data_store_id: String,
     pub scope_id: String,
     pub id: Option<String>,
-    pub body: CreateScopedDataStoreEntryRequest,
+    pub body: DataStoreEntryInput,
 }
 #[derive(Debug, Clone)]
 pub struct GetScopedDataStoreEntryParams {
@@ -536,7 +536,7 @@ pub struct UpdateScopedDataStoreEntryParams {
     pub scope_id: String,
     pub entry_id: String,
     pub allow_missing: Option<bool>,
-    pub body: UpdateScopedDataStoreEntryRequest,
+    pub body: DataStoreEntryInput,
 }
 #[derive(Debug, Clone)]
 pub struct DeleteScopedDataStoreEntryParams {
@@ -551,7 +551,7 @@ pub struct IncrementScopedDataStoreEntryParams {
     pub data_store_id: String,
     pub scope_id: String,
     pub entry_id: String,
-    pub body: IncrementScopedDataStoreEntryRequest,
+    pub body: IncrementDataStoreEntryRequestInput,
 }
 #[derive(Debug, Clone)]
 pub struct ListScopedDataStoreEntryRevisionsParams {
@@ -567,12 +567,12 @@ pub struct ListScopedDataStoreEntryRevisionsParams {
 pub struct UndeleteDataStoreParams {
     pub universe_id: String,
     pub data_store_id: String,
-    pub body: UndeleteDataStoreRequest,
+    pub body: UndeleteDataStoreRequestInput,
 }
 #[derive(Debug, Clone)]
 pub struct SnapshotDataStoresParams {
     pub universe_id: String,
-    pub body: SnapshotDataStoresRequest,
+    pub body: SnapshotDataStoresRequestInput,
 }
 #[derive(Debug, Clone)]
 pub struct GetMemoryStoreFlushOperationParams {
@@ -584,13 +584,13 @@ pub struct GetMemoryStoreFlushOperationParams {
 pub struct CreateMemoryStoreQueueItemParams {
     pub universe_id: i64,
     pub queue_id: String,
-    pub body: CreateMemoryStoreQueueItemRequest,
+    pub body: CreateMemoryStoreQueueItemRequestInput,
 }
 #[derive(Debug, Clone)]
 pub struct DiscardMemoryStoreQueueItemsParams {
     pub universe_id: i64,
     pub queue_id: String,
-    pub body: DiscardMemoryStoreQueueItemsRequest,
+    pub body: DiscardMemoryStoreQueueItemsRequestInput,
 }
 #[derive(Debug, Clone)]
 pub struct ReadMemoryStoreQueueItemsParams {
@@ -614,7 +614,7 @@ pub struct CreateMemoryStoreSortedMapItemParams {
     pub universe_id: i64,
     pub sorted_map_id: String,
     pub id: String,
-    pub body: CreateMemoryStoreSortedMapItemRequest,
+    pub body: MemoryStoreSortedMapItemInput,
 }
 #[derive(Debug, Clone)]
 pub struct GetMemoryStoreSortedMapItemParams {
@@ -628,7 +628,7 @@ pub struct UpdateMemoryStoreSortedMapItemParams {
     pub sorted_map_id: String,
     pub item_id: String,
     pub allow_missing: Option<bool>,
-    pub body: UpdateMemoryStoreSortedMapItemRequest,
+    pub body: MemoryStoreSortedMapItemInput,
 }
 #[derive(Debug, Clone)]
 pub struct DeleteMemoryStoreSortedMapItemParams {
@@ -657,7 +657,7 @@ pub struct CreateOrderedDataStoreEntryParams {
     pub ordered_data_store_id: String,
     pub scope_id: String,
     pub id: Option<String>,
-    pub body: CreateOrderedDataStoreEntryRequest,
+    pub body: OrderedDataStoreEntryInput,
 }
 #[derive(Debug, Clone)]
 pub struct GetOrderedDataStoreEntryParams {
@@ -673,7 +673,7 @@ pub struct UpdateOrderedDataStoreEntryParams {
     pub scope_id: String,
     pub entry_id: String,
     pub allow_missing: Option<bool>,
-    pub body: UpdateOrderedDataStoreEntryRequest,
+    pub body: OrderedDataStoreEntryInput,
 }
 #[derive(Debug, Clone)]
 pub struct DeleteOrderedDataStoreEntryParams {
@@ -688,5 +688,5 @@ pub struct IncrementOrderedDataStoreEntryParams {
     pub ordered_data_store_id: String,
     pub scope_id: String,
     pub entry_id: String,
-    pub body: IncrementOrderedDataStoreEntryRequest,
+    pub body: IncrementOrderedDataStoreEntryRequestInput,
 }
