@@ -147,13 +147,16 @@ impl CollectibleClient {
         Self { transport }
     }
     pub async fn publish(&self, input: PublishCollectibleInput) -> Result<Value, Error> {
-        let request =
-            Request::new(Operation::post(Server::Apis, "/v1/collectibles")).json(&input)?;
+        let request = Request::new(Operation::post(
+            Server::ItemConfiguration,
+            "/v1/collectibles",
+        ))
+        .json(&input)?;
         self.transport.execute(request).await
     }
     pub async fn bulk_update(&self, input: BulkUpdateCollectiblesInput) -> Result<Value, Error> {
         let request = Request::new(Operation::patch(
-            Server::Apis,
+            Server::ItemConfiguration,
             "/v1/collectibles/bulk-update",
         ))
         .json(&input)?;
@@ -161,7 +164,7 @@ impl CollectibleClient {
     }
     pub async fn update(&self, id: &str, input: UpdateCollectibleInput) -> Result<Value, Error> {
         let request = Request::new(Operation::patch(
-            Server::Apis,
+            Server::ItemConfiguration,
             "/v1/collectibles/{collectibleItemId}",
         ))
         .path_param("collectibleItemId", id)

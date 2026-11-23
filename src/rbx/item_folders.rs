@@ -45,7 +45,7 @@ impl ItemFolderClient {
         items: Vec<FolderItemInput>,
     ) -> Result<Value, Error> {
         self.call(
-            Operation::post(Server::Apis, "/v1/folders/{folderId}/items"),
+            Operation::post(Server::ItemConfiguration, "/v1/folders/{folderId}/items"),
             folder_id,
             items,
         )
@@ -57,7 +57,7 @@ impl ItemFolderClient {
         items: Vec<FolderItemInput>,
     ) -> Result<Value, Error> {
         self.call(
-            Operation::delete(Server::Apis, "/v1/folders/{folderId}/items"),
+            Operation::delete(Server::ItemConfiguration, "/v1/folders/{folderId}/items"),
             folder_id,
             items,
         )

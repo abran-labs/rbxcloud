@@ -1,7 +1,7 @@
 mod support;
 
 use rbxcloud::rbx::{
-    client::{AsyncClient, ClientPolicy},
+    client::{AsyncClient, ClientPolicy, Server},
     collectible_management::*,
     credentials::{Credentials, SecretString},
     place_instance_management::*,
@@ -15,6 +15,8 @@ use support::{Reply, TestServer};
 
 async fn transport(server: &TestServer) -> AsyncClient {
     let policy = ClientPolicy::loopback(server.addr())
+        .unwrap()
+        .with_loopback_server(Server::ItemConfiguration, server.addr())
         .unwrap()
         .timeout(Duration::from_secs(2))
         .retry_delay(Duration::from_millis(1));

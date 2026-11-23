@@ -2,7 +2,7 @@ mod support;
 
 use rbxcloud::rbx::{
     avatar_bundle_context::*,
-    client::{AsyncClient, ClientPolicy},
+    client::{AsyncClient, ClientPolicy, Server},
     creator_store_management::*,
     credentials::{Credentials, SecretString},
     item_folders::*,
@@ -12,6 +12,8 @@ use support::{Reply, TestServer};
 
 async fn transport(server: &TestServer) -> AsyncClient {
     let policy = ClientPolicy::loopback(server.addr())
+        .unwrap()
+        .with_loopback_server(Server::ItemConfiguration, server.addr())
         .unwrap()
         .timeout(Duration::from_secs(2))
         .retry_delay(Duration::from_millis(1));

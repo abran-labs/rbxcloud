@@ -81,8 +81,11 @@ impl AvatarBundleContextClient {
         Self { transport }
     }
     pub async fn create_context(&self, input: CreateBundleContextInput) -> Result<Value, Error> {
-        let request = Request::new(Operation::post(Server::Apis, "/v1/bundles/create-context"))
-            .json(&input)?;
+        let request = Request::new(Operation::post(
+            Server::ItemConfiguration,
+            "/v1/bundles/create-context",
+        ))
+        .json(&input)?;
         self.transport.execute(request).await
     }
 }
