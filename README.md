@@ -25,11 +25,17 @@ Create API keys on the [Roblox Credentials page](https://create.roblox.com/crede
 | Command | Use |
 | -- | -- |
 | `rbxcloud coverage` | Coverage summary by API family |
+| `rbxcloud assets upload-batch --help` | Preview and resume new asset uploads |
+| `rbxcloud auth status` | Check local API key setup without exposing it |
+| `rbxcloud skill install` | Install the matching Roblox Open Cloud agent skill |
+| `rbxcloud workflow --help` | Run allowlisted TOML workflows |
 | `rbxcloud datastore-v2 --help` | Data Stores, scopes, snapshots, revisions |
 | `rbxcloud memory-store --help` | Memory Store queues and sorted maps |
 | `rbxcloud campaign-management --help` | Advertising campaigns and estimates |
 | `rbxcloud asset-multipart-start --help` | Resumable multipart asset uploads |
 | `rbxcloud analytics-query --help` | Analytics metrics and benchmarks |
+
+See the [batch upload](docs/cli/cli-assets.md#upload-batch), [agent skill](docs/cli/cli-skill.md), and [workflow](docs/cli/cli-workflow.md) guides.
 
 ## Supported APIs
 

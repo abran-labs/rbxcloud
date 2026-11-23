@@ -21,4 +21,12 @@ There are many tools that can be used to securely store a key. GitHub has a Secr
 If a key must be located within a local repository's directory, be sure to add it to the `.gitignore` file. This is common in some `.env` file setups.
 
 ## Environment Variable
-All CLI commands expect the `--api-key` parameter, but can also be set via the `RBXCLOUD_API_KEY` environment variable. With the environment variable set, the `--api-key` parameter can be left out.
+Typed commands such as `assets upload-batch` and `workflow run` load
+`ROBLOX_OPEN_CLOUD_API_KEY`, then `RBXCLOUD_API_KEY`, then either variable in
+`~/.config/opencode/secrets/roblox-open-cloud.env`. The file must be regular, not
+a symlink, and owner-only (`chmod 600` on Unix). Inject keys through your secret
+manager; don't put them in command arguments, TOML, or logs.
+
+`rbxcloud auth status` uses the same loader and never contacts Roblox. A passing
+check does not verify key scope, validity, or permission to create group assets.
+Some older commands still expect `RBXCLOUD_API_KEY`; check the command's `--help`.
