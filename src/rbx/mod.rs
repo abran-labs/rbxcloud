@@ -9,6 +9,7 @@ pub mod credentials;
 pub mod error;
 #[path = "generated/mod.rs"]
 pub mod generated;
+pub mod service_efficiency;
 pub mod types;
 pub(crate) mod util;
 pub mod v1;

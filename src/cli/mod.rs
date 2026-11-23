@@ -10,6 +10,7 @@ mod messaging_cli;
 mod notification_cli;
 mod ordered_datastore_cli;
 mod place_cli;
+mod service_efficiency_typed;
 mod subscription_cli;
 mod universe_cli;
 mod user_cli;
@@ -40,6 +41,8 @@ pub(crate) struct Cli {
 pub(crate) enum Command {
     /// Access the Roblox Assets API
     Assets(Assets),
+    /// Manage typed service-efficiency accounts and payments
+    ServicePayments(service_efficiency_typed::ServicePayments),
     /// Execute typed composed request bodies
     ComposedTools(generated::composed::ComposedTools),
     /// Execute typed translation and utility requests
@@ -121,6 +124,7 @@ impl Cli {
             Command::ActionTools(command) => command.run().await,
             Command::UtilityTools(command) => command.run().await,
             Command::ComposedTools(command) => command.run().await,
+            Command::ServicePayments(command) => command.run().await,
             Command::Experience(command) => command.run().await,
             Command::Messaging(command) => command.run().await,
             Command::Datastore(command) => command.run().await,

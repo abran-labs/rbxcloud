@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 326,
-    "not_covered": 71,
+    "covered": 330,
+    "not_covered": 67,
     "existing": 45,
-    "implemented": 281,
+    "implemented": 285,
     "unverified": 0,
     "defective": 0,
-    "pending": 71,
+    "pending": 67,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -5823,8 +5823,8 @@
         "legacy-cookie"
       ],
       "family": "service_efficiency",
-      "cli": "rbxcloud service-efficiency update-account-for-group",
-      "status": "pending",
+      "cli": "rbxcloud service-payments update-group-account",
+      "status": "implemented",
       "operation_id": "ServiceEfficiencyApi_UpdateAccountForGroup",
       "tags": [
         "Accounts",
@@ -5865,8 +5865,8 @@
         "legacy-cookie"
       ],
       "family": "service_efficiency",
-      "cli": "rbxcloud service-efficiency update-account-for-user",
-      "status": "pending",
+      "cli": "rbxcloud service-payments update-user-account",
+      "status": "implemented",
       "operation_id": "ServiceEfficiencyApi_UpdateAccountForUser",
       "tags": [
         "Accounts",
@@ -6220,8 +6220,8 @@
         "legacy-cookie"
       ],
       "family": "service_efficiency",
-      "cli": "rbxcloud service-efficiency submit-manual-payment-for-group",
-      "status": "pending",
+      "cli": "rbxcloud service-payments submit-group-payment",
+      "status": "implemented",
       "operation_id": "ServiceEfficiencyApi_SubmitManualPaymentForGroup",
       "tags": [
         "Accounts",
@@ -6241,8 +6241,8 @@
         "legacy-cookie"
       ],
       "family": "service_efficiency",
-      "cli": "rbxcloud service-efficiency submit-manual-payment-for-user",
-      "status": "pending",
+      "cli": "rbxcloud service-payments submit-user-payment",
+      "status": "implemented",
       "operation_id": "ServiceEfficiencyApi_SubmitManualPaymentForUser",
       "tags": [
         "Accounts",
