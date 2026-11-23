@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 366,
-    "not_covered": 31,
+    "covered": 374,
+    "not_covered": 23,
     "existing": 45,
-    "implemented": 321,
+    "implemented": 329,
     "unverified": 0,
     "defective": 0,
-    "pending": 31,
+    "pending": 23,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -476,7 +476,7 @@
       ],
       "family": "analytics_alerts",
       "cli": "rbxcloud analytics-alerts create-alert",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Analytics"
@@ -516,7 +516,7 @@
       ],
       "family": "analytics_alerts",
       "cli": "rbxcloud analytics-alerts update-alert",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Analytics"
@@ -572,8 +572,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_dashboards",
-      "cli": "rbxcloud analytics-dashboards validate-dashboard-document",
-      "status": "pending",
+      "cli": "rbxcloud analytics-dashboards validate-document",
+      "status": "implemented",
       "operation_id": "CustomDashboards_ValidateDashboardDocument",
       "tags": [
         "Analytics"
@@ -611,7 +611,7 @@
       ],
       "family": "analytics_dashboards",
       "cli": "rbxcloud analytics-dashboards create-dashboard",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "CustomDashboards_CreateDashboard",
       "tags": [
         "Analytics"
@@ -705,8 +705,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_dashboards",
-      "cli": "rbxcloud analytics-dashboards update-dashboard-metadata",
-      "status": "pending",
+      "cli": "rbxcloud analytics-dashboards update-metadata",
+      "status": "implemented",
       "operation_id": "CustomDashboards_UpdateDashboardMetadata",
       "tags": [
         "Analytics"
@@ -725,7 +725,7 @@
       ],
       "family": "analytics_dashboards",
       "cli": "rbxcloud analytics-dashboards publish-dashboard",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": "CustomDashboards_PublishDashboard",
       "tags": [
         "Analytics"
@@ -4816,8 +4816,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_logs",
-      "cli": "rbxcloud analytics-logs create-log-regex",
-      "status": "pending",
+      "cli": "rbxcloud analytics-log-regexes create-regex",
+      "status": "implemented",
       "operation_id": "LogAttributeService_Create",
       "tags": [
         "Analytics"
@@ -4835,8 +4835,8 @@
         "legacy-cookie"
       ],
       "family": "analytics_logs",
-      "cli": "rbxcloud analytics-logs update-log-regex",
-      "status": "pending",
+      "cli": "rbxcloud analytics-log-regexes update-regex",
+      "status": "implemented",
       "operation_id": "LogAttributeService_Update",
       "tags": [
         "Analytics"

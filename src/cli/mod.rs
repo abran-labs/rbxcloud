@@ -1,3 +1,4 @@
+mod analytics_management;
 mod analytics_query;
 mod asset_download;
 mod asset_multipart_start;
@@ -86,6 +87,12 @@ pub(crate) enum Command {
     CustomSignals(matchmaking_configuration::CustomSignals),
     /// Run typed analytics metric and benchmark queries
     AnalyticsQuery(analytics_query::AnalyticsQuery),
+    /// Manage typed custom analytics dashboards
+    AnalyticsDashboards(analytics_management::AnalyticsDashboards),
+    /// Manage typed analytics alerts
+    AnalyticsAlerts(analytics_management::AnalyticsAlerts),
+    /// Manage typed analytics log regexes
+    AnalyticsLogRegexes(analytics_management::AnalyticsLogRegexes),
     /// Manage typed advertising campaigns and estimates
     CampaignManagement(campaign_management::CampaignManagement),
     /// Create a typed advertising campaign recommendation
@@ -159,6 +166,9 @@ impl Cli {
             Command::CampaignPlanning(command) => command.run().await,
             Command::CampaignManagement(command) => command.run().await,
             Command::AnalyticsQuery(command) => command.run().await,
+            Command::AnalyticsDashboards(command) => command.run().await,
+            Command::AnalyticsAlerts(command) => command.run().await,
+            Command::AnalyticsLogRegexes(command) => command.run().await,
             Command::PlayerAttributes(command) => command.run().await,
             Command::ServerAttributes(command) => command.run().await,
             Command::ScoringConfigurations(command) => command.run().await,
