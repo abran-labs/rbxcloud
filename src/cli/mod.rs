@@ -5,6 +5,7 @@ mod asset_multipart_start;
 mod assets_cli;
 mod campaign_management;
 mod campaign_planning;
+mod catalog_management;
 mod cloud;
 mod config_publishing;
 mod datastore_cli;
@@ -95,6 +96,14 @@ pub(crate) enum Command {
     AnalyticsLogRegexes(analytics_management::AnalyticsLogRegexes),
     /// Manage typed advertising campaigns and estimates
     CampaignManagement(campaign_management::CampaignManagement),
+    /// Manage typed Creator Store product pricing
+    CreatorStoreProducts(catalog_management::CreatorStoreProducts),
+    /// Search Creator Store assets and delete typed saves
+    ToolboxAssets(catalog_management::ToolboxAssets),
+    /// Create typed avatar bundle contexts
+    AvatarBundleContext(catalog_management::AvatarBundleContext),
+    /// Add and remove typed item-folder entries
+    ItemFolders(catalog_management::ItemFolders),
     /// Create a typed advertising campaign recommendation
     CampaignPlanning(campaign_planning::CampaignRecommendation),
     /// Download authenticated binary Roblox assets
@@ -165,6 +174,10 @@ impl Cli {
             Command::AssetDownload(command) => command.run().await,
             Command::CampaignPlanning(command) => command.run().await,
             Command::CampaignManagement(command) => command.run().await,
+            Command::CreatorStoreProducts(command) => command.run().await,
+            Command::ToolboxAssets(command) => command.run().await,
+            Command::AvatarBundleContext(command) => command.run().await,
+            Command::ItemFolders(command) => command.run().await,
             Command::AnalyticsQuery(command) => command.run().await,
             Command::AnalyticsDashboards(command) => command.run().await,
             Command::AnalyticsAlerts(command) => command.run().await,

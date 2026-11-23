@@ -10,13 +10,13 @@
   "summary": {
     "spec_operations": 997,
     "api_key_operations": 397,
-    "covered": 374,
-    "not_covered": 23,
+    "covered": 381,
+    "not_covered": 16,
     "existing": 45,
-    "implemented": 329,
+    "implemented": 336,
     "unverified": 0,
     "defective": 0,
-    "pending": 23,
+    "pending": 16,
     "excluded": 600,
     "excluded_by_reason": {
       "legacy-cookie": 524,
@@ -1121,8 +1121,8 @@
         "oauth2"
       ],
       "family": "creator_store",
-      "cli": "rbxcloud creator-store create-creator-store-product",
-      "status": "pending",
+      "cli": "rbxcloud creator-store-products create-product",
+      "status": "implemented",
       "operation_id": "Cloud_CreateCreatorStoreProduct",
       "tags": [
         "Creator Store"
@@ -1157,8 +1157,8 @@
         "oauth2"
       ],
       "family": "creator_store",
-      "cli": "rbxcloud creator-store update-creator-store-product",
-      "status": "pending",
+      "cli": "rbxcloud creator-store-products update-product",
+      "status": "implemented",
       "operation_id": "Cloud_UpdateCreatorStoreProduct",
       "tags": [
         "Creator Store"
@@ -6335,8 +6335,8 @@
         "legacy-cookie"
       ],
       "family": "creator_store",
-      "cli": "rbxcloud creator-store bulk-delete-saves",
-      "status": "pending",
+      "cli": "rbxcloud toolbox-assets bulk-delete-saves",
+      "status": "implemented",
       "operation_id": "Saves_BulkDeleteSaves",
       "tags": [
         "Creator Store"
@@ -6397,8 +6397,8 @@
         "none"
       ],
       "family": "creator_store",
-      "cli": "rbxcloud creator-store search-assets",
-      "status": "pending",
+      "cli": "rbxcloud toolbox-assets search-assets",
+      "status": "implemented",
       "operation_id": "Toolbox_SearchCreatorStoreAssets",
       "tags": [
         "Creator Store"
@@ -6530,8 +6530,8 @@
         "legacy-cookie"
       ],
       "family": "avatar_bundles",
-      "cli": "rbxcloud avatar-bundles create-context",
-      "status": "pending",
+      "cli": "rbxcloud avatar-bundle-context create-context",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets",
@@ -7133,7 +7133,7 @@
       ],
       "family": "item_folders",
       "cli": "rbxcloud item-folders add-items",
-      "status": "pending",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets"
@@ -7150,8 +7150,8 @@
         "legacy-cookie"
       ],
       "family": "item_folders",
-      "cli": "rbxcloud item-folders remove-items",
-      "status": "pending",
+      "cli": "rbxcloud item-folders delete-items",
+      "status": "implemented",
       "operation_id": null,
       "tags": [
         "Assets"

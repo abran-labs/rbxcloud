@@ -32,3 +32,7 @@ pub mod localization_table_contents;
 pub mod analytics_alerts;
 pub mod analytics_dashboards;
 pub mod analytics_log_regexes;
+
+pub mod avatar_bundle_context;
+pub mod creator_store_management;
+pub mod item_folders;
