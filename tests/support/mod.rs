@@ -55,7 +55,11 @@ pub struct Reply {
 
 impl Reply {
     pub fn binary(status: u16, body: Vec<u8>) -> Self {
-        Self { status, body, ..Self::empty(status) }
+        Self {
+            status,
+            body,
+            ..Self::empty(status)
+        }
     }
 
     pub fn json(status: u16, body: &str) -> Self {

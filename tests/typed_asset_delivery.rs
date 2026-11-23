@@ -24,9 +24,8 @@ async fn client(server: &TestServer) -> AssetDeliveryClient {
 
 #[tokio::test]
 async fn binary_asset_download_preserves_bytes_and_version_path() {
-    let server =
-        TestServer::start(vec![Reply::binary(200, vec![0, 1, 2, 255, 10])
-            .header("Content-Type", "application/octet-stream")]);
+    let server = TestServer::start(vec![Reply::binary(200, vec![0, 1, 2, 255, 10])
+        .header("Content-Type", "application/octet-stream")]);
     let dir = tempfile::tempdir().unwrap();
     let output = dir.path().join("asset.bin");
     let result = client(&server)
