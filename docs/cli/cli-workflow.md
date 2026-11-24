@@ -70,6 +70,13 @@ Command names, flag order, and fixed tokens are literal:
 
 An image step can expand an array of paths at `PATH...`. Paths must stay
 inside the project. Its manifest is fixed to `.rbxcloud/upload-batch.json`.
+Workflow uploads (including upload dry runs) require Linux with `openat2`
+available (kernel 5.6 or newer, not blocked by sandbox policy). Project-relative
+asset paths cannot traverse symlinks or mounts; hard-linked files are rejected.
+The `.rbxcloud` state directory must be owned by the current user and not writable
+by group or others. Use a trusted project and keep its upload state under your
+control. Read-only workflow steps and direct `assets upload-batch` do not require
+`openat2`.
 Read steps can request up to three bounded retries after the initial attempt.
 The upload step never retries a create. No shell, raw HTTP, nested workflows,
 script execution or publication, downloads, custom manifest destinations,

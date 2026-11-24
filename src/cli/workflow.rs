@@ -18,6 +18,8 @@ use serde_json::{json, Value};
 
 use model::{Document, Scope};
 
+use super::asset_batch::WorkflowProject;
+
 const PROJECT: &str = ".rbxcloud/workflows";
 const PERSONAL: &str = "rbxcloud/workflows";
 const MAX_SOURCE: u64 = 128 * 1024;
@@ -250,18 +252,12 @@ impl Workflow {
             } => {
                 let document = Document::parse(&read_source(&roots.locate(&name)?)?)?;
                 let inputs = document.bind(&input)?;
-                let plan = preflight(&document, &inputs, &roots.project)?;
+                let project = WorkflowProject::new(&roots.project);
+                let plan = preflight(&document, &inputs, &project)?;
                 let result = if dry_run {
                     plan
                 } else {
-                    execute(
-                        &document,
-                        &inputs,
-                        &roots.project,
-                        ClientPolicy::default(),
-                        None,
-                    )
-                    .await?
+                    execute(&document, &inputs, &project, ClientPolicy::default(), None).await?
                 };
                 serde_json::to_string_pretty(&result)?
             }
@@ -274,7 +270,7 @@ impl Workflow {
 fn preflight(
     document: &Document,
     inputs: &BTreeMap<String, Value>,
-    project: &Path,
+    project: &WorkflowProject<'_>,
 ) -> Result<Value> {
     let mut outputs = BTreeMap::new();
     let mut plan = Vec::new();
@@ -304,7 +300,7 @@ fn preflight(
                                 if let target::Action::Upload(batch) = action {
                                     files += batch.preflight_workflow(project).map_err(|_| {
                                         anyhow::anyhow!(
-                                            "step {}: image input preflight failed",
+                                            "step {}: image input preflight failed (requires Linux openat2 and confined project paths)",
                                             step.id
                                         )
                                     })?;
@@ -325,7 +321,7 @@ fn preflight(
 async fn execute(
     document: &Document,
     inputs: &BTreeMap<String, Value>,
-    project: &Path,
+    project: &WorkflowProject<'_>,
     policy: ClientPolicy,
     mut credentials: Option<Credentials>,
 ) -> Result<Value> {
@@ -406,6 +402,81 @@ mod tests {
     use crate::test_support::{Reply, TestServer};
     use rbxcloud::rbx::credentials::SecretString;
 
+    #[cfg(target_os = "linux")]
+    #[tokio::test]
+    async fn upload_template_records_and_reuses_project_manifest() {
+        let root = tempfile::tempdir().unwrap();
+        fs::create_dir_all(root.path().join("icons/sub")).unwrap();
+        fs::write(root.path().join("icons/sub/a.png"), b"image fixture").unwrap();
+        let document = Document::parse(UPLOAD_IMAGES).unwrap();
+        let inputs = document.bind(&["creator_id=42".into()]).unwrap();
+        let project = WorkflowProject::new(root.path());
+        let server = TestServer::start(vec![Reply::json(
+            200,
+            r#"{"done":true,"response":{"assetId":"123"}}"#,
+        )]);
+        let plan = preflight(&document, &inputs, &project).unwrap();
+        assert_eq!(plan["steps"][0]["files"], 1);
+        assert!(!root.path().join(".rbxcloud").exists());
+        for _ in 0..2 {
+            let result = execute(
+                &document,
+                &inputs,
+                &project,
+                ClientPolicy::loopback(server.addr()).unwrap(),
+                Some(Credentials::api_key(SecretString::new("workflow-test-key"))),
+            )
+            .await
+            .unwrap();
+            let entry = &result["outputs"]["images"]["entries"][0];
+            assert_eq!(entry["result"]["asset_id"], 123);
+            assert!(entry.get("path").is_none());
+        }
+        let state = fs::read_to_string(root.path().join(".rbxcloud/upload-batch.json")).unwrap();
+        assert!(state.contains("\"asset_id\": 123"));
+        assert_eq!(server.requests().len(), 1);
+        assert_eq!(server.requests()[0].method, "POST");
+    }
+
+    #[cfg(target_os = "linux")]
+    #[tokio::test]
+    async fn upload_template_refuses_symlinked_state_entries_without_requests() {
+        use std::os::unix::fs::symlink;
+
+        for entry in [
+            ".rbxcloud",
+            ".rbxcloud/upload-batch.json",
+            ".rbxcloud/upload-batch.json.lock",
+        ] {
+            let root = tempfile::tempdir().unwrap();
+            fs::create_dir(root.path().join("icons")).unwrap();
+            fs::write(root.path().join("icons/a.png"), b"image fixture").unwrap();
+            let entry = root.path().join(entry);
+            let fixture = root.path().join("fixture");
+            if entry == root.path().join(".rbxcloud") {
+                fs::create_dir(&fixture).unwrap();
+            } else {
+                fs::create_dir(entry.parent().unwrap()).unwrap();
+                fs::write(&fixture, br#"{"version":1,"entries":{}}"#).unwrap();
+            }
+            symlink(&fixture, &entry).unwrap();
+            let document = Document::parse(UPLOAD_IMAGES).unwrap();
+            let inputs = document.bind(&["creator_id=42".into()]).unwrap();
+            let server = TestServer::start(vec![]);
+            assert!(execute(
+                &document,
+                &inputs,
+                &WorkflowProject::new(root.path()),
+                ClientPolicy::loopback(server.addr()).unwrap(),
+                Some(Credentials::api_key(SecretString::new("workflow-test-key"))),
+            )
+            .await
+            .is_err());
+            assert!(server.requests().is_empty());
+            assert_eq!(fs::read_link(entry).unwrap(), fixture);
+        }
+    }
+
     #[tokio::test]
     async fn loops_over_json_output_gates_on_booleans_and_retries_one_safe_read() {
         let root = tempfile::tempdir().unwrap();
@@ -432,7 +503,8 @@ when = "${each.published}"
         )
         .unwrap();
         let inputs = document.bind(&[]).unwrap();
-        let plan = preflight(&document, &inputs, root.path()).unwrap();
+        let project = WorkflowProject::new(root.path());
+        let plan = preflight(&document, &inputs, &project).unwrap();
         assert_eq!(plan["steps"][0]["ready"], 1);
         assert_eq!(plan["steps"][1]["deferred"], 1);
         let server = TestServer::start(vec![
@@ -448,7 +520,7 @@ when = "${each.published}"
         ]);
         let policy = ClientPolicy::loopback(server.addr()).unwrap();
         let credentials = Credentials::api_key(SecretString::new("workflow-test-key"));
-        let result = execute(&document, &inputs, root.path(), policy, Some(credentials))
+        let result = execute(&document, &inputs, &project, policy, Some(credentials))
             .await
             .unwrap();
         assert_eq!(
@@ -492,7 +564,7 @@ retries = 1
         assert!(execute(
             &document,
             &document.bind(&[]).unwrap(),
-            root.path(),
+            &WorkflowProject::new(root.path()),
             policy,
             Some(credentials)
         )

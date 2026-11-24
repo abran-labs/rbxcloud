@@ -1,8 +1,11 @@
+mod confined;
+
 use std::{
     collections::{BTreeMap, BTreeSet},
     fs::{self, File, OpenOptions},
     io::{Read, Write},
     path::{Component, Path, PathBuf},
+    sync::OnceLock,
     time::Duration,
 };
 
@@ -16,6 +19,8 @@ use rbxcloud::rbx::{
 };
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+
+use confined::{Project, StateDir};
 
 const DEFAULT_MANIFEST: &str = ".rbxcloud/upload-batch.json";
 const MAX_BYTES: u64 = 20_000_000;
@@ -71,11 +76,28 @@ struct Manifest {
 
 struct LockedManifest {
     _lock: File,
-    path: PathBuf,
+    destination: ManifestDestination,
     data: Manifest,
 }
 
+enum ManifestDestination {
+    Direct(PathBuf),
+    Workflow(StateDir),
+}
+
 impl LockedManifest {
+    fn open_workflow(project: &Project) -> Result<Self> {
+        let state = project.state_dir()?;
+        let lock = state.lock()?;
+        fs2::FileExt::try_lock_exclusive(&lock).context("cannot acquire batch manifest lock")?;
+        let data = Self::read(state.manifest()?)?;
+        Ok(Self {
+            _lock: lock,
+            destination: ManifestDestination::Workflow(state),
+            data,
+        })
+    }
+
     fn open(path: &Path) -> Result<Self> {
         let name = path.file_name().context("manifest must name a file")?;
         let parent = path
@@ -108,53 +130,165 @@ impl LockedManifest {
             "manifest lock must be a regular file"
         );
         fs2::FileExt::try_lock_exclusive(&lock).context("cannot acquire batch manifest lock")?;
-        let data = match path.symlink_metadata() {
+        let file = match path.symlink_metadata() {
             Ok(meta) => {
                 ensure!(
                     meta.file_type().is_file(),
                     "manifest must be a regular file"
                 );
-                serde_json::from_reader(std::io::BufReader::new(File::open(&path)?))
-                    .context("invalid batch manifest")?
+                Some(File::open(&path)?)
             }
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Manifest {
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => None,
+            Err(e) => return Err(e.into()),
+        };
+        Ok(Self {
+            _lock: lock,
+            destination: ManifestDestination::Direct(path),
+            data: Self::read(file)?,
+        })
+    }
+
+    fn read(file: Option<File>) -> Result<Manifest> {
+        let data = match file {
+            Some(file) => serde_json::from_reader(std::io::BufReader::new(file))
+                .context("invalid batch manifest")?,
+            None => Manifest {
                 version: 1,
                 entries: BTreeMap::new(),
             },
-            Err(e) => return Err(e.into()),
         };
         ensure!(data.version == 1, "unsupported manifest version");
-        Ok(Self {
-            _lock: lock,
-            path,
-            data,
-        })
+        Ok(data)
     }
 
     fn set(&mut self, key: String, state: State) -> Result<()> {
         self.data.entries.insert(key, state);
-        let parent = self.path.parent().context("manifest has no parent")?;
-        let mut temp = tempfile::NamedTempFile::new_in(parent)?;
-        serde_json::to_writer_pretty(&mut temp, &self.data)?;
-        temp.write_all(b"\n")?;
-        temp.as_file().sync_all()?;
-        temp.persist(&self.path)
-            .context("cannot replace batch manifest")?;
-        #[cfg(unix)]
-        File::open(parent)?.sync_all()?;
+        match &self.destination {
+            ManifestDestination::Workflow(dir) => {
+                let mut bytes = serde_json::to_vec_pretty(&self.data)?;
+                bytes.push(b'\n');
+                dir.replace(&bytes)
+            }
+            ManifestDestination::Direct(path) => {
+                let parent = path.parent().context("manifest has no parent")?;
+                let mut temp = tempfile::NamedTempFile::new_in(parent)?;
+                serde_json::to_writer_pretty(&mut temp, &self.data)?;
+                temp.write_all(b"\n")?;
+                temp.as_file().sync_all()?;
+                temp.persist(path)
+                    .context("cannot replace batch manifest")?;
+                #[cfg(unix)]
+                File::open(parent)?.sync_all()?;
+                Ok(())
+            }
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Kind {
+    Directory,
+    File,
+    Other,
+}
+
+impl Kind {
+    fn from_std(ty: fs::FileType) -> Self {
+        if ty.is_file() {
+            Self::File
+        } else if ty.is_dir() {
+            Self::Directory
+        } else {
+            Self::Other
+        }
+    }
+}
+
+type Children = Box<dyn Iterator<Item = Result<(PathBuf, Kind)>>>;
+
+#[derive(Clone, Copy)]
+enum Inputs<'a> {
+    Direct,
+    Workflow(&'a Project),
+}
+
+pub(super) struct WorkflowProject<'a> {
+    path: &'a Path,
+    capability: OnceLock<Project>,
+}
+
+impl<'a> WorkflowProject<'a> {
+    pub(super) fn new(path: &'a Path) -> Self {
+        Self {
+            path,
+            capability: OnceLock::new(),
+        }
+    }
+
+    fn confined(&self) -> Result<&Project> {
+        if let Some(root) = self.capability.get() {
+            return Ok(root);
+        }
+        let root = Project::open(self.path)?;
+        Ok(self.capability.get_or_init(|| root))
+    }
+}
+
+impl Inputs<'_> {
+    fn kind(self, path: &Path) -> std::io::Result<Kind> {
+        match self {
+            Self::Direct => fs::symlink_metadata(path).map(|meta| Kind::from_std(meta.file_type())),
+            Self::Workflow(root) => root.kind(path),
+        }
+    }
+
+    fn children(self, path: &Path) -> Result<Children> {
+        match self {
+            Self::Direct => Ok(Box::new(fs::read_dir(path)?.map(|item| {
+                let item = item?;
+                Ok((item.path(), Kind::from_std(item.file_type()?)))
+            }))),
+            Self::Workflow(root) => root.children(path),
+        }
+    }
+
+    fn insert(self, files: &mut BTreeSet<PathBuf>, path: &Path) -> Result<()> {
+        let path = match self {
+            Self::Direct => path.canonicalize()?,
+            Self::Workflow(_) => path.components().collect(),
+        };
+        ensure!(path.to_str().is_some(), "non-UTF-8 upload path");
+        files.insert(path);
+        ensure!(files.len() <= MAX_ENTRIES, "batch contains too many files");
         Ok(())
+    }
+
+    fn read(self, path: &Path) -> Result<Vec<u8>> {
+        let file = match self {
+            Self::Direct => open_direct_file(path)?,
+            Self::Workflow(root) => root.file(path)?,
+        };
+        let mut data = Vec::new();
+        file.take(MAX_BYTES + 1).read_to_end(&mut data)?;
+        ensure!(
+            !data.is_empty() && data.len() as u64 <= MAX_BYTES,
+            "upload file must be 1 to {MAX_BYTES} bytes"
+        );
+        Ok(data)
     }
 }
 
 impl BatchArgs {
     pub(super) async fn run(self) -> Result<String> {
-        let entries = self.prepare(None)?;
+        let inputs = Inputs::Direct;
+        let entries = self.prepare(inputs)?;
         if self.dry_run {
             return self.preview(&entries);
         }
         let transport =
             AsyncClient::new(Credentials::from_process()?, ClientPolicy::default()).await?;
         self.upload(
+            inputs,
             entries,
             AssetCreateClient::new(transport),
             Duration::from_secs(1),
@@ -162,32 +296,25 @@ impl BatchArgs {
         .await
     }
 
-    pub(super) fn preflight_workflow(&self, root: &Path) -> Result<usize> {
-        self.prepare(Some(root)).map(|entries| entries.len())
+    pub(super) fn preflight_workflow(&self, project: &WorkflowProject<'_>) -> Result<usize> {
+        self.prepare(Inputs::Workflow(project.confined()?))
+            .map(|entries| entries.len())
     }
 
     pub(super) async fn run_workflow(
-        mut self,
-        root: &Path,
+        self,
+        project: &WorkflowProject<'_>,
         transport: AsyncClient,
     ) -> Result<serde_json::Value> {
         ensure!(
             matches!(self.asset_type, AssetKind::Image),
             "workflows can only upload images"
         );
-        let entries = self.prepare(Some(root))?;
-        let state_dir = root.join(".rbxcloud");
-        match state_dir.symlink_metadata() {
-            Ok(meta) => ensure!(
-                meta.is_dir(),
-                "project .rbxcloud must not be a symlink or special file"
-            ),
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => fs::create_dir(&state_dir)?,
-            Err(e) => return Err(e.into()),
-        }
-        self.manifest = root.join(DEFAULT_MANIFEST);
+        let inputs = Inputs::Workflow(project.confined()?);
+        let entries = self.prepare(inputs)?;
         let result = self
             .upload(
+                inputs,
                 entries,
                 AssetCreateClient::new(transport),
                 Duration::from_secs(1),
@@ -217,11 +344,11 @@ impl BatchArgs {
     }
 
     // Direct CLI paths may be anywhere. Workflow uploads get an explicit project root.
-    fn prepare(&self, root: Option<&Path>) -> Result<Vec<Entry>> {
+    fn prepare(&self, inputs: Inputs<'_>) -> Result<Vec<Entry>> {
         let mut files = BTreeSet::new();
         for pattern in &self.paths {
             let input = Path::new(pattern);
-            let input = if let Some(root) = root {
+            if matches!(inputs, Inputs::Workflow(_)) {
                 ensure!(
                     input.components().all(|c| matches!(
                         c,
@@ -229,22 +356,21 @@ impl BatchArgs {
                     )),
                     "workflow asset paths must be project-relative without parent segments"
                 );
-                root.join(input)
-            } else {
-                input.to_path_buf()
-            };
-            match input.symlink_metadata() {
-                Ok(meta) if meta.is_file() => {
+            }
+            match inputs.kind(input) {
+                Ok(Kind::File) => {
                     ensure!(
                         self.supported(&input),
                         "file extension does not match asset type"
                     );
-                    insert_file(&mut files, &input, root)?;
+                    inputs.insert(&mut files, input)?;
                 }
-                Ok(meta) if meta.is_dir() => self.walk(input, &mut files, root)?,
-                Ok(_) => bail!("explicit upload paths must be regular files or directories"),
+                Ok(Kind::Directory) => self.walk(input.to_owned(), &mut files, inputs)?,
+                Ok(Kind::Other) => {
+                    bail!("explicit upload paths must be regular files or directories")
+                }
                 Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
-                    self.expand_glob(Path::new(pattern), &mut files, root)?;
+                    self.expand_glob(input, &mut files, inputs)?;
                 }
                 Err(e) => return Err(e.into()),
             }
@@ -262,7 +388,7 @@ impl BatchArgs {
                         .any(|c| c.is_control() || matches!(c, '\u{2028}' | '\u{2029}')),
                 "invalid upload file name"
             );
-            let sha256 = hash(&read_file(&path)?);
+            let sha256 = hash(&inputs.read(&path)?);
             let key = format!(
                 "{:?}:{}:{:?}:{sha256}",
                 self.creator_type, self.creator_id, self.asset_type
@@ -283,9 +409,9 @@ impl BatchArgs {
         &self,
         pattern: &Path,
         files: &mut BTreeSet<PathBuf>,
-        root: Option<&Path>,
+        inputs: Inputs<'_>,
     ) -> Result<()> {
-        let mut base = root.unwrap_or(Path::new(".")).to_path_buf();
+        let mut base = PathBuf::from(".");
         let mut segments = Vec::new();
         for part in pattern.components() {
             match part {
@@ -293,7 +419,7 @@ impl BatchArgs {
                     let segment = segment.to_str().context("non-UTF-8 glob segment")?;
                     if segments.is_empty() && !segment.contains(['*', '?', '[']) {
                         base.push(segment);
-                        if !base.symlink_metadata().is_ok_and(|m| m.is_dir()) {
+                        if !inputs.kind(&base).is_ok_and(|kind| kind == Kind::Directory) {
                             bail!("upload path/glob matched no supported regular files");
                         }
                     } else {
@@ -301,7 +427,7 @@ impl BatchArgs {
                     }
                 }
                 Component::Prefix(_) | Component::RootDir | Component::ParentDir
-                    if root.is_none() && segments.is_empty() =>
+                    if matches!(inputs, Inputs::Direct) && segments.is_empty() =>
                 {
                     base.push(part.as_os_str())
                 }
@@ -330,15 +456,16 @@ impl BatchArgs {
             if recursive && !last {
                 todo.push((dir.clone(), index + 1));
             }
-            for item in fs::read_dir(&dir)? {
+            for item in inputs.children(&dir)? {
                 inspected += 1;
                 ensure!(
                     inspected <= MAX_GLOB_NODES,
                     "upload glob exceeded its traversal limit"
                 );
-                let item = item?;
-                let name = item.file_name();
-                let Some(name) = name.to_str() else { continue };
+                let (path, kind) = item?;
+                let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
+                    continue;
+                };
                 let matches = if recursive {
                     !name.starts_with('.')
                 } else {
@@ -347,11 +474,10 @@ impl BatchArgs {
                 if !matches {
                     continue;
                 }
-                let file_type = item.file_type()?;
-                if file_type.is_dir() && (recursive || !last) {
-                    todo.push((item.path(), if recursive { index } else { index + 1 }));
-                } else if last && file_type.is_file() && self.supported(&item.path()) {
-                    insert_file(files, &item.path(), root)?;
+                if kind == Kind::Directory && (recursive || !last) {
+                    todo.push((path, if recursive { index } else { index + 1 }));
+                } else if last && kind == Kind::File && self.supported(&path) {
+                    inputs.insert(files, &path)?;
                     matched = true;
                 }
             }
@@ -363,30 +489,18 @@ impl BatchArgs {
         Ok(())
     }
 
-    fn walk(
-        &self,
-        path: PathBuf,
-        files: &mut BTreeSet<PathBuf>,
-        root: Option<&Path>,
-    ) -> Result<()> {
+    fn walk(&self, path: PathBuf, files: &mut BTreeSet<PathBuf>, inputs: Inputs<'_>) -> Result<()> {
         let mut dirs = vec![path];
         while let Some(dir) = dirs.pop() {
-            if let Some(root) = root {
-                ensure!(
-                    dir.canonicalize()?.starts_with(root),
-                    "asset directory escapes project"
-                );
-            }
-            for item in fs::read_dir(dir)? {
-                let item = item?;
-                let ty = item.file_type()?;
-                if ty.is_dir() {
-                    dirs.push(item.path());
-                } else if ty.is_file()
-                    && item.file_name().to_str().is_some()
-                    && self.supported(&item.path())
+            for item in inputs.children(&dir)? {
+                let (path, kind) = item?;
+                if kind == Kind::Directory {
+                    dirs.push(path);
+                } else if kind == Kind::File
+                    && path.file_name().and_then(|n| n.to_str()).is_some()
+                    && self.supported(&path)
                 {
-                    insert_file(files, &item.path(), root)?;
+                    inputs.insert(files, &path)?;
                 }
             }
         }
@@ -395,11 +509,15 @@ impl BatchArgs {
 
     async fn upload(
         &self,
+        inputs: Inputs<'_>,
         entries: Vec<Entry>,
         client: AssetCreateClient,
         poll_delay: Duration,
     ) -> Result<String> {
-        let manifest = tokio::sync::Mutex::new(LockedManifest::open(&self.manifest)?);
+        let manifest = tokio::sync::Mutex::new(match inputs {
+            Inputs::Direct => LockedManifest::open(&self.manifest)?,
+            Inputs::Workflow(project) => LockedManifest::open_workflow(project)?,
+        });
         let mut unique = BTreeMap::new();
         for entry in &entries {
             unique.entry(&entry.key).or_insert(entry);
@@ -407,7 +525,7 @@ impl BatchArgs {
         let results: Vec<_> = stream::iter(
             unique
                 .into_values()
-                .map(|entry| self.process(entry, &manifest, &client, poll_delay)),
+                .map(|entry| self.process(inputs, entry, &manifest, &client, poll_delay)),
         )
         .buffer_unordered(self.concurrency.into())
         // Finish active requests even if another manifest write fails.
@@ -443,6 +561,7 @@ impl BatchArgs {
 
     async fn process(
         &self,
+        inputs: Inputs<'_>,
         entry: &Entry,
         manifest: &tokio::sync::Mutex<LockedManifest>,
         client: &AssetCreateClient,
@@ -453,7 +572,7 @@ impl BatchArgs {
             Some(State::Accepted { operation_id }) => operation_id,
             Some(_) => return Ok(()),
             None => {
-                let data = read_file(&entry.path)?;
+                let data = inputs.read(&entry.path)?;
                 ensure!(
                     hash(&data) == entry.sha256,
                     "asset changed after planning; rerun batch"
@@ -538,23 +657,13 @@ impl BatchArgs {
     }
 }
 
-fn insert_file(files: &mut BTreeSet<PathBuf>, path: &Path, root: Option<&Path>) -> Result<()> {
-    let path = path.canonicalize()?;
-    if let Some(root) = root {
-        ensure!(path.starts_with(root), "asset file escapes project");
-    }
-    files.insert(path);
-    ensure!(files.len() <= MAX_ENTRIES, "batch contains too many files");
-    Ok(())
-}
-
 fn file_name(path: &Path) -> Result<&str> {
     path.file_name()
         .and_then(|n| n.to_str())
         .context("non-UTF-8 upload file name")
 }
 
-fn read_file(path: &Path) -> Result<Vec<u8>> {
+fn open_direct_file(path: &Path) -> Result<File> {
     let mut opts = OpenOptions::new();
     opts.read(true);
     #[cfg(unix)]
@@ -567,13 +676,7 @@ fn read_file(path: &Path) -> Result<Vec<u8>> {
         file.metadata()?.is_file(),
         "upload input must remain a regular file"
     );
-    let mut data = Vec::new();
-    file.take(MAX_BYTES + 1).read_to_end(&mut data)?;
-    ensure!(
-        !data.is_empty() && data.len() as u64 <= MAX_BYTES,
-        "upload file must be 1 to {MAX_BYTES} bytes"
-    );
-    Ok(data)
+    Ok(file)
 }
 
 fn hash(data: &[u8]) -> String {
@@ -657,7 +760,8 @@ mod tests {
         )
         .await?;
         args.upload(
-            args.prepare(None)?,
+            Inputs::Direct,
+            args.prepare(Inputs::Direct)?,
             AssetCreateClient::new(transport),
             Duration::ZERO,
         )

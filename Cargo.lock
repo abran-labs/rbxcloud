@@ -858,6 +858,7 @@ dependencies = [
  "rand",
  "rbxcloud",
  "reqwest",
+ "rustix",
  "serde",
  "serde_json",
  "sha2",

@@ -135,6 +135,65 @@ fn auth_status_requires_absolute_home_only_for_file_fallback() {
     }
 }
 
+#[cfg(unix)]
+#[test]
+fn batch_rejects_non_utf8_parent_before_upload_setup() {
+    use std::{ffi::OsStr, os::unix::ffi::OsStrExt};
+    let temp = tempfile::tempdir().unwrap();
+    let dir = temp.path().join(OsStr::from_bytes(b"icons-\xff"));
+    fs::create_dir(&dir).unwrap();
+    fs::write(dir.join("ok.png"), b"image fixture").unwrap();
+    let output = cli(
+        temp.path(),
+        &[
+            "assets",
+            "upload-batch",
+            "--creator-type",
+            "user",
+            "--creator-id",
+            "42",
+            "--asset-type",
+            "image",
+            ".",
+        ],
+    );
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("non-UTF-8 upload path"));
+    assert!(!temp.path().join(".rbxcloud").exists());
+}
+
+#[cfg(target_os = "linux")]
+#[test]
+fn workflow_preflight_rejects_even_in_project_directory_aliases() {
+    let temp = tempfile::tempdir().unwrap();
+    let home = temp.path();
+    fs::create_dir(home.join("icons")).unwrap();
+    fs::write(home.join("icons/a.png"), b"image fixture").unwrap();
+    std::os::unix::fs::symlink("icons", home.join("alias")).unwrap();
+    assert!(cli(
+        home,
+        &["workflow", "init", "icons", "--template", "upload-images"]
+    )
+    .status
+    .success());
+    let output = cli(
+        home,
+        &[
+            "workflow",
+            "run",
+            "icons",
+            "--input",
+            "creator_id=42",
+            "--input",
+            r#"paths=["alias/a.png"]"#,
+            "--dry-run",
+        ],
+    );
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("image input preflight failed"));
+}
+
+#[cfg(target_os = "linux")]
 #[test]
 fn workflow_dry_run_preflights_batch_without_mutations() {
     let temp = tempfile::tempdir().unwrap();

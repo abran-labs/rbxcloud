@@ -30,6 +30,9 @@ toml = { version = "0.9", default-features = false, features = ["std", "serde", 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
 
+[target.'cfg(target_os = "linux")'.dependencies]
+rustix = { version = "1.1", features = ["fs", "process"] }
+
 [features]
 # Synthetic operations for tests/transport.rs. They let the transport be tested
 # from an integration test while its request constructors stay crate-private.
