@@ -1,8 +1,10 @@
 mod analytics_management;
 mod analytics_query;
+mod asset_batch;
 mod asset_download;
 mod asset_multipart_start;
 mod assets_cli;
+mod auth;
 mod campaign_management;
 mod campaign_planning;
 mod catalog_management;
@@ -26,10 +28,12 @@ mod notification_cli;
 mod ordered_datastore_cli;
 mod place_cli;
 mod service_efficiency_typed;
+mod skill;
 mod subscription_cli;
 mod universe_cli;
 mod user_cli;
 mod user_restriction_cli;
+mod workflow;
 
 use clap::{Parser, Subcommand};
 use generated::storage::{DatastoreV2, MemoryStore, OrderedDatastoreV2};
@@ -180,6 +184,12 @@ pub(crate) enum Command {
 
     /// Show Open Cloud API coverage status by family
     Coverage(Coverage),
+    /// Inspect local Open Cloud credentials
+    Auth(auth::Auth),
+    /// Install or inspect the bundled Roblox Open Cloud agent skill
+    Skill(skill::Skill),
+    /// Run restricted, native TOML workflows
+    Workflow(workflow::Workflow),
 }
 
 impl Cli {
@@ -241,6 +251,9 @@ impl Cli {
             Command::MemoryStore(command) => command.run().await,
             Command::OrderedDatastoreV2(command) => command.run().await,
             Command::Coverage(command) => command.run(),
+            Command::Auth(command) => command.run(),
+            Command::Skill(command) => command.run(),
+            Command::Workflow(command) => command.run().await,
         }
     }
 }

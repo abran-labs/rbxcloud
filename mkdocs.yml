@@ -9,6 +9,8 @@ nav:
   - CLI:
     - Install: cli/cli-install.md
     - API Key: cli/cli-api-key.md
+    - Agent Skill: cli/cli-skill.md
+    - Workflows: cli/cli-workflow.md
     - Assets: cli/cli-assets.md
     - DataStore: cli/cli-datastore.md
     - Experience: cli/cli-experience.md

@@ -288,6 +288,9 @@ impl Client {
                 for (name, part) in parts {
                     let part = match part {
                         Part::Text(text) => FormPart::text(text.clone()),
+                        Part::Json(text) => FormPart::text(text.clone())
+                            .mime_str("application/json")
+                            .map_err(|_| "invalid JSON MIME type".to_string())?,
                         Part::File(file) => FormPart::bytes(file.data.to_vec())
                             .file_name(file.file_name.clone())
                             .mime_str(&file.content_type)

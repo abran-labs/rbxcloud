@@ -92,6 +92,7 @@ pub(crate) fn check_file_name(name: &str) -> Result<(), &'static str> {
 
 pub(crate) enum Part {
     Text(String),
+    Json(String),
     File(Attachment),
 }
 
@@ -179,6 +180,21 @@ impl Request {
     /// Adds a text field to a `multipart/form-data` body.
     pub(crate) fn multipart_text(self, name: &'static str, value: impl Into<String>) -> Self {
         self.push_part(name, Part::Text(value.into()))
+    }
+
+    pub(crate) fn multipart_json<T: Serialize>(
+        self,
+        name: &'static str,
+        value: &T,
+    ) -> Result<Self, Error> {
+        let json = serde_json::to_string(value).map_err(|e| Error::InvalidRequest {
+            operation: self.operation.label(),
+            reason: format!(
+                "multipart metadata cannot be written as JSON ({:?})",
+                e.classify()
+            ),
+        })?;
+        Ok(self.push_part(name, Part::Json(json)))
     }
 
     /// Adds a file to a `multipart/form-data` body.
