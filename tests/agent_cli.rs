@@ -109,6 +109,33 @@ fn auth_status_checks_real_loader_without_disclosing_key() {
 }
 
 #[test]
+fn auth_status_requires_absolute_home_only_for_file_fallback() {
+    let temp = tempfile::tempdir().unwrap();
+    for home in [None, Some(""), Some("relative")] {
+        let mut command = Command::new(env!("CARGO_BIN_EXE_rbxcloud"));
+        command
+            .current_dir(temp.path())
+            .env_remove("HOME")
+            .env_remove("USERPROFILE")
+            .env_remove("ROBLOX_OPEN_CLOUD_API_KEY")
+            .env_remove("RBXCLOUD_API_KEY")
+            .args(["auth", "status"]);
+        if let Some(home) = home {
+            command.env("HOME", home);
+        }
+        let missing = command.output().unwrap();
+        assert!(!missing.status.success());
+        assert!(String::from_utf8_lossy(&missing.stderr).contains("absolute home directory"));
+        assert!(command
+            .env("ROBLOX_OPEN_CLOUD_API_KEY", "fake-environment-only")
+            .output()
+            .unwrap()
+            .status
+            .success());
+    }
+}
+
+#[test]
 fn workflow_dry_run_preflights_batch_without_mutations() {
     let temp = tempfile::tempdir().unwrap();
     let home = temp.path();

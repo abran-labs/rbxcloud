@@ -57,14 +57,27 @@ impl Credentials {
         env: &dyn Fn(&str) -> Option<String>,
         credentials_file: &Path,
     ) -> Result<SecretString, CredentialsError> {
+        match Self::load_env(env)? {
+            Some(key) => Ok(key),
+            None => Self::load_file(credentials_file),
+        }
+    }
+
+    fn load_env(
+        env: &dyn Fn(&str) -> Option<String>,
+    ) -> Result<Option<SecretString>, CredentialsError> {
         for name in KEY_NAMES {
             if let Some(value) = env(name) {
                 if let Some(key) = usable(value, name)? {
-                    return Ok(key);
+                    return Ok(Some(key));
                 }
             }
         }
 
+        Ok(None)
+    }
+
+    fn load_file(credentials_file: &Path) -> Result<SecretString, CredentialsError> {
         let Some(mut file) = env_file::read(credentials_file)? else {
             return Err(missing(credentials_file, false));
         };
@@ -89,17 +102,18 @@ impl Credentials {
                 });
             }
         }
-        let file = Self::default_file().unwrap_or_else(|| PathBuf::from(DEFAULT_FILE));
-        Self::load(&|name| std::env::var(name).ok(), &file).map(Self::ApiKey)
+        if let Some(key) = Self::load_env(&|name| std::env::var(name).ok())? {
+            return Ok(Self::ApiKey(key));
+        }
+        let file = Self::default_file().ok_or(CredentialsError::NoAbsoluteHome)?;
+        Self::load_file(&file).map(Self::ApiKey)
     }
 
-    /// The default credentials file, when a home directory is known.
+    /// The default credentials file, when an absolute home directory is known.
     pub fn default_file() -> Option<PathBuf> {
-        let home = std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE"))?;
-        if home.is_empty() {
-            return None;
-        }
-        Some(PathBuf::from(home).join(DEFAULT_FILE))
+        let home =
+            PathBuf::from(std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE"))?);
+        home.is_absolute().then(|| home.join(DEFAULT_FILE))
     }
 
     pub(crate) fn secret(&self) -> &SecretString {
@@ -136,6 +150,8 @@ fn usable(value: String, source: &str) -> Result<Option<SecretString>, Credentia
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum CredentialsError {
+    /// File fallback is unavailable without an absolute home directory.
+    NoAbsoluteHome,
     /// Neither the environment nor the credentials file has a key.
     Missing { file: PathBuf, file_present: bool },
     /// A value was found but cannot be sent as an HTTP header. `source` names
@@ -156,6 +172,11 @@ pub enum CredentialsError {
 impl fmt::Display for CredentialsError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::NoAbsoluteHome => write!(
+                f,
+                "no Roblox Open Cloud API key: set {API_KEY_VAR} (or {LEGACY_API_KEY_VAR}); \
+                 credentials file fallback requires an absolute home directory"
+            ),
             Self::Missing { file, file_present } => {
                 let state = if *file_present {
                     "has neither key"
